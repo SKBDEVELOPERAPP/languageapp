@@ -736,6 +736,7 @@
 
       <!-- ================= LESSON ================= -->
 
+    
       <section id="lessonPage" class="page">
 
         <div class="lesson-header">
@@ -1754,85 +1755,39 @@
   }
 
 
-  function createLesson(language) {
+function createLesson(language) {
+  const data = languageData[language];
 
-    const data =
-      languageData[language];
+  const items = shuffle([
+    ...data.words.map(item => ({
+      ...item,
+      type: "vocab"
+    })),
 
-    const vocabulary =
-      shuffle(data.words)
-        .slice(0, 6)
-        .map(item => ({
-          ...item,
-          type: "vocab"
-        }));
+    ...data.phrases.map(item => ({
+      ...item,
+      type: "phrase"
+    }))
+  ]).slice(0, 10);
 
-    const phrases =
-      shuffle(data.phrases)
-        .slice(0, 4)
-        .map(item => ({
-          ...item,
-          type: "phrase"
-        }));
+  const modes = [
+    "speak",
+    "listen",
+    "speak",
+    "choice",
+    "speak",
+    "write",
+    "speak",
+    "listen",
+    "choice",
+    "speak"
+  ];
 
-
-    const content =
-      shuffle([
-        ...vocabulary,
-        ...phrases
-      ]);
-
-
-    /*
-      We deliberately make the lesson
-      speaking-heavy.
-    */
-
-    const modes = [
-      "speak",
-      "speak",
-      "listen",
-      "speak",
-      "choice",
-      "speak",
-      "write",
-      "speak",
-      "listen",
-      "speak"
-    ];
-
-
-    return content.map((item, index) => {
-
-      return {
-        ...item,
-        mode: modes[index]
-      };
-
-    });
-
-  }
-
-
-  function startLesson(language) {
-
-    currentLanguage = language;
-
-    currentQuestions =
-      createLesson(language);
-
-    currentQuestionIndex = 0;
-
-    speechScores = [];
-
-    progress.language = language;
-
-    showPage("lesson");
-
-    renderQuestion();
-  }
-
-
+  return items.map((item, index) => ({
+    ...item,
+    mode: modes[index]
+  }));
+}
   /* =========================================================
      RENDER QUESTION
   ========================================================= */
@@ -2119,86 +2074,53 @@
   }
 
 
-  function speakText(text) {
+function speakText(text) {
+  if (!("speechSynthesis" in window)) {
+    alert(
+      "your browser does not support text-to-speech."
+    );
+    return;
+  }
 
-    if (!("speechSynthesis" in window)) {
+  const code =
+    languageData[currentLanguage].code;
 
-      alert(
-        "your browser does not support text-to-speech."
-      );
+  window.speechSynthesis.cancel();
 
-      return;
-    }
-
-
-    const code =
-      languageData[currentLanguage].code;
-
-
-    window.speechSynthesis.cancel();
-
-
+  function actuallySpeak() {
     const utterance =
       new SpeechSynthesisUtterance(text);
 
-
     utterance.lang = code;
-
     utterance.rate = 0.78;
-
     utterance.pitch = 1;
-
 
     const voice =
       getBestVoice(code);
-
 
     if (voice) {
       utterance.voice = voice;
     }
 
-
-    /*
-      A tiny delay helps some browsers,
-      especially after another utterance.
-    */
-
-    setTimeout(() => {
-
-      window.speechSynthesis.speak(
-        utterance
-      );
-
-    }, 80);
-
-  }
-
-
-  function speakCurrentQuestion() {
-
-    if (!currentQuestion) {
-      return;
-    }
-
-    speakText(
-      currentQuestion.word
+    window.speechSynthesis.speak(
+      utterance
     );
   }
 
-
-  if ("speechSynthesis" in window) {
-
-    window.speechSynthesis.onvoiceschanged =
-      function () {
-
-        window.speechSynthesis
-          .getVoices();
-
-      };
-
+  // Some browsers load voices late
+  if (
+    window.speechSynthesis
+      .getVoices()
+      .length > 0
+  ) {
+    actuallySpeak();
+  } else {
+    setTimeout(
+      actuallySpeak,
+      300
+    );
   }
-
-
+}
   /* =========================================================
      SPEECH RECOGNITION
   ========================================================= */
@@ -2416,428 +2338,221 @@
   }
 
 
-  function practiceSpeaking() {
+function practiceSpeaking() {
+  const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-    const Recognition =
-      getSpeechRecognition();
+  const resultBox = document.getElementById("speechResult");
+  const speakButton = document.getElementById("speakButton");
 
-
-    if (!Recognition) {
-
-      document.getElementById(
-        "speechResult"
-      ).classList.remove("hidden");
-
-
-      document.getElementById(
-        "speechResult"
-      ).innerHTML =
-        `
-          <div class="score bad">
-            speech recognition unavailable
-          </div>
-          your browser does not support speech
-          recognition. try Chrome or Edge on desktop.
-        `;
-
-      return;
-    }
-
-
-    if (speechRecognition) {
-
-      try {
-        speechRecognition.stop();
-      } catch (e) {}
-
-    }
-
-
-    speechRecognition =
-      new Recognition();
-
-
-    const code =
-      languageData[currentLanguage].code;
-
-
-    speechRecognition.lang = code;
-
-    speechRecognition.continuous = false;
-
-    speechRecognition.interimResults = true;
-
-    speechRecognition.maxAlternatives = 5;
-
-
-    const resultBox =
-      document.getElementById(
-        "speechResult"
-      );
-
-
-    const speakButton =
-      document.getElementById(
-        "speakButton"
-      );
-
-
+  if (!Recognition) {
     resultBox.classList.remove("hidden");
 
+    resultBox.innerHTML = `
+      <div class="score bad">
+        speech recognition unavailable
+      </div>
+      <div>
+        use Chrome or Edge and allow microphone access.
+      </div>
+    `;
 
-    resultBox.innerHTML =
-      `<div class="listening-live">● listening...</div>`;
-
-
-    speakButton.disabled = true;
-
-    speakButton.textContent =
-      "● listening...";
-
-
-    let finalTranscript = "";
-
-
-    speechRecognition.onresult =
-      function(event) {
-
-        let interim = "";
-
-
-        for (
-          let i = event.resultIndex;
-          i < event.results.length;
-          i++
-        ) {
-
-          const text =
-            event.results[i][0].transcript;
-
-
-          if (
-            event.results[i].isFinal
-          ) {
-
-            finalTranscript +=
-              text;
-
-          } else {
-
-            interim +=
-              text;
-
-          }
-
-        }
-
-
-        resultBox.innerHTML =
-          `
-            <div>
-              heard:
-              <strong>
-                ${escapeHTML(
-                  finalTranscript || interim
-                )}
-              </strong>
-            </div>
-          `;
-
-      };
-
-
-    speechRecognition.onerror =
-      function(event) {
-
-        speakButton.disabled = false;
-
-        speakButton.textContent =
-          "● try again";
-
-
-        resultBox.classList.remove(
-          "hidden"
-        );
-
-
-        resultBox.innerHTML =
-          `
-            <div class="score bad">
-              couldn't detect speech
-            </div>
-            ${escapeHTML(
-              event.error || "try again"
-            )}
-          `;
-
-      };
-
-
-    speechRecognition.onend =
-      function() {
-
-        speakButton.disabled = false;
-
-        speakButton.textContent =
-          "● try again";
-
-
-        if (!finalTranscript.trim()) {
-
-          resultBox.innerHTML =
-            `
-              <div class="score bad">
-                nothing detected
-              </div>
-              try saying the phrase again.
-            `;
-
-          return;
-        }
-
-
-        finishSpeech(
-          finalTranscript
-        );
-
-      };
-
-
-    try {
-
-      speechRecognition.start();
-
-    } catch (error) {
-
-      console.error(error);
-
-      speakButton.disabled = false;
-
-      speakButton.textContent =
-        "● try again";
-
-    }
-
+    return;
   }
 
+  // Stop an old recognition attempt
+  if (speechRecognition) {
+    try {
+      speechRecognition.abort();
+    } catch (e) {}
+  }
 
-  function finishSpeech(transcript) {
+  const recognition = new Recognition();
 
-    const score =
-      scoreSpeech(
-        transcript,
-        currentQuestion
-      );
+  speechRecognition = recognition;
 
+  recognition.lang =
+    languageData[currentLanguage].code;
 
-    speechScores.push(score);
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 5;
 
+  let finalTranscript = "";
+  let finished = false;
 
-    const resultBox =
-      document.getElementById(
-        "speechResult"
-      );
+  resultBox.classList.remove("hidden");
 
+  resultBox.innerHTML = `
+    <div class="listening-live">
+      ● listening...
+    </div>
+  `;
 
-    let title = "";
+  speakButton.disabled = true;
+  speakButton.textContent = "● listening...";
 
-    let feedback = "";
+  recognition.onresult = function(event) {
+    let interimTranscript = "";
 
-    if (score >= 88) {
+    for (
+      let i = event.resultIndex;
+      i < event.results.length;
+      i++
+    ) {
+      const transcript =
+        event.results[i][0].transcript;
 
-      title = "excellent";
-
-      feedback =
-        "that was very close.";
-
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      } else {
+        interimTranscript += transcript;
+      }
     }
 
-    else if (score >= 70) {
+    const displayedTranscript =
+      finalTranscript || interimTranscript;
 
-      title = "correct";
+    resultBox.innerHTML = `
+      <div>
+        heard:
+        <strong>
+          ${escapeHTML(displayedTranscript)}
+        </strong>
+      </div>
+    `;
+  };
 
-      feedback =
-        "good job. the app detected the target phrase.";
+  recognition.onerror = function(event) {
+    if (finished) return;
 
+    finished = true;
+
+    speakButton.disabled = false;
+    speakButton.textContent = "● try again";
+
+    let message =
+      "try saying the phrase again.";
+
+    if (event.error === "not-allowed") {
+      message =
+        "microphone permission was blocked. allow microphone access and try again.";
     }
 
-    else if (score >= 50) {
-
-      title = "almost";
-
-      feedback =
-        "some of it matched. try saying it more clearly.";
-
+    if (event.error === "no-speech") {
+      message =
+        "no speech detected. speak clearly after pressing the button.";
     }
 
-    else {
-
-      title = "try again";
-
-      feedback =
-        "the detected speech was too different from the target.";
-
+    if (event.error === "network") {
+      message =
+        "speech recognition needs a browser connection. try Chrome or Edge.";
     }
 
+    resultBox.innerHTML = `
+      <div class="score bad">
+        couldn't detect speech
+      </div>
 
-    const scoreClass =
-      score >= 70
-        ? "good"
-        : "bad";
+      <div>
+        ${escapeHTML(message)}
+      </div>
+    `;
+  };
 
+  recognition.onend = function() {
+    if (finished) return;
 
-    resultBox.innerHTML =
-      `
-        <div class="score ${scoreClass}">
-          ${score}% · ${title}
+    finished = true;
+
+    speakButton.disabled = false;
+    speakButton.textContent = "● try again";
+
+    if (!finalTranscript.trim()) {
+      resultBox.innerHTML = `
+        <div class="score bad">
+          nothing detected
         </div>
 
         <div>
-          heard:
-          <strong>
-            ${escapeHTML(transcript)}
-          </strong>
-        </div>
-
-        <div>
-          target:
-          <strong>
-            ${escapeHTML(currentQuestion.word)}
-          </strong>
-        </div>
-
-        <div>
-          ${feedback}
+          try saying the phrase again.
         </div>
       `;
 
-
-    if (score >= 70) {
-
-      questionAnswered = true;
-
-      showNextButton();
-
-    } else {
-
-      questionAnswered = false;
-
-      document.getElementById(
-        "nextButton"
-      ).classList.add("hidden");
-
-    }
-
-  }
-
-
-  /* =========================================================
-     CHOICE QUESTIONS
-  ========================================================= */
-
-  function createMeaningChoices() {
-
-    const area =
-      document.getElementById(
-        "choiceArea"
-      );
-
-
-    const data =
-      languageData[currentLanguage];
-
-
-    const allItems = [
-      ...data.words,
-      ...data.phrases
-    ];
-
-
-    const wrongAnswers =
-      shuffle(
-        allItems.filter(
-          item =>
-            item.translation !==
-            currentQuestion.translation
-        )
-      )
-      .slice(0, 2)
-      .map(item => item.translation);
-
-
-    const options =
-      shuffle([
-        currentQuestion.translation,
-        ...wrongAnswers
-      ]);
-
-
-    options.forEach(option => {
-
-      const button =
-        document.createElement("button");
-
-
-      button.className =
-        "choice-btn";
-
-
-      button.textContent =
-        option;
-
-
-      button.onclick =
-        function() {
-
-          checkChoice(
-            option,
-            button
-          );
-
-        };
-
-
-      area.appendChild(button);
-
-    });
-
-  }
-
-
-  function checkChoice(answer, button) {
-
-    if (questionAnswered) {
       return;
     }
 
+function finishSpeech(transcript) {
+  const score =
+    scoreSpeech(transcript, currentQuestion);
 
-    const correct =
-      normalizeText(answer) ===
-      normalizeText(
-        currentQuestion.translation
-      );
+  const resultBox =
+    document.getElementById("speechResult");
 
+  let title = "";
+  let feedback = "";
 
-    if (correct) {
-
-      button.classList.add(
-        "correct"
-      );
-
-      questionAnswered = true;
-
-      showNextButton();
-
-    } else {
-
-      button.classList.add(
-        "wrong"
-      );
-
-    }
-
+  if (score >= 88) {
+    title = "excellent";
+    feedback =
+      "that was very close to the target.";
+  } else if (score >= 70) {
+    title = "correct";
+    feedback =
+      "good job. the app detected the target phrase.";
+  } else if (score >= 50) {
+    title = "almost";
+    feedback =
+      "some of it matched. try saying it more clearly.";
+  } else {
+    title = "try again";
+    feedback =
+      "the detected speech was too different from the target.";
   }
 
+  const scoreClass =
+    score >= 70 ? "good" : "bad";
+
+  resultBox.innerHTML = `
+    <div class="score ${scoreClass}">
+      ${score}% · ${title}
+    </div>
+
+    <div>
+      heard:
+      <strong>
+        ${escapeHTML(transcript)}
+      </strong>
+    </div>
+
+    <div>
+      target:
+      <strong>
+        ${escapeHTML(currentQuestion.word)}
+      </strong>
+    </div>
+
+    <div>
+      ${feedback}
+    </div>
+  `;
+
+  if (score >= 70) {
+    // Only successful attempts count
+    speechScores.push(score);
+
+    questionAnswered = true;
+
+    showNextButton();
+  } else {
+    questionAnswered = false;
+
+    document
+      .getElementById("nextButton")
+      .classList.add("hidden");
+  }
+}
 
   /* =========================================================
      WRITING
