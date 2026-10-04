@@ -1,822 +1,1409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-<title>SKB</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    color: #292725;
-    font-family: "Courier New", monospace;
-
-    background-color: #eee9dc;
-
-    background-image:
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0px,
-            transparent 31px,
-            rgba(100,130,140,.16) 32px
-        );
-
-    min-height: 100vh;
-}
-
-
-/* notebook margin */
-
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 52px;
-    width: 1px;
-    background: rgba(170,90,90,.35);
-    pointer-events: none;
-}
-
-
-/* app */
-
-.app {
-    width: min(100%, 500px);
-    min-height: 100vh;
-    margin: auto;
-    padding-bottom: 100px;
-}
-
-
-/* header */
-
-header {
-    padding: 38px 28px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.logo {
-    font-family: Georgia, serif;
-    font-size: 34px;
-    font-style: italic;
-    letter-spacing: -2px;
-}
-
-.subtitle {
-    font-family: "Courier New", monospace;
-    font-size: 11px;
-    color: #77736b;
-    margin-top: 3px;
-}
-
-.streak {
-    font-size: 13px;
-    background: #e4d9bd;
-    border: 1px dashed #817864;
-    padding: 7px 10px;
-    transform: rotate(2deg);
-}
-
-
-/* welcome */
-
-.welcome {
-    padding: 30px 28px 20px;
-}
-
-.welcome small {
-    color: #827b70;
-    font-size: 11px;
-}
-
-.welcome h1 {
-    font-family: Georgia, serif;
-    font-weight: normal;
-    font-size: 34px;
-    line-height: 1.05;
-    margin: 8px 0 12px;
-}
-
-.welcome p {
-    color: #77736b;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-
-/* language cards */
-
-.languages {
-    padding: 5px 28px;
-}
-
-.language {
-    position: relative;
-
-    width: 100%;
-    min-height: 78px;
-
-    margin-bottom: 17px;
-    padding: 15px 18px;
-
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    background: rgba(250,248,239,.82);
-
-    border: 1px solid #77736b;
-    border-radius: 3px;
-
-    color: #292725;
-
-    font-family: "Courier New", monospace;
-    font-size: 15px;
-    text-align: left;
-
-    cursor: pointer;
-
-    box-shadow: 3px 4px 0 rgba(80,75,65,.2);
-
-    transition: .15s;
-}
-
-.language:nth-child(1) {
-    transform: rotate(-.5deg);
-}
-
-.language:nth-child(2) {
-    transform: rotate(.7deg);
-}
-
-.language:nth-child(3) {
-    transform: rotate(-.4deg);
-}
-
-.language:nth-child(4) {
-    transform: rotate(.6deg);
-}
-
-.language:hover {
-    transform: translateY(-2px) rotate(0deg);
-    background: #f8f4e8;
-}
-
-.flag {
-    font-size: 28px;
-}
-
-.language-info {
-    font-weight: bold;
-}
-
-.language-info small {
-    display: block;
-    margin-top: 5px;
-    color: #898379;
-    font-weight: normal;
-    font-size: 11px;
-}
-
-
-/* little notebook marks */
-
-.language::after {
-    content: "→";
-    position: absolute;
-    right: 18px;
-    color: #898379;
-}
-
-
-/* lesson */
-
-.lesson {
-    display: none;
-    padding: 25px 28px;
-}
-
-.back {
-    border: none;
-    background: none;
-    padding: 5px 0 25px;
-
-    color: #706b62;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-
-    cursor: pointer;
-}
-
-.lesson-header small {
-    color: #8a8377;
-    font-size: 11px;
-}
-
-.lesson-header h1 {
-    font-family: Georgia, serif;
-    font-weight: normal;
-    font-style: italic;
-    font-size: 28px;
-    margin: 7px 0 20px;
-}
-
-
-/* flashcard */
-
-.lesson-card {
-    position: relative;
-
-    padding: 45px 25px 35px;
-
-    background: rgba(250,248,239,.92);
-
-    border: 1px solid #77736b;
-
-    box-shadow:
-        5px 6px 0 rgba(80,75,65,.18);
-
-    transform: rotate(-.4deg);
-
-    text-align: center;
-}
-
-
-/* tape */
-
-.lesson-card::before {
-    content: "";
-    position: absolute;
-
-    width: 80px;
-    height: 22px;
-
-    top: -11px;
-    left: 50%;
-
-    transform: translateX(-50%) rotate(-2deg);
-
-    background: rgba(202,185,143,.65);
-}
-
-
-/* word */
-
-.word {
-    font-family: Georgia, serif;
-    font-size: 43px;
-    margin: 25px 0 10px;
-}
-
-.translation {
-    font-size: 15px;
-    color: #77736b;
-}
-
-.pronunciation {
-    margin-top: 8px;
-    color: #999187;
-    font-size: 12px;
-}
-
-
-/* speaker */
-
-.speak {
-    display: block;
-
-    width: 55px;
-    height: 55px;
-
-    margin: 27px auto 17px;
-
-    border-radius: 50%;
-
-    border: 1px solid #555049;
-
-    background: #e3dccb;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-    box-shadow: 2px 3px 0 rgba(80,75,65,.25);
-}
-
-.speak:hover {
-    background: #d8cfbb;
-}
-
-
-/* speaking */
-
-.practice {
-    width: 100%;
-
-    padding: 14px;
-
-    background: #36332f;
-    color: #f7f3e9;
-
-    border: none;
-    border-radius: 2px;
-
-    font-family: "Courier New", monospace;
-    font-size: 13px;
-
-    cursor: pointer;
-}
-
-.practice:hover {
-    background: #4a4640;
-}
-
-.message {
-    min-height: 25px;
-    margin-top: 17px;
-
-    color: #77736b;
-
-    font-size: 11px;
-}
-
-
-/* progress */
-
-.progress-box {
-    margin-top: 28px;
-    text-align: left;
-}
-
-.progress-label {
-    display: flex;
-    justify-content: space-between;
-
-    color: #817b71;
-    font-size: 10px;
-
-    margin-bottom: 7px;
-}
-
-.progress {
-    height: 5px;
-    background: #ded8ca;
-}
-
-.progress-fill {
-    width: 20%;
-    height: 100%;
-    background: #686158;
-}
-
-
-/* navigation */
-
-nav {
-    position: fixed;
-
-    bottom: 0;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: min(500px, 100%);
-
-    display: flex;
-    justify-content: space-around;
-
-    padding: 13px 5px 17px;
-
-    background: rgba(238,233,220,.96);
-
-    border-top: 1px dashed #8d867a;
-
-    z-index: 10;
-}
-
-nav button {
-    border: none;
-    background: none;
-
-    color: #8a8378;
-
-    font-family: "Courier New", monospace;
-    font-size: 10px;
-
-    cursor: pointer;
-
-    line-height: 1.7;
-}
-
-nav button:first-child {
-    color: #292725;
-}
-
-
-/* phone */
-
-@media (max-width: 480px) {
-
-    body::before {
-        left: 32px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4eddf" />
+  <title>lingua — language journal</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    .welcome h1 {
-        font-size: 30px;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #302b27;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #f5efdf 0px,
+          #f5efdf 31px,
+          #d8d0c0 32px
+        );
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 48px;
+      width: 1px;
+      background: #c88f8f;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(100%, 650px);
+      margin: auto;
+      padding: 25px 25px 100px 70px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------- login ---------- */
+
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+    }
+
+    .auth-card {
+      width: min(100%, 430px);
+      padding: 35px 30px;
+      background: rgba(250, 246, 235, 0.94);
+      border: 1px solid #9e9588;
+      box-shadow: 7px 7px 0 rgba(74, 65, 56, 0.12);
+      transform: rotate(-0.4deg);
+    }
+
+    .auth-logo {
+      font-size: 42px;
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: #776e65;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .auth-card label {
+      display: block;
+      font-size: 13px;
+      margin: 15px 0 6px;
+      color: #645c54;
+    }
+
+    .auth-card input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px dashed #8f867b;
+      background: transparent;
+      padding: 10px 4px;
+      outline: none;
+      color: #302b27;
+    }
+
+    .auth-card input:focus {
+      border-bottom: 1px solid #302b27;
+    }
+
+    .auth-button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 13px;
+      border: 1px solid #5e574f;
+      background: #302b27;
+      color: #f8f1e4;
+      border-radius: 2px;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #756d65;
+    }
+
+    .auth-switch button {
+      border: none;
+      background: none;
+      text-decoration: underline;
+      padding: 0;
+      color: #302b27;
+    }
+
+    .auth-message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    /* ---------- header ---------- */
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 35px;
+    }
+
+    .logo {
+      font-size: 38px;
+      font-style: italic;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: #766d64;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .streak {
+      font-size: 13px;
+      padding-top: 7px;
+    }
+
+    /* ---------- sections ---------- */
+
+    .page-title {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      color: #766d64;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .entry {
+      font-size: 11px;
+      color: #91887e;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    /* ---------- language cards ---------- */
+
+    .languages {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .language-card {
+      position: relative;
+      text-align: left;
+      padding: 20px;
+      min-height: 115px;
+      border: 1px dashed #9b9288;
+      background: rgba(250, 246, 235, 0.75);
+      color: #302b27;
+      transition: 0.15s ease;
+    }
+
+    .language-card:nth-child(2) {
+      transform: rotate(0.5deg);
+    }
+
+    .language-card:nth-child(3) {
+      transform: rotate(-0.4deg);
+    }
+
+    .language-card:hover {
+      transform: translateY(-3px) rotate(0deg);
+      box-shadow: 4px 5px 0 rgba(74, 65, 56, 0.12);
+    }
+
+    .flag {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .language-name {
+      font-size: 18px;
+    }
+
+    .language-native {
+      font-size: 12px;
+      color: #81786e;
+      margin-top: 4px;
+    }
+
+    /* ---------- lesson ---------- */
+
+    .back-button {
+      border: none;
+      background: none;
+      padding: 0;
+      margin-bottom: 20px;
+      color: #71685f;
+      font-size: 13px;
+    }
+
+    .lesson-card {
+      background: rgba(250, 246, 235, 0.92);
+      border: 1px solid #a39a8d;
+      padding: 30px 25px;
+      box-shadow: 6px 7px 0 rgba(74, 65, 56, 0.12);
+    }
+
+    .lesson-language {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #91877d;
+      margin-bottom: 20px;
     }
 
     .word {
-        font-size: 36px;
+      font-size: 40px;
+      margin-bottom: 7px;
     }
 
-}
+    .translation {
+      font-size: 17px;
+      color: #756c63;
+    }
 
-</style>
+    .pronunciation {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #91877d;
+      font-style: italic;
+    }
+
+    .speaker {
+      border: 1px solid #8e857b;
+      background: transparent;
+      border-radius: 50%;
+      width: 43px;
+      height: 43px;
+      margin-top: 22px;
+      font-size: 17px;
+    }
+
+    .practice {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      border: 1px solid #5d554d;
+      background: #302b27;
+      color: #f8f1e4;
+    }
+
+    .progress-area {
+      margin-top: 28px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #81786e;
+      margin-bottom: 7px;
+    }
+
+    .progress-track {
+      height: 5px;
+      background: #ddd5c7;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #625a51;
+      transition: width 0.3s ease;
+    }
+
+    .lesson-complete {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px dashed #756c63;
+      background: transparent;
+      color: #302b27;
+    }
+
+    /* ---------- progress ---------- */
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .stat {
+      background: rgba(250, 246, 235, 0.8);
+      border: 1px dashed #9b9288;
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: 30px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #81786e;
+      margin-top: 4px;
+    }
+
+    /* ---------- profile ---------- */
+
+    .profile-card {
+      background: rgba(250, 246, 235, 0.85);
+      border: 1px dashed #9b9288;
+      padding: 25px;
+    }
+
+    .email-display {
+      font-size: 15px;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+
+    .logout {
+      border: 1px solid #746b62;
+      background: transparent;
+      padding: 11px 20px;
+      color: #302b27;
+    }
+
+    /* ---------- nav ---------- */
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 650px);
+      background: rgba(245, 239, 223, 0.96);
+      border-top: 1px solid #aaa093;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 10px 48px;
+      backdrop-filter: blur(5px);
+    }
+
+    .nav-button {
+      border: none;
+      background: none;
+      color: #847a70;
+      padding: 8px 3px;
+      font-size: 11px;
+    }
+
+    .nav-button.active {
+      color: #302b27;
+      text-decoration: underline;
+    }
+
+    /* ---------- responsive ---------- */
+
+    @media (max-width: 500px) {
+      body::before {
+        left: 28px;
+      }
+
+      .app {
+        padding-left: 45px;
+        padding-right: 18px;
+      }
+
+      .languages {
+        grid-template-columns: 1fr;
+      }
+
+      .logo {
+        font-size: 32px;
+      }
+
+      .word {
+        font-size: 34px;
+      }
+
+      .bottom-nav {
+        padding-left: 35px;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
-<div class="app">
+  <!-- login / signup -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
 
+      <div class="auth-logo">lingua</div>
+      <div class="auth-subtitle">a little language journal</div>
 
-<header>
+      <div id="loginForm">
 
-    <div>
-        <div class="logo">lingua</div>
-        <div class="subtitle">a little language journal</div>
-    </div>
+        <label for="loginEmail">email</label>
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="your email"
+          autocomplete="email"
+        />
 
-    <div class="streak">
-        ♡ 0 days
-    </div>
+        <label for="loginPassword">password</label>
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="your password"
+          autocomplete="current-password"
+        />
 
-</header>
-
-
-<main>
-
-
-<section id="home">
-
-    <div class="welcome">
-
-        <small>entry no. 001</small>
-
-        <h1>what are we<br>learning today?</h1>
-
-        <p>
-            pick a language.<br>
-            take your time.
-        </p>
-
-    </div>
-
-
-    <div class="languages">
-
-
-        <button class="language"
-                onclick="openLanguage('Korean')">
-
-            <span class="flag">🇰🇷</span>
-
-            <div class="language-info">
-                korean
-                <small>한국어 · hanguk-eo</small>
-            </div>
-
+        <button class="auth-button" onclick="login()">
+          log in →
         </button>
 
-
-        <button class="language"
-                onclick="openLanguage('Japanese')">
-
-            <span class="flag">🇯🇵</span>
-
-            <div class="language-info">
-                japanese
-                <small>日本語 · nihongo</small>
-            </div>
-
-        </button>
-
-
-        <button class="language"
-                onclick="openLanguage('Spanish')">
-
-            <span class="flag">🇪🇸</span>
-
-            <div class="language-info">
-                spanish
-                <small>español · español</small>
-            </div>
-
-        </button>
-
-
-        <button class="language"
-                onclick="openLanguage('French')">
-
-            <span class="flag">🇫🇷</span>
-
-            <div class="language-info">
-                french
-                <small>français · français</small>
-            </div>
-
-        </button>
-
-
-    </div>
-
-</section>
-
-
-
-<section id="lesson" class="lesson">
-
-
-    <button class="back"
-            onclick="goHome()">
-
-        ← back to languages
-
-    </button>
-
-
-    <div class="lesson-header">
-
-        <small id="languageName"></small>
-
-        <h1>lesson 01 · greetings</h1>
-
-    </div>
-
-
-    <div class="lesson-card">
-
-
-        <div
-            class="word"
-            id="word">
+        <div class="auth-switch">
+          don't have an account?
+          <button onclick="showSignup()">sign up</button>
         </div>
 
+      </div>
 
-        <div
-            class="translation"
-            id="translation">
+      <div id="signupForm" class="hidden">
+
+        <label for="signupEmail">email</label>
+        <input
+          id="signupEmail"
+          type="email"
+          placeholder="your email"
+          autocomplete="email"
+        />
+
+        <label for="signupPassword">password</label>
+        <input
+          id="signupPassword"
+          type="password"
+          placeholder="at least 6 characters"
+          autocomplete="new-password"
+        />
+
+        <button class="auth-button" onclick="signup()">
+          create account →
+        </button>
+
+        <div class="auth-switch">
+          already have an account?
+          <button onclick="showLogin()">log in</button>
         </div>
 
+      </div>
 
-        <div
-            class="pronunciation"
-            id="pronunciation">
+      <div id="authMessage" class="auth-message"></div>
+
+    </div>
+  </div>
+
+
+  <!-- main app -->
+  <div id="app" class="hidden">
+
+    <div class="app">
+
+      <header>
+        <div>
+          <div class="logo">lingua</div>
+          <div class="subtitle">a little language journal</div>
         </div>
 
+        <div class="streak">
+          ♡ <span id="streakDisplay">0</span> days
+        </div>
+      </header>
 
-        <button
-            class="speak"
-            onclick="speakWord()">
 
+      <!-- HOME -->
+      <section id="homePage">
+
+        <div class="entry">entry no. 001</div>
+
+        <div class="page-title">
+          what are we learning today?
+        </div>
+
+        <div class="page-subtitle">
+          pick a language. take your time.
+        </div>
+
+        <div class="languages">
+
+          <button class="language-card" onclick="startLesson('korean')">
+            <div class="flag">🇰🇷</div>
+            <div class="language-name">korean</div>
+            <div class="language-native">한국어</div>
+          </button>
+
+          <button class="language-card" onclick="startLesson('japanese')">
+            <div class="flag">🇯🇵</div>
+            <div class="language-name">japanese</div>
+            <div class="language-native">日本語</div>
+          </button>
+
+          <button class="language-card" onclick="startLesson('spanish')">
+            <div class="flag">🇪🇸</div>
+            <div class="language-name">spanish</div>
+            <div class="language-native">español</div>
+          </button>
+
+          <button class="language-card" onclick="startLesson('french')">
+            <div class="flag">🇫🇷</div>
+            <div class="language-name">french</div>
+            <div class="language-native">français</div>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- LESSON -->
+      <section id="lessonPage" class="hidden">
+
+        <button class="back-button" onclick="goHome()">
+          ← back
+        </button>
+
+        <div class="lesson-card">
+
+          <div class="lesson-language" id="lessonLanguage">
+            korean
+          </div>
+
+          <div class="word" id="lessonWord">
+            안녕하세요
+          </div>
+
+          <div class="translation" id="lessonTranslation">
+            hello
+          </div>
+
+          <div class="pronunciation" id="lessonPronunciation">
+            annyeonghaseyo
+          </div>
+
+          <button class="speaker" onclick="speakCurrentWord()">
             ♫
+          </button>
 
-        </button>
-
-
-        <button
-            class="practice"
-            onclick="startSpeaking()">
-
+          <button class="practice" onclick="practiceSpeaking()">
             say it out loud →
+          </button>
 
-        </button>
+          <div id="speechResult" class="pronunciation"></div>
 
-
-        <div
-            class="message"
-            id="message">
-        </div>
-
-
-        <div class="progress-box">
+          <div class="progress-area">
 
             <div class="progress-label">
-
-                <span>lesson progress</span>
-
-                <span>01 / 05</span>
-
+              <span>lesson progress</span>
+              <span id="lessonProgressText">0 / 5</span>
             </div>
 
-            <div class="progress">
-
-                <div class="progress-fill"></div>
-
+            <div class="progress-track">
+              <div id="lessonProgressFill" class="progress-fill"></div>
             </div>
+
+          </div>
+
+          <button class="lesson-complete" onclick="completeLesson()">
+            mark lesson complete ✓
+          </button>
 
         </div>
 
+      </section>
+
+
+      <!-- PROGRESS -->
+      <section id="progressPage" class="hidden">
+
+        <div class="entry">your little record</div>
+
+        <div class="page-title">
+          progress
+        </div>
+
+        <div class="page-subtitle">
+          everything you've learned so far.
+        </div>
+
+        <div class="stats">
+
+          <div class="stat">
+            <div class="stat-number" id="xpDisplay">0</div>
+            <div class="stat-label">xp</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-number" id="lessonsDisplay">0</div>
+            <div class="stat-label">lessons completed</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-number" id="wordsDisplay">0</div>
+            <div class="stat-label">words learned</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-number" id="streakStatDisplay">0</div>
+            <div class="stat-label">day streak</div>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- PROFILE -->
+      <section id="profilePage" class="hidden">
+
+        <div class="entry">your journal</div>
+
+        <div class="page-title">
+          profile
+        </div>
+
+        <div class="page-subtitle">
+          your account and settings.
+        </div>
+
+        <div class="profile-card">
+
+          <div class="email-display" id="profileEmail">
+            loading...
+          </div>
+
+          <button class="logout" onclick="logout()">
+            log out
+          </button>
+
+        </div>
+
+      </section>
 
     </div>
 
 
-</section>
+    <!-- bottom navigation -->
+    <nav class="bottom-nav">
 
-
-</main>
-
-
-<nav>
-
-    <button onclick="goHome()">
-        ♡<br>
+      <button class="nav-button active" onclick="showPage('home')">
         home
-    </button>
+      </button>
 
-    <button>
-        ✎<br>
+      <button class="nav-button" onclick="showPage('lesson')">
         lessons
-    </button>
+      </button>
 
-    <button>
-        ∿<br>
+      <button class="nav-button" onclick="showPage('progress')">
         progress
-    </button>
+      </button>
 
-    <button>
-        ○<br>
+      <button class="nav-button" onclick="showPage('profile')">
         profile
-    </button>
+      </button>
 
-</nav>
+    </nav>
 
-
-</div>
+  </div>
 
 
 <script>
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
+
+  const SUPABASE_URL =
+    "https://gdcvudbqwkdiccyugtxz.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_K7S7aII4qnXr4N04kQphMw_ZlPKsxBQ";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
 
-const lessons = {
+  /* =========================================================
+     LANGUAGE DATA
+  ========================================================= */
 
-    Korean: {
+  const lessons = {
+
+    korean: [
+      {
         word: "안녕하세요",
         translation: "hello",
-        pronunciation: "annyeonghaseyo",
-        language: "ko-KR"
-    },
+        pronunciation: "annyeonghaseyo"
+      },
+      {
+        word: "감사합니다",
+        translation: "thank you",
+        pronunciation: "gamsahamnida"
+      },
+      {
+        word: "네",
+        translation: "yes",
+        pronunciation: "ne"
+      },
+      {
+        word: "아니요",
+        translation: "no",
+        pronunciation: "aniyo"
+      },
+      {
+        word: "친구",
+        translation: "friend",
+        pronunciation: "chingu"
+      }
+    ],
 
-    Japanese: {
+    japanese: [
+      {
         word: "こんにちは",
         translation: "hello",
-        pronunciation: "konnichiwa",
-        language: "ja-JP"
-    },
+        pronunciation: "konnichiwa"
+      },
+      {
+        word: "ありがとう",
+        translation: "thank you",
+        pronunciation: "arigatou"
+      },
+      {
+        word: "はい",
+        translation: "yes",
+        pronunciation: "hai"
+      },
+      {
+        word: "いいえ",
+        translation: "no",
+        pronunciation: "iie"
+      },
+      {
+        word: "友達",
+        translation: "friend",
+        pronunciation: "tomodachi"
+      }
+    ],
 
-    Spanish: {
+    spanish: [
+      {
         word: "hola",
         translation: "hello",
-        pronunciation: "oh-la",
-        language: "es-ES"
-    },
+        pronunciation: "oh-la"
+      },
+      {
+        word: "gracias",
+        translation: "thank you",
+        pronunciation: "grah-see-ahs"
+      },
+      {
+        word: "sí",
+        translation: "yes",
+        pronunciation: "see"
+      },
+      {
+        word: "no",
+        translation: "no",
+        pronunciation: "noh"
+      },
+      {
+        word: "amigo",
+        translation: "friend",
+        pronunciation: "ah-mee-goh"
+      }
+    ],
 
-    French: {
+    french: [
+      {
         word: "bonjour",
         translation: "hello",
-        pronunciation: "bon-zhoor",
-        language: "fr-FR"
-    }
+        pronunciation: "bohn-zhoor"
+      },
+      {
+        word: "merci",
+        translation: "thank you",
+        pronunciation: "mehr-see"
+      },
+      {
+        word: "oui",
+        translation: "yes",
+        pronunciation: "wee"
+      },
+      {
+        word: "non",
+        translation: "no",
+        pronunciation: "noh"
+      },
+      {
+        word: "ami",
+        translation: "friend",
+        pronunciation: "ah-mee"
+      }
+    ]
 
-};
-
-
-let currentLanguage = null;
-
-
-function openLanguage(language) {
-
-    currentLanguage = language;
-
-    const lesson = lessons[language];
-
-    document.getElementById("home").style.display = "none";
-
-    document.getElementById("lesson").style.display = "block";
-
-    document.getElementById("languageName").innerText =
-        language.toLowerCase();
-
-    document.getElementById("word").innerText =
-        lesson.word;
-
-    document.getElementById("translation").innerText =
-        lesson.translation;
-
-    document.getElementById("pronunciation").innerText =
-        "/" + lesson.pronunciation + "/";
-
-    document.getElementById("message").innerText = "";
-
-}
+  };
 
 
-function goHome() {
-
-    document.getElementById("lesson").style.display = "none";
-
-    document.getElementById("home").style.display = "block";
-
-}
-
-
-function speakWord() {
-
-    const lesson = lessons[currentLanguage];
-
-    const speech =
-        new SpeechSynthesisUtterance(lesson.word);
-
-    speech.lang = lesson.language;
-
-    speech.rate = 0.8;
-
-    window.speechSynthesis.cancel();
-
-    window.speechSynthesis.speak(speech);
-
-}
+  const languageCodes = {
+    korean: "ko-KR",
+    japanese: "ja-JP",
+    spanish: "es-ES",
+    french: "fr-FR"
+  };
 
 
-function startSpeaking() {
+  let currentUser = null;
+  let currentLanguage = null;
+  let currentWordIndex = 0;
+  let progressData = null;
+
+
+  /* =========================================================
+     AUTH
+  ========================================================= */
+
+  function showSignup() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("signupForm").classList.remove("hidden");
+    document.getElementById("authMessage").textContent = "";
+  }
+
+
+  function showLogin() {
+    document.getElementById("signupForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+    document.getElementById("authMessage").textContent = "";
+  }
+
+
+  async function signup() {
+
+    const email =
+      document.getElementById("signupEmail").value.trim();
+
+    const password =
+      document.getElementById("signupPassword").value;
 
     const message =
-        document.getElementById("message");
+      document.getElementById("authMessage");
+
+    if (!email || !password) {
+      message.textContent = "please enter an email and password.";
+      return;
+    }
+
+    if (password.length < 6) {
+      message.textContent =
+        "your password needs at least 6 characters.";
+      return;
+    }
+
+    message.textContent = "creating your journal...";
+
+    const { data, error } =
+      await supabaseClient.auth.signUp({
+        email,
+        password
+      });
+
+    if (error) {
+      message.textContent = error.message;
+      return;
+    }
+
+    if (data.session) {
+      currentUser = data.user;
+      await setupUser();
+    } else {
+      message.textContent =
+        "check your email to confirm your account.";
+    }
+  }
+
+
+  async function login() {
+
+    const email =
+      document.getElementById("loginEmail").value.trim();
+
+    const password =
+      document.getElementById("loginPassword").value;
+
+    const message =
+      document.getElementById("authMessage");
+
+    if (!email || !password) {
+      message.textContent =
+        "please enter your email and password.";
+      return;
+    }
+
+    message.textContent = "opening your journal...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if (error) {
+      message.textContent = error.message;
+      return;
+    }
+
+    currentUser = data.user;
+
+    await setupUser();
+  }
+
+
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    currentUser = null;
+    progressData = null;
+
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("authScreen").classList.remove("hidden");
+
+    showLogin();
+  }
+
+
+  /* =========================================================
+     USER / PROGRESS
+  ========================================================= */
+
+  async function setupUser() {
+
+    document.getElementById("authScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    document.getElementById("profileEmail").textContent =
+      currentUser.email;
+
+    await loadProgress();
+
+    showPage("home");
+  }
+
+
+  async function loadProgress() {
+
+    const { data, error } =
+      await supabaseClient
+        .from("user_progress")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (!data) {
+
+      const { data: newProgress, error: insertError } =
+        await supabaseClient
+          .from("user_progress")
+          .insert({
+            user_id: currentUser.id,
+            language: "none",
+            xp: 0,
+            streak: 0,
+            lessons_completed: 0,
+            words_learned: 0
+          })
+          .select()
+          .single();
+
+      if (insertError) {
+        console.error(insertError);
+        return;
+      }
+
+      progressData = newProgress;
+
+    } else {
+
+      progressData = data;
+
+    }
+
+    updateProgressUI();
+  }
+
+
+  async function saveProgress(changes = {}) {
+
+    if (!currentUser || !progressData) {
+      return;
+    }
+
+    const updated = {
+      ...progressData,
+      ...changes
+    };
+
+    const { data, error } =
+      await supabaseClient
+        .from("user_progress")
+        .update({
+          language: updated.language,
+          xp: updated.xp,
+          streak: updated.streak,
+          lessons_completed: updated.lessons_completed,
+          words_learned: updated.words_learned,
+          updated_at: new Date().toISOString()
+        })
+        .eq("user_id", currentUser.id)
+        .select()
+        .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    progressData = data;
+
+    updateProgressUI();
+  }
+
+
+  function updateProgressUI() {
+
+    if (!progressData) return;
+
+    document.getElementById("xpDisplay").textContent =
+      progressData.xp || 0;
+
+    document.getElementById("lessonsDisplay").textContent =
+      progressData.lessons_completed || 0;
+
+    document.getElementById("wordsDisplay").textContent =
+      progressData.words_learned || 0;
+
+    document.getElementById("streakDisplay").textContent =
+      progressData.streak || 0;
+
+    document.getElementById("streakStatDisplay").textContent =
+      progressData.streak || 0;
+  }
+
+
+  /* =========================================================
+     LESSONS
+  ========================================================= */
+
+  function startLesson(language) {
+
+    currentLanguage = language;
+    currentWordIndex = 0;
+
+    const word =
+      lessons[language][currentWordIndex];
+
+    document.getElementById("lessonLanguage").textContent =
+      language;
+
+    document.getElementById("lessonWord").textContent =
+      word.word;
+
+    document.getElementById("lessonTranslation").textContent =
+      word.translation;
+
+    document.getElementById("lessonPronunciation").textContent =
+      word.pronunciation;
+
+    updateLessonProgress();
+
+    showPage("lesson");
+  }
+
+
+  function updateLessonProgress() {
+
+    const total =
+      lessons[currentLanguage].length;
+
+    const current =
+      currentWordIndex + 1;
+
+    document.getElementById("lessonProgressText").textContent =
+      current + " / " + total;
+
+    document.getElementById("lessonProgressFill").style.width =
+      ((current / total) * 100) + "%";
+  }
+
+
+  function nextWord() {
+
+    if (!currentLanguage) return;
+
+    if (
+      currentWordIndex <
+      lessons[currentLanguage].length - 1
+    ) {
+      currentWordIndex++;
+
+      const word =
+        lessons[currentLanguage][currentWordIndex];
+
+      document.getElementById("lessonWord").textContent =
+        word.word;
+
+      document.getElementById("lessonTranslation").textContent =
+        word.translation;
+
+      document.getElementById("lessonPronunciation").textContent =
+        word.pronunciation;
+
+      document.getElementById("speechResult").textContent = "";
+
+      updateLessonProgress();
+
+    } else {
+
+      completeLesson();
+    }
+  }
+
+
+  async function completeLesson() {
+
+    if (!currentUser || !progressData) {
+      return;
+    }
+
+    const newXP =
+      (progressData.xp || 0) + 50;
+
+    const newLessons =
+      (progressData.lessons_completed || 0) + 1;
+
+    const newWords =
+      (progressData.words_learned || 0) +
+      lessons[currentLanguage].length;
+
+    await saveProgress({
+      language: currentLanguage,
+      xp: newXP,
+      lessons_completed: newLessons,
+      words_learned: newWords
+    });
+
+    alert("lesson saved ♡ +50 xp");
+
+    showPage("progress");
+  }
+
+
+  /* =========================================================
+     SPEECH
+  ========================================================= */
+
+  function speakCurrentWord() {
+
+    if (!currentLanguage) return;
+
+    const word =
+      lessons[currentLanguage][currentWordIndex];
+
+    const speech =
+      new SpeechSynthesisUtterance(word.word);
+
+    speech.lang =
+      languageCodes[currentLanguage];
+
+    speech.rate = 0.85;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+  }
+
+
+  function practiceSpeaking() {
 
     const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
 
+    const result =
+      document.getElementById("speechResult");
 
     if (!SpeechRecognition) {
 
-        message.innerText =
-            "speaking practice isn't supported here yet.";
+      result.textContent =
+        "speech practice isn't supported in this browser.";
 
-        return;
-
+      return;
     }
 
-
     const recognition =
-        new SpeechRecognition();
+      new SpeechRecognition();
 
     recognition.lang =
-        lessons[currentLanguage].language;
+      languageCodes[currentLanguage];
 
     recognition.interimResults = false;
-
     recognition.maxAlternatives = 1;
 
-
-    message.innerText =
-        "listening...";
-
+    result.textContent =
+      "listening...";
 
     recognition.start();
 
-
     recognition.onresult = function(event) {
 
-        const spoken =
-            event.results[0][0].transcript;
+      const spoken =
+        event.results[0][0].transcript;
 
-        message.innerText =
-            "you said: " + spoken + " ✓";
-
+      result.textContent =
+        "you said: " + spoken + " ✓";
     };
-
 
     recognition.onerror = function() {
 
-        message.innerText =
-            "couldn't hear you. try again.";
-
+      result.textContent =
+        "i couldn't hear that. try again.";
     };
+  }
 
-}
 
+  /* =========================================================
+     NAVIGATION
+  ========================================================= */
+
+  function showPage(page) {
+
+    document
+      .getElementById("homePage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("lessonPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("progressPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("profilePage")
+      .classList.add("hidden");
+
+
+    if (page === "home") {
+      document
+        .getElementById("homePage")
+        .classList.remove("hidden");
+    }
+
+    if (page === "lesson") {
+      document
+        .getElementById("lessonPage")
+        .classList.remove("hidden");
+    }
+
+    if (page === "progress") {
+      document
+        .getElementById("progressPage")
+        .classList.remove("hidden");
+
+      updateProgressUI();
+    }
+
+    if (page === "profile") {
+      document
+        .getElementById("profilePage")
+        .classList.remove("hidden");
+    }
+
+
+    document
+      .querySelectorAll(".nav-button")
+      .forEach(button => button.classList.remove("active"));
+
+    const buttons =
+      document.querySelectorAll(".nav-button");
+
+    if (page === "home") buttons[0].classList.add("active");
+    if (page === "lesson") buttons[1].classList.add("active");
+    if (page === "progress") buttons[2].classList.add("active");
+    if (page === "profile") buttons[3].classList.add("active");
+  }
+
+
+  function goHome() {
+    showPage("home");
+  }
+
+
+  /* =========================================================
+     CHECK LOGIN WHEN PAGE LOADS
+  ========================================================= */
+
+  async function checkSession() {
+
+    const { data } =
+      await supabaseClient.auth.getSession();
+
+    if (data.session) {
+
+      currentUser = data.session.user;
+
+      await setupUser();
+
+    } else {
+
+      document
+        .getElementById("authScreen")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("app")
+        .classList.add("hidden");
+    }
+  }
+
+
+  supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+      if (session && !currentUser) {
+
+        currentUser = session.user;
+
+        await setupUser();
+      }
+
+    }
+  );
+
+
+  checkSession();
 
 </script>
 
