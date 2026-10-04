@@ -2,1425 +2,880 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   />
 
-  <meta
-    name="theme-color"
-    content="#181818"
-  />
+  <title>skillbuilding</title>
 
-  <meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
-  />
-
-  <meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="black-translucent"
-  />
-
-  <meta
-    name="apple-mobile-web-app-title"
-    content="SKB"
-  />
-
-  <title>skill building app</title>
-
-  <!-- supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
-    /* =====================================================
-       base
-    ===================================================== */
-
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    html {
-      background: #181818;
+    :root {
+      --bg: #181818;
+      --panel: #202020;
+      --panel-2: #252525;
+      --border: #3a3a3a;
+      --text: #eeeeee;
+      --muted: #999999;
+      --soft: #cfcfcf;
+      --good: #a8d5a2;
+      --bad: #d9a0a0;
     }
 
     body {
       margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Courier New", Courier, monospace;
       min-height: 100vh;
-
-      background: #181818;
-      color: #e4e1db;
-
-      font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-      font-size: 14px;
-      letter-spacing: 0.15px;
-
-      overscroll-behavior: none;
     }
 
     button,
     input {
-      font: inherit;
+      font-family: inherit;
     }
 
     button {
       cursor: pointer;
     }
 
-    button:active {
-      transform: scale(0.98);
-    }
-
-    input {
-      outline: none;
-    }
-
     .hidden {
       display: none !important;
     }
 
+    /* ---------------- AUTH ---------------- */
 
-    /* =====================================================
-       app shell
-    ===================================================== */
-
-    .app {
-      width: 100%;
-      max-width: 760px;
-
+    #authScreen {
       min-height: 100vh;
-
-      margin: 0 auto;
-
-      padding:
-        max(35px, env(safe-area-inset-top))
-        24px
-        calc(95px + env(safe-area-inset-bottom));
-    }
-
-
-    /* =====================================================
-       auth
-    ===================================================== */
-
-    .auth-screen {
-      min-height: 100vh;
-
       display: flex;
-      align-items: center;
       justify-content: center;
-
-      padding: 24px;
-
-      background: #181818;
+      align-items: center;
+      padding: 30px;
     }
 
-    .auth-card {
+    .auth-box {
       width: 100%;
-      max-width: 390px;
-
-      padding: 42px 35px;
-
-      border: 1px solid #343434;
-
-      background: #1c1c1c;
-    }
-
-    .auth-logo {
-      font-size: 30px;
-
-      letter-spacing: -1.5px;
-
-      margin-bottom: 8px;
-    }
-
-    .auth-subtitle {
-      color: #666;
-
-      font-size: 11px;
-
-      margin-bottom: 42px;
-    }
-
-    .auth-card label {
-      display: block;
-
-      color: #666;
-
-      font-size: 10px;
-
-      margin:
-        22px 0
-        8px;
-    }
-
-    .auth-card input {
-      width: 100%;
-
-      padding:
-        11px 0;
-
-      border: none;
-
-      border-bottom:
-        1px solid #3d3d3d;
-
-      background: transparent;
-
-      color: #eee;
-
-      border-radius: 0;
-    }
-
-    .auth-card input:focus {
-      border-bottom-color: #999;
-    }
-
-    .auth-button {
-      width: 100%;
-
-      margin-top: 32px;
-
-      padding: 14px;
-
-      border:
-        1px solid #aaa;
-
-      background: #dedbd4;
-
-      color: #181818;
-    }
-
-    .auth-button:hover {
-      background: #fff;
-    }
-
-    .auth-switch {
-      margin-top: 24px;
-
-      text-align: center;
-
-      color: #555;
-
-      font-size: 10px;
-    }
-
-    .auth-switch button {
-      border: none;
-
-      background: none;
-
-      color: #aaa;
-
-      padding: 0;
-
-      text-decoration: underline;
-    }
-
-    .auth-message {
-      min-height: 20px;
-
-      margin-top: 18px;
-
-      color: #888;
-
-      font-size: 10px;
-
-      line-height: 1.6;
-    }
-
-
-    /* =====================================================
-       header
-    ===================================================== */
-
-    .topbar {
-      display: flex;
-
-      align-items: flex-start;
-
-      justify-content: space-between;
-
-      margin-bottom: 85px;
+      max-width: 420px;
+      border: 1px solid var(--border);
+      padding: 38px;
+      background: #1b1b1b;
     }
 
     .logo {
-      font-size: 27px;
-
-      letter-spacing:
-        -1.5px;
+      font-size: 26px;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
     }
 
-    .tagline {
-      margin-top: 7px;
-
-      color: #555;
-
-      font-size: 9px;
+    .subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 30px;
     }
 
-    .streak {
-      color: #666;
-
-      font-size: 10px;
-    }
-
-
-    /* =====================================================
-       typography
-    ===================================================== */
-
-    .eyebrow {
-      margin-bottom: 18px;
-
-      color: #555;
-
-      font-size: 9px;
-
-      letter-spacing: 2px;
-    }
-
-    .page-title {
-      margin: 0 0 10px;
-
-      font-size: 23px;
-
-      font-weight: normal;
-
-      letter-spacing: -0.7px;
-    }
-
-    .page-description {
-      margin: 0 0 40px;
-
-      color: #666;
-
-      font-size: 11px;
-
-      line-height: 1.7;
-    }
-
-
-    /* =====================================================
-       language selection
-    ===================================================== */
-
-    .language-list {
+    .auth-tabs {
       display: flex;
-
-      flex-direction: column;
-
-      border-top:
-        1px solid #333;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .language {
-      width: 100%;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding:
-        23px 3px;
-
+    .auth-tab {
+      background: none;
       border: none;
-
-      border-bottom:
-        1px solid #303030;
-
-      background: transparent;
-
-      color: #ddd;
-
-      text-align: left;
-    }
-
-    .language:hover {
-      background: #1d1d1d;
-    }
-
-    .language-left {
-      display: flex;
-
-      align-items: center;
-
-      gap: 18px;
-    }
-
-    .language-number {
-      color: #444;
-
-      font-size: 9px;
-
-      width: 20px;
-    }
-
-    .language-name {
-      font-size: 14px;
-    }
-
-    .language-native {
-      margin-top: 5px;
-
-      color: #555;
-
-      font-size: 10px;
-    }
-
-    .language-arrow {
-      color: #555;
-
+      color: var(--muted);
+      padding: 12px 0;
+      margin-right: 24px;
       font-size: 13px;
     }
 
-
-    /* =====================================================
-       lesson
-    ===================================================== */
-
-    .back {
-      border: none;
-
-      background: transparent;
-
-      color: #555;
-
-      padding: 0;
-
-      margin-bottom: 38px;
-
-      font-size: 10px;
+    .auth-tab.active {
+      color: var(--text);
     }
 
-    .back:hover {
-      color: #aaa;
-    }
-
-    .lesson-header {
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      margin-bottom: 45px;
-    }
-
-    .lesson-language {
-      color: #555;
-
-      font-size: 9px;
-
-      letter-spacing: 2px;
-
-      text-transform: uppercase;
-    }
-
-    .lesson-count {
-      color: #555;
-
-      font-size: 9px;
-    }
-
-    .word-container {
-      min-height: 250px;
-
-      display: flex;
-
-      flex-direction: column;
-
-      justify-content: center;
-
-      border-top:
-        1px solid #333;
-
-      border-bottom:
-        1px solid #333;
-
-      padding:
-        45px 0;
-    }
-
-    .word {
-      margin-bottom: 14px;
-
-      color: #eee;
-
-      font-size: 43px;
-
-      font-weight: normal;
-
-      line-height: 1.2;
-    }
-
-    .translation {
-      color: #aaa;
-
-      font-size: 15px;
-    }
-
-    .pronunciation {
-      margin-top: 9px;
-
-      color: #555;
-
-      font-size: 10px;
-    }
-
-    .speaker {
-      width: 42px;
-      height: 42px;
-
-      margin-top: 30px;
-
-      border:
-        1px solid #444;
-
-      border-radius: 0;
-
-      background: transparent;
-
-      color: #aaa;
-    }
-
-    .speaker:hover {
-      background: #232323;
-    }
-
-    .practice {
+    input {
       width: 100%;
-
-      margin-top: 25px;
-
+      background: #151515;
+      border: 1px solid var(--border);
+      color: var(--text);
       padding: 14px;
-
-      border:
-        1px solid #444;
-
-      background: transparent;
-
-      color: #bbb;
-
-      text-align: left;
+      outline: none;
+      margin-bottom: 12px;
     }
 
-    .practice:hover {
-      background: #212121;
-
-      color: #eee;
+    input:focus {
+      border-color: #666;
     }
 
-    .speech-result {
-      min-height: 20px;
-
-      margin-top: 14px;
-
-      color: #777;
-
-      font-size: 10px;
-    }
-
-    .lesson-progress {
-      margin-top: 42px;
-    }
-
-    .progress-info {
-      display: flex;
-
-      justify-content: space-between;
-
-      margin-bottom: 9px;
-
-      color: #555;
-
-      font-size: 9px;
-    }
-
-    .progress-bar {
-      height: 2px;
-
-      background: #333;
-    }
-
-    .progress-fill {
-      width: 0%;
-
-      height: 100%;
-
-      background: #aaa;
-
-      transition:
-        width 0.25s ease;
-    }
-
-    .complete {
+    .main-btn {
       width: 100%;
-
-      margin-top: 20px;
-
-      padding: 13px;
-
-      border:
-        1px solid #3f3f3f;
-
-      background: transparent;
-
-      color: #666;
+      background: var(--text);
+      color: #111;
+      border: none;
+      padding: 14px;
+      margin-top: 8px;
+      font-weight: bold;
     }
 
-    .complete:hover {
-      color: #ddd;
-
-      border-color: #777;
+    .main-btn:hover {
+      opacity: 0.88;
     }
 
+    .message {
+      margin-top: 15px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
 
-    /* =====================================================
-       progress
-    ===================================================== */
+    /* ---------------- APP ---------------- */
+
+    #app {
+      min-height: 100vh;
+    }
+
+    nav {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      position: sticky;
+      top: 0;
+      background: rgba(24, 24, 24, 0.96);
+      z-index: 20;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links button {
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px;
+    }
+
+    .nav-links button:hover {
+      color: var(--text);
+    }
+
+    .logout-btn {
+      border-left: 1px solid var(--border) !important;
+      padding-left: 20px !important;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 30px 100px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page-title {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .page-description {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 38px;
+      line-height: 1.6;
+    }
+
+    /* ---------------- HOME ---------------- */
 
     .stats {
       display: grid;
-
-      grid-template-columns:
-        1fr 1fr;
-
-      border-top:
-        1px solid #333;
-
-      border-left:
-        1px solid #333;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 45px;
     }
 
     .stat {
-      padding: 27px;
-
-      border-right:
-        1px solid #333;
-
-      border-bottom:
-        1px solid #333;
+      border: 1px solid var(--border);
+      padding: 22px;
+      background: var(--panel);
     }
 
     .stat-number {
-      color: #ddd;
-
-      font-size: 27px;
+      font-size: 25px;
+      margin-bottom: 6px;
     }
 
     .stat-label {
-      margin-top: 8px;
-
-      color: #555;
-
-      font-size: 9px;
-    }
-
-
-    /* =====================================================
-       profile
-    ===================================================== */
-
-    .profile {
-      border-top:
-        1px solid #333;
-
-      padding-top: 25px;
-    }
-
-    .email {
-      margin-bottom: 30px;
-
-      color: #888;
-
+      color: var(--muted);
       font-size: 11px;
+      text-transform: lowercase;
     }
 
-    .logout {
-      padding:
-        10px 17px;
+    .language-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
 
-      border:
-        1px solid #444;
+    .language-card {
+      border: 1px solid var(--border);
+      padding: 26px;
+      background: var(--panel);
+      transition: 0.15s;
+    }
 
+    .language-card:hover {
+      border-color: #666;
+      transform: translateY(-2px);
+    }
+
+    .language-name {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .language-info {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 22px;
+    }
+
+    .small-btn {
+      border: 1px solid var(--border);
       background: transparent;
-
-      color: #777;
+      color: var(--text);
+      padding: 10px 15px;
+      font-size: 12px;
     }
 
-    .logout:hover {
-      color: #ddd;
+    .small-btn:hover {
+      background: #2a2a2a;
+    }
 
+    /* ---------------- LESSON ---------------- */
+
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .lesson-language {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .lesson-count {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .progress-line {
+      width: 100%;
+      height: 2px;
+      background: #333;
+      margin-bottom: 35px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #eee;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .mode-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .question-box {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 35px;
+      margin-bottom: 15px;
+      min-height: 230px;
+    }
+
+    .question-number {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 25px;
+    }
+
+    .prompt {
+      font-size: 28px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .translation {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    .pronunciation {
+      color: #aaa;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .lesson-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .action-btn {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 13px 18px;
+      font-size: 12px;
+    }
+
+    .action-btn:hover {
+      background: var(--panel-2);
+    }
+
+    .primary-action {
+      background: var(--text);
+      color: #111;
+      border-color: var(--text);
+    }
+
+    .primary-action:hover {
+      background: #ccc;
+    }
+
+    .speech-result {
+      margin-top: 20px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .score {
+      font-size: 24px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .score.good {
+      color: var(--good);
+    }
+
+    .score.bad {
+      color: var(--bad);
+    }
+
+    .listening-live {
+      color: var(--text);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .choice-btn {
+      border: 1px solid var(--border);
+      background: #191919;
+      color: var(--text);
+      padding: 15px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .choice-btn:hover {
       border-color: #777;
     }
 
-
-    /* =====================================================
-       bottom navigation
-    ===================================================== */
-
-    .bottom-nav {
-      position: fixed;
-
-      left: 50%;
-      bottom: 0;
-
-      transform:
-        translateX(-50%);
-
-      width: 100%;
-
-      max-width: 760px;
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      padding:
-        5px
-        0
-        calc(5px + env(safe-area-inset-bottom));
-
-      border-top:
-        1px solid #303030;
-
-      background:
-        rgba(24, 24, 24, 0.97);
-
-      backdrop-filter:
-        blur(12px);
+    .choice-btn.correct {
+      border-color: var(--good);
+      color: var(--good);
     }
 
-    .nav-button {
-      border: none;
-
-      background: transparent;
-
-      color: #4f4f4f;
-
-      padding:
-        12px 5px;
-
-      font-size: 9px;
+    .choice-btn.wrong {
+      border-color: var(--bad);
+      color: var(--bad);
     }
 
-    .nav-button.active {
-      color: #ddd;
+    .writing-input {
+      margin-top: 20px;
     }
 
-
-    /* =====================================================
-       mobile
-    ===================================================== */
-
-    @media (max-width: 550px) {
-
-      .app {
-        padding:
-          30px 20px
-          calc(90px + env(safe-area-inset-bottom));
-      }
-
-      .topbar {
-        margin-bottom: 65px;
-      }
-
-      .word {
-        font-size: 34px;
-      }
-
-      .word-container {
-        min-height: 230px;
-      }
-
-      .auth-card {
-        padding: 35px 27px;
-      }
-
+    .finish-area {
+      margin-top: 40px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
     }
 
+    /* ---------------- RESPONSIVE ---------------- */
+
+    @media (max-width: 700px) {
+      nav {
+        padding: 0 16px;
+      }
+
+      .nav-links {
+        gap: 8px;
+      }
+
+      .nav-links button {
+        font-size: 10px;
+      }
+
+      main {
+        padding: 35px 18px 80px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .language-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .question-box {
+        padding: 24px;
+      }
+
+      .prompt {
+        font-size: 23px;
+      }
+
+      .lesson-header {
+        gap: 20px;
+      }
+    }
   </style>
 </head>
 
-
 <body>
 
+  <!-- ================= AUTH ================= -->
 
-  <!-- =====================================================
-       authentication
-  ===================================================== -->
+  <section id="authScreen">
 
-  <main
-    id="authScreen"
-    class="auth-screen"
-  >
+    <div class="auth-box">
 
-    <section class="auth-card">
+      <div class="logo">skillbuilding</div>
 
-      <div class="auth-logo">
-        skill-building app
+      <div class="subtitle">
+        a speaking-first language learning app.
+        practice real words, listen, speak, repeat.
       </div>
 
-      <div class="auth-subtitle">
-        language, one word at a time.
+      <div class="auth-tabs">
+        <button
+          id="loginTab"
+          class="auth-tab active"
+          onclick="showAuth('login')"
+        >
+          login
+        </button>
+
+        <button
+          id="signupTab"
+          class="auth-tab"
+          onclick="showAuth('signup')"
+        >
+          sign up
+        </button>
       </div>
-
-
-      <!-- login -->
 
       <div id="loginForm">
-
-        <label for="loginEmail">
-          email
-        </label>
 
         <input
           id="loginEmail"
           type="email"
+          placeholder="email"
           autocomplete="email"
-          placeholder="your email"
         />
-
-
-        <label for="loginPassword">
-          password
-        </label>
 
         <input
           id="loginPassword"
           type="password"
+          placeholder="password"
           autocomplete="current-password"
-          placeholder="your password"
         />
 
-
-        <button
-          class="auth-button"
-          onclick="login()"
-        >
-          log in
+        <button class="main-btn" onclick="login()">
+          login
         </button>
-
-
-        <div class="auth-switch">
-
-          don't have an account?
-
-          <button
-            onclick="showSignup()"
-          >
-            sign up
-          </button>
-
-        </div>
 
       </div>
 
-
-      <!-- signup -->
-
-      <div
-        id="signupForm"
-        class="hidden"
-      >
-
-        <label for="signupEmail">
-          email
-        </label>
+      <div id="signupForm" class="hidden">
 
         <input
           id="signupEmail"
           type="email"
+          placeholder="email"
           autocomplete="email"
-          placeholder="your email"
         />
-
-
-        <label for="signupPassword">
-          password
-        </label>
 
         <input
           id="signupPassword"
           type="password"
+          placeholder="password"
           autocomplete="new-password"
-          placeholder="at least 6 characters"
         />
 
-
-        <button
-          class="auth-button"
-          onclick="signup()"
-        >
+        <button class="main-btn" onclick="signup()">
           create account
         </button>
 
+      </div>
 
-        <div class="auth-switch">
+      <div id="authMessage" class="message"></div>
 
-          already have an account?
+    </div>
+
+  </section>
+
+
+  <!-- ================= APP ================= -->
+
+  <div id="app" class="hidden">
+
+    <nav>
+
+      <div class="nav-logo">
+        skillbuilding
+      </div>
+
+      <div class="nav-links">
+
+        <button onclick="showPage('home')">
+          home
+        </button>
+
+        <button onclick="showPage('lesson')">
+          lesson
+        </button>
+
+        <button onclick="logout()" class="logout-btn">
+          logout
+        </button>
+
+      </div>
+
+    </nav>
+
+
+    <main>
+
+      <!-- ================= HOME ================= -->
+
+      <section id="homePage" class="page active">
+
+        <div class="page-title">
+          learn by speaking.
+        </div>
+
+        <div class="page-description">
+          short lessons built around speaking, listening,
+          and understanding real language.
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+            <div id="xpStat" class="stat-number">0</div>
+            <div class="stat-label">xp</div>
+          </div>
+
+          <div class="stat">
+            <div id="streakStat" class="stat-number">0</div>
+            <div class="stat-label">day streak</div>
+          </div>
+
+          <div class="stat">
+            <div id="lessonsStat" class="stat-number">0</div>
+            <div class="stat-label">lessons</div>
+          </div>
+
+          <div class="stat">
+            <div id="wordsStat" class="stat-number">0</div>
+            <div class="stat-label">words</div>
+          </div>
+
+        </div>
+
+
+        <div class="language-grid">
+
+          <div class="language-card">
+
+            <div class="language-name">
+              korean
+            </div>
+
+            <div class="language-info">
+              한국어 · speaking + listening
+            </div>
+
+            <button
+              class="small-btn"
+              onclick="startLesson('korean')"
+            >
+              start →
+            </button>
+
+          </div>
+
+
+          <div class="language-card">
+
+            <div class="language-name">
+              japanese
+            </div>
+
+            <div class="language-info">
+              日本語 · speaking + listening
+            </div>
+
+            <button
+              class="small-btn"
+              onclick="startLesson('japanese')"
+            >
+              start →
+            </button>
+
+          </div>
+
+
+          <div class="language-card">
+
+            <div class="language-name">
+              spanish
+            </div>
+
+            <div class="language-info">
+              español · speaking + listening
+            </div>
+
+            <button
+              class="small-btn"
+              onclick="startLesson('spanish')"
+            >
+              start →
+            </button>
+
+          </div>
+
+
+          <div class="language-card">
+
+            <div class="language-name">
+              french
+            </div>
+
+            <div class="language-info">
+              français · speaking + listening
+            </div>
+
+            <button
+              class="small-btn"
+              onclick="startLesson('french')"
+            >
+              start →
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= LESSON ================= -->
+
+      <section id="lessonPage" class="page">
+
+        <div class="lesson-header">
+
+          <div>
+            <div id="lessonLanguage" class="lesson-language">
+              lesson
+            </div>
+          </div>
+
+          <div id="lessonCount" class="lesson-count">
+            1 / 10
+          </div>
+
+        </div>
+
+
+        <div class="progress-line">
+          <div
+            id="lessonProgress"
+            class="progress-fill"
+          ></div>
+        </div>
+
+
+        <div id="lessonMode" class="mode-label">
+          speaking practice
+        </div>
+
+
+        <div class="question-box">
+
+          <div id="questionNumber" class="question-number">
+            question 1
+          </div>
+
+          <div id="prompt" class="prompt">
+            hello
+          </div>
+
+          <div id="translation" class="translation">
+            hello
+          </div>
+
+          <div id="pronunciation" class="pronunciation">
+          </div>
+
+
+          <div id="choiceArea" class="choice-grid">
+          </div>
+
+
+          <input
+            id="writingInput"
+            class="writing-input hidden"
+            type="text"
+            placeholder="type your answer..."
+            autocomplete="off"
+          />
+
+
+          <div id="speechResult" class="speech-result hidden">
+          </div>
+
+        </div>
+
+
+        <div class="lesson-actions">
 
           <button
-            onclick="showLogin()"
+            id="hearButton"
+            class="action-btn"
+            onclick="speakCurrentQuestion()"
           >
-            log in
+            ♫ hear it
+          </button>
+
+          <button
+            id="speakButton"
+            class="action-btn primary-action"
+            onclick="practiceSpeaking()"
+          >
+            ● speak now
+          </button>
+
+          <button
+            id="checkWritingButton"
+            class="action-btn primary-action hidden"
+            onclick="checkWriting()"
+          >
+            check
+          </button>
+
+          <button
+            id="nextButton"
+            class="action-btn primary-action hidden"
+            onclick="nextQuestion()"
+          >
+            next →
           </button>
 
         </div>
 
-      </div>
 
+        <div class="finish-area">
 
-      <div
-        id="authMessage"
-        class="auth-message"
-      ></div>
-
-    </section>
-
-  </main>
-
-
-
-  <!-- =====================================================
-       main application
-  ===================================================== -->
-
-  <main
-    id="app"
-    class="app hidden"
-  >
-
-
-    <!-- top -->
-
-    <header class="topbar">
-
-      <div>
-
-        <div class="logo">
-          skill-building app
-        </div>
-
-        <div class="tagline">
-          language, one word at a time.
-        </div>
-
-      </div>
-
-
-      <div class="streak">
-
-        <span id="streakDisplay">
-          0
-        </span>
-
-        day streak
-
-      </div>
-
-    </header>
-
-
-
-    <!-- =================================================
-         home
-    ================================================= -->
-
-    <section
-      id="homePage"
-    >
-
-      <div class="eyebrow">
-        languages / 001
-      </div>
-
-      <h1 class="page-title">
-        choose a language.
-      </h1>
-
-      <p class="page-description">
-        start somewhere. come back tomorrow.
-      </p>
-
-
-      <div class="language-list">
-
-
-        <button
-          class="language"
-          onclick="startLesson('korean')"
-        >
-
-          <div class="language-left">
-
-            <div class="language-number">
-              01
-            </div>
-
-            <div>
-
-              <div class="language-name">
-                korean
-              </div>
-
-              <div class="language-native">
-                한국어
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="language-arrow">
-            →
-          </div>
-
-        </button>
-
-
-
-        <button
-          class="language"
-          onclick="startLesson('japanese')"
-        >
-
-          <div class="language-left">
-
-            <div class="language-number">
-              02
-            </div>
-
-            <div>
-
-              <div class="language-name">
-                japanese
-              </div>
-
-              <div class="language-native">
-                日本語
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="language-arrow">
-            →
-          </div>
-
-        </button>
-
-
-
-        <button
-          class="language"
-          onclick="startLesson('spanish')"
-        >
-
-          <div class="language-left">
-
-            <div class="language-number">
-              03
-            </div>
-
-            <div>
-
-              <div class="language-name">
-                spanish
-              </div>
-
-              <div class="language-native">
-                español
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="language-arrow">
-            →
-          </div>
-
-        </button>
-
-
-
-        <button
-          class="language"
-          onclick="startLesson('french')"
-        >
-
-          <div class="language-left">
-
-            <div class="language-number">
-              04
-            </div>
-
-            <div>
-
-              <div class="language-name">
-                french
-              </div>
-
-              <div class="language-native">
-                français
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="language-arrow">
-            →
-          </div>
-
-        </button>
-
-
-      </div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         lesson
-    ================================================= -->
-
-    <section
-      id="lessonPage"
-      class="hidden"
-    >
-
-      <button
-        class="back"
-        onclick="showPage('home')"
-      >
-        ← languages
-      </button>
-
-
-      <div class="lesson-header">
-
-        <div
-          id="lessonLanguage"
-          class="lesson-language"
-        >
-          korean
-        </div>
-
-        <div
-          id="lessonProgressText"
-          class="lesson-count"
-        >
-          01 / 05
-        </div>
-
-      </div>
-
-
-      <div class="word-container">
-
-        <div
-          id="lessonWord"
-          class="word"
-        >
-          안녕하세요
-        </div>
-
-        <div
-          id="lessonTranslation"
-          class="translation"
-        >
-          hello
-        </div>
-
-        <div
-          id="lessonPronunciation"
-          class="pronunciation"
-        >
-          annyeonghaseyo
-        </div>
-
-
-        <button
-          class="speaker"
-          onclick="speakCurrentWord()"
-          aria-label="listen"
-        >
-          ♫
-        </button>
-
-      </div>
-
-
-      <button
-        class="practice"
-        onclick="practiceSpeaking()"
-      >
-        say it out loud →
-      </button>
-
-
-      <div
-        id="speechResult"
-        class="speech-result"
-      ></div>
-
-
-      <div class="lesson-progress">
-
-        <div class="progress-info">
-
-          <span>
-            progress
-          </span>
-
-          <span
-            id="lessonPercent"
+          <button
+            id="finishButton"
+            class="action-btn hidden"
+            onclick="finishLesson()"
           >
-            20%
-          </span>
+            finish lesson
+          </button>
 
         </div>
 
+      </section>
 
-        <div class="progress-bar">
+    </main>
 
-          <div
-            id="lessonProgressFill"
-            class="progress-fill"
-          ></div>
-
-        </div>
-
-      </div>
-
-
-      <button
-        class="complete"
-        onclick="completeLesson()"
-      >
-        complete lesson
-      </button>
-
-    </section>
-
-
-
-    <!-- =================================================
-         progress
-    ================================================= -->
-
-    <section
-      id="progressPage"
-      class="hidden"
-    >
-
-      <div class="eyebrow">
-        record / 002
-      </div>
-
-      <h1 class="page-title">
-        progress.
-      </h1>
-
-      <p class="page-description">
-        a quiet record of what you've learned.
-      </p>
-
-
-      <div class="stats">
-
-
-        <div class="stat">
-
-          <div
-            id="xpDisplay"
-            class="stat-number"
-          >
-            0
-          </div>
-
-          <div class="stat-label">
-            xp
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div
-            id="lessonsDisplay"
-            class="stat-number"
-          >
-            0
-          </div>
-
-          <div class="stat-label">
-            lessons
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div
-            id="wordsDisplay"
-            class="stat-number"
-          >
-            0
-          </div>
-
-          <div class="stat-label">
-            words
-          </div>
-
-        </div>
-
-
-        <div class="stat">
-
-          <div
-            id="streakStatDisplay"
-            class="stat-number"
-          >
-            0
-          </div>
-
-          <div class="stat-label">
-            day streak
-          </div>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         profile
-    ================================================= -->
-
-    <section
-      id="profilePage"
-      class="hidden"
-    >
-
-      <div class="eyebrow">
-        account / 003
-      </div>
-
-      <h1 class="page-title">
-        profile.
-      </h1>
-
-      <p class="page-description">
-        your account.
-      </p>
-
-
-      <div class="profile">
-
-        <div
-          id="profileEmail"
-          class="email"
-        >
-          loading...
-        </div>
-
-
-        <button
-          class="logout"
-          onclick="logout()"
-        >
-          log out
-        </button>
-
-      </div>
-
-    </section>
-
-
-  </main>
-
-
-
-  <!-- =====================================================
-       navigation
-  ===================================================== -->
-
-  <nav
-    id="bottomNav"
-    class="bottom-nav hidden"
-  >
-
-    <button
-      class="nav-button active"
-      onclick="showPage('home')"
-    >
-      home
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="showPage('lesson')"
-    >
-      lessons
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="showPage('progress')"
-    >
-      progress
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="showPage('profile')"
-    >
-      profile
-    </button>
-
-  </nav>
-
+  </div>
 
 
 <script>
 
-  /* =====================================================
-     supabase
-  ===================================================== */
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
 
   const SUPABASE_URL =
     "https://gdcvudbqwkdiccyugtxz.supabase.co";
 
   /*
-    paste your NEW publishable key here
+    IMPORTANT:
+    put your NEW Supabase publishable key here.
+    Do not use your old key.
   */
 
   const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_K7S7aII4qnXr4N04kQphMw_ZlPKsxBQ";
-
 
   const supabaseClient =
     window.supabase.createClient(
@@ -1429,231 +884,634 @@
     );
 
 
-  /* =====================================================
-     language data
-  ===================================================== */
-
-  const lessons = {
-
-    korean: [
-
-      {
-        word: "안녕하세요",
-        translation: "hello",
-        pronunciation: "annyeonghaseyo"
-      },
-
-      {
-        word: "감사합니다",
-        translation: "thank you",
-        pronunciation: "gamsahamnida"
-      },
-
-      {
-        word: "네",
-        translation: "yes",
-        pronunciation: "ne"
-      },
-
-      {
-        word: "아니요",
-        translation: "no",
-        pronunciation: "aniyo"
-      },
-
-      {
-        word: "친구",
-        translation: "friend",
-        pronunciation: "chingu"
-      }
-
-    ],
+  const PRODUCTION_URL =
+    "https://selinahe361-eng.github.io/language-app/";
 
 
-    japanese: [
+  function getRedirectUrl() {
 
-      {
-        word: "こんにちは",
-        translation: "hello",
-        pronunciation: "konnichiwa"
-      },
+    if (
+      window.location.protocol === "http:" ||
+      window.location.protocol === "https:"
+    ) {
 
-      {
-        word: "ありがとう",
-        translation: "thank you",
-        pronunciation: "arigatou"
-      },
+      return (
+        window.location.origin +
+        window.location.pathname
+      );
 
-      {
-        word: "はい",
-        translation: "yes",
-        pronunciation: "hai"
-      },
+    }
 
-      {
-        word: "いいえ",
-        translation: "no",
-        pronunciation: "iie"
-      },
-
-      {
-        word: "友達",
-        translation: "friend",
-        pronunciation: "tomodachi"
-      }
-
-    ],
-
-
-    spanish: [
-
-      {
-        word: "hola",
-        translation: "hello",
-        pronunciation: "oh-la"
-      },
-
-      {
-        word: "gracias",
-        translation: "thank you",
-        pronunciation: "grah-see-ahs"
-      },
-
-      {
-        word: "sí",
-        translation: "yes",
-        pronunciation: "see"
-      },
-
-      {
-        word: "no",
-        translation: "no",
-        pronunciation: "noh"
-      },
-
-      {
-        word: "amigo",
-        translation: "friend",
-        pronunciation: "ah-mee-goh"
-      }
-
-    ],
-
-
-    french: [
-
-      {
-        word: "bonjour",
-        translation: "hello",
-        pronunciation: "bohn-zhoor"
-      },
-
-      {
-        word: "merci",
-        translation: "thank you",
-        pronunciation: "mehr-see"
-      },
-
-      {
-        word: "oui",
-        translation: "yes",
-        pronunciation: "wee"
-      },
-
-      {
-        word: "non",
-        translation: "no",
-        pronunciation: "noh"
-      },
-
-      {
-        word: "ami",
-        translation: "friend",
-        pronunciation: "ah-mee"
-      }
-
-    ]
-
-  };
-
-
-  const languageCodes = {
-
-    korean: "ko-KR",
-
-    japanese: "ja-JP",
-
-    spanish: "es-ES",
-
-    french: "fr-FR"
-
-  };
-
-
-  let currentUser = null;
-
-  let currentLanguage = null;
-
-  let currentWordIndex = 0;
-
-  let progressData = null;
-
-
-  /* =====================================================
-     authentication
-  ===================================================== */
-
-  function showSignup() {
-
-    document
-      .getElementById("loginForm")
-      .classList.add("hidden");
-
-    document
-      .getElementById("signupForm")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("authMessage")
-      .textContent = "";
-
+    return PRODUCTION_URL;
   }
 
 
-  function showLogin() {
+  /* =========================================================
+     LANGUAGE DATA
+  ========================================================= */
 
-    document
-      .getElementById("signupForm")
-      .classList.add("hidden");
+  const languageData = {
 
-    document
-      .getElementById("loginForm")
-      .classList.remove("hidden");
+    korean: {
 
-    document
-      .getElementById("authMessage")
-      .textContent = "";
+      name: "korean",
+      code: "ko-KR",
 
+      words: [
+
+        {
+          word: "안녕하세요",
+          translation: "hello",
+          pronunciation: "annyeonghaseyo",
+          aliases: ["안녕하세요"]
+        },
+
+        {
+          word: "감사합니다",
+          translation: "thank you",
+          pronunciation: "gamsahamnida",
+          aliases: ["감사합니다"]
+        },
+
+        {
+          word: "네",
+          translation: "yes",
+          pronunciation: "ne",
+          aliases: ["네"]
+        },
+
+        {
+          word: "아니요",
+          translation: "no",
+          pronunciation: "aniyo",
+          aliases: ["아니요"]
+        },
+
+        {
+          word: "친구",
+          translation: "friend",
+          pronunciation: "chingu",
+          aliases: ["친구"]
+        },
+
+        {
+          word: "물",
+          translation: "water",
+          pronunciation: "mul",
+          aliases: ["물"]
+        },
+
+        {
+          word: "밥",
+          translation: "rice / meal",
+          pronunciation: "bap",
+          aliases: ["밥"]
+        },
+
+        {
+          word: "괜찮아요",
+          translation: "it's okay",
+          pronunciation: "gwaenchanayo",
+          aliases: ["괜찮아요"]
+        },
+
+        {
+          word: "미안해요",
+          translation: "I'm sorry",
+          pronunciation: "mianhaeyo",
+          aliases: ["미안해요"]
+        },
+
+        {
+          word: "주세요",
+          translation: "please give me",
+          pronunciation: "juseyo",
+          aliases: ["주세요"]
+        }
+
+      ],
+
+      phrases: [
+
+        {
+          word: "물 주세요.",
+          translation: "water, please.",
+          pronunciation: "mul juseyo",
+          aliases: ["물 주세요"]
+        },
+
+        {
+          word: "괜찮아요.",
+          translation: "it's okay.",
+          pronunciation: "gwaenchanayo",
+          aliases: ["괜찮아요"]
+        },
+
+        {
+          word: "감사합니다.",
+          translation: "thank you.",
+          pronunciation: "gamsahamnida",
+          aliases: ["감사합니다"]
+        },
+
+        {
+          word: "네, 좋아요.",
+          translation: "yes, that's good.",
+          pronunciation: "ne, joayo",
+          aliases: ["네 좋아요"]
+        },
+
+        {
+          word: "미안해요.",
+          translation: "I'm sorry.",
+          pronunciation: "mianhaeyo",
+          aliases: ["미안해요"]
+        }
+
+      ]
+
+    },
+
+
+    japanese: {
+
+      name: "japanese",
+      code: "ja-JP",
+
+      words: [
+
+        {
+          word: "こんにちは",
+          translation: "hello",
+          pronunciation: "konnichiwa",
+          aliases: ["こんにちは"]
+        },
+
+        {
+          word: "ありがとう",
+          translation: "thank you",
+          pronunciation: "arigatou",
+          aliases: ["ありがとう"]
+        },
+
+        {
+          word: "はい",
+          translation: "yes",
+          pronunciation: "hai",
+          aliases: ["はい"]
+        },
+
+        {
+          word: "いいえ",
+          translation: "no",
+          pronunciation: "iie",
+          aliases: ["いいえ"]
+        },
+
+        {
+          word: "友達",
+          translation: "friend",
+          pronunciation: "tomodachi",
+          aliases: ["友達"]
+        },
+
+        {
+          word: "水",
+          translation: "water",
+          pronunciation: "mizu",
+          aliases: ["水"]
+        },
+
+        {
+          word: "ごはん",
+          translation: "meal / rice",
+          pronunciation: "gohan",
+          aliases: ["ごはん"]
+        },
+
+        {
+          word: "大丈夫",
+          translation: "it's okay",
+          pronunciation: "daijoubu",
+          aliases: ["大丈夫"]
+        },
+
+        {
+          word: "すみません",
+          translation: "excuse me / sorry",
+          pronunciation: "sumimasen",
+          aliases: ["すみません"]
+        },
+
+        {
+          word: "お願いします",
+          translation: "please",
+          pronunciation: "onegaishimasu",
+          aliases: ["お願いします"]
+        }
+
+      ],
+
+      phrases: [
+
+        {
+          word: "水をください。",
+          translation: "water, please.",
+          pronunciation: "mizu o kudasai",
+          aliases: ["水をください"]
+        },
+
+        {
+          word: "大丈夫です。",
+          translation: "it's okay.",
+          pronunciation: "daijoubu desu",
+          aliases: ["大丈夫です"]
+        },
+
+        {
+          word: "ありがとうございます。",
+          translation: "thank you very much.",
+          pronunciation: "arigatou gozaimasu",
+          aliases: ["ありがとうございます"]
+        },
+
+        {
+          word: "はい、お願いします。",
+          translation: "yes, please.",
+          pronunciation: "hai, onegaishimasu",
+          aliases: ["はい お願いします"]
+        },
+
+        {
+          word: "すみません。",
+          translation: "excuse me / sorry.",
+          pronunciation: "sumimasen",
+          aliases: ["すみません"]
+        }
+
+      ]
+
+    },
+
+
+    spanish: {
+
+      name: "spanish",
+      code: "es-ES",
+
+      words: [
+
+        {
+          word: "hola",
+          translation: "hello",
+          pronunciation: "oh-la",
+          aliases: ["hola"]
+        },
+
+        {
+          word: "gracias",
+          translation: "thank you",
+          pronunciation: "grah-see-as",
+          aliases: ["gracias"]
+        },
+
+        {
+          word: "sí",
+          translation: "yes",
+          pronunciation: "see",
+          aliases: ["sí", "si"]
+        },
+
+        {
+          word: "no",
+          translation: "no",
+          pronunciation: "no",
+          aliases: ["no"]
+        },
+
+        {
+          word: "amigo",
+          translation: "friend",
+          pronunciation: "ah-mee-go",
+          aliases: ["amigo"]
+        },
+
+        {
+          word: "agua",
+          translation: "water",
+          pronunciation: "ah-gwa",
+          aliases: ["agua"]
+        },
+
+        {
+          word: "comida",
+          translation: "food",
+          pronunciation: "koh-mee-da",
+          aliases: ["comida"]
+        },
+
+        {
+          word: "por favor",
+          translation: "please",
+          pronunciation: "por fah-vor",
+          aliases: ["por favor"]
+        },
+
+        {
+          word: "perdón",
+          translation: "sorry / excuse me",
+          pronunciation: "pair-don",
+          aliases: ["perdón", "perdon"]
+        },
+
+        {
+          word: "quiero",
+          translation: "I want",
+          pronunciation: "kee-eh-ro",
+          aliases: ["quiero"]
+        }
+
+      ],
+
+      phrases: [
+
+        {
+          word: "Quiero agua, por favor.",
+          translation: "I want water, please.",
+          pronunciation: "kee-eh-ro ah-gwa por fah-vor",
+          aliases: ["quiero agua por favor"]
+        },
+
+        {
+          word: "Estoy bien.",
+          translation: "I'm okay.",
+          pronunciation: "es-toy byen",
+          aliases: ["estoy bien"]
+        },
+
+        {
+          word: "Muchas gracias.",
+          translation: "thank you very much.",
+          pronunciation: "moo-chas gra-see-as",
+          aliases: ["muchas gracias"]
+        },
+
+        {
+          word: "Sí, por favor.",
+          translation: "yes, please.",
+          pronunciation: "see por fah-vor",
+          aliases: ["sí por favor", "si por favor"]
+        },
+
+        {
+          word: "Perdón.",
+          translation: "sorry / excuse me.",
+          pronunciation: "pair-don",
+          aliases: ["perdón", "perdon"]
+        }
+
+      ]
+
+    },
+
+
+    french: {
+
+      name: "french",
+      code: "fr-FR",
+
+      words: [
+
+        {
+          word: "bonjour",
+          translation: "hello",
+          pronunciation: "bohn-zhoor",
+          aliases: ["bonjour"]
+        },
+
+        {
+          word: "merci",
+          translation: "thank you",
+          pronunciation: "mehr-see",
+          aliases: ["merci"]
+        },
+
+        {
+          word: "oui",
+          translation: "yes",
+          pronunciation: "wee",
+          aliases: ["oui"]
+        },
+
+        {
+          word: "non",
+          translation: "no",
+          pronunciation: "noh",
+          aliases: ["non"]
+        },
+
+        {
+          word: "ami",
+          translation: "friend",
+          pronunciation: "ah-mee",
+          aliases: ["ami"]
+        },
+
+        {
+          word: "eau",
+          translation: "water",
+          pronunciation: "oh",
+          aliases: ["eau"]
+        },
+
+        {
+          word: "nourriture",
+          translation: "food",
+          pronunciation: "noo-ree-toor",
+          aliases: ["nourriture"]
+        },
+
+        {
+          word: "s'il vous plaît",
+          translation: "please",
+          pronunciation: "seel voo pleh",
+          aliases: ["s'il vous plaît", "sil vous plait"]
+        },
+
+        {
+          word: "pardon",
+          translation: "sorry / excuse me",
+          pronunciation: "par-dohn",
+          aliases: ["pardon"]
+        },
+
+        {
+          word: "je veux",
+          translation: "I want",
+          pronunciation: "zhuh vuh",
+          aliases: ["je veux"]
+        }
+
+      ],
+
+      phrases: [
+
+        {
+          word: "Je voudrais de l'eau, s'il vous plaît.",
+          translation: "I would like water, please.",
+          pronunciation: "zhuh voo-dreh duh loh seel voo pleh",
+          aliases: [
+            "je voudrais de l'eau s'il vous plaît",
+            "je voudrais de leau sil vous plait"
+          ]
+        },
+
+        {
+          word: "Ça va.",
+          translation: "I'm okay.",
+          pronunciation: "sa va",
+          aliases: ["ça va", "ca va"]
+        },
+
+        {
+          word: "Merci beaucoup.",
+          translation: "thank you very much.",
+          pronunciation: "mehr-see boh-koo",
+          aliases: ["merci beaucoup"]
+        },
+
+        {
+          word: "Oui, s'il vous plaît.",
+          translation: "yes, please.",
+          pronunciation: "wee seel voo pleh",
+          aliases: [
+            "oui s'il vous plaît",
+            "oui sil vous plait"
+          ]
+        },
+
+        {
+          word: "Pardon.",
+          translation: "sorry / excuse me.",
+          pronunciation: "par-dohn",
+          aliases: ["pardon"]
+        }
+
+      ]
+
+    }
+
+  };
+
+
+  /* =========================================================
+     APP STATE
+  ========================================================= */
+
+  let currentUser = null;
+  let progress = null;
+
+  let currentLanguage = null;
+  let currentQuestions = [];
+  let currentQuestionIndex = 0;
+  let currentQuestion = null;
+
+  let questionAnswered = false;
+
+  let speechRecognition = null;
+
+  let speechScores = [];
+
+
+  /* =========================================================
+     AUTH
+  ========================================================= */
+
+  function showAuth(type) {
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const signupForm =
+      document.getElementById("signupForm");
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const signupTab =
+      document.getElementById("signupTab");
+
+    if (type === "login") {
+
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
+
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
+
+    } else {
+
+      signupForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+
+      signupTab.classList.add("active");
+      loginTab.classList.remove("active");
+
+    }
+
+    document.getElementById("authMessage").textContent = "";
+  }
+
+
+  async function login() {
+
+    const email =
+      document.getElementById("loginEmail").value.trim();
+
+    const password =
+      document.getElementById("loginPassword").value;
+
+    const message =
+      document.getElementById("authMessage");
+
+    if (!email || !password) {
+
+      message.textContent =
+        "enter your email and password.";
+
+      return;
+    }
+
+    message.textContent = "logging in...";
+
+    const { error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if (error) {
+
+      message.textContent =
+        error.message;
+
+      return;
+    }
+
+    message.textContent = "";
   }
 
 
   async function signup() {
 
     const email =
-      document
-        .getElementById("signupEmail")
-        .value
-        .trim();
+      document.getElementById("signupEmail").value.trim();
 
     const password =
-      document
-        .getElementById("signupPassword")
-        .value;
+      document.getElementById("signupPassword").value;
 
     const message =
-      document
-        .getElementById("authMessage");
-
+      document.getElementById("authMessage");
 
     if (!email || !password) {
 
@@ -1662,7 +1520,6 @@
 
       return;
     }
-
 
     if (password.length < 6) {
 
@@ -1672,22 +1529,20 @@
       return;
     }
 
-
     message.textContent =
-      "creating account...";
+      "creating your account...";
 
-
-    const {
-      data,
-      error
-    } =
+    const { data, error } =
       await supabaseClient.auth.signUp({
 
         email,
-        password
+        password,
+
+        options: {
+          emailRedirectTo: getRedirectUrl()
+        }
 
       });
-
 
     if (error) {
 
@@ -1697,82 +1552,17 @@
       return;
     }
 
-
     if (data.session) {
 
-      currentUser =
-        data.user;
-
-      await setupUser();
+      message.textContent =
+        "account created.";
 
     } else {
 
       message.textContent =
-        "check your email to confirm your account.";
+        "account created. check your email to confirm it.";
 
     }
-
-  }
-
-
-  async function login() {
-
-    const email =
-      document
-        .getElementById("loginEmail")
-        .value
-        .trim();
-
-    const password =
-      document
-        .getElementById("loginPassword")
-        .value;
-
-    const message =
-      document
-        .getElementById("authMessage");
-
-
-    if (!email || !password) {
-
-      message.textContent =
-        "enter an email and password.";
-
-      return;
-    }
-
-
-    message.textContent =
-      "logging in...";
-
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.auth.signInWithPassword({
-
-        email,
-        password
-
-      });
-
-
-    if (error) {
-
-      message.textContent =
-        error.message;
-
-      return;
-    }
-
-
-    currentUser =
-      data.user;
-
-
-    await setupUser();
-
   }
 
 
@@ -1780,90 +1570,48 @@
 
     await supabaseClient.auth.signOut();
 
-
     currentUser = null;
-
-    progressData = null;
-
 
     document
       .getElementById("app")
       .classList.add("hidden");
 
-
-    document
-      .getElementById("bottomNav")
-      .classList.add("hidden");
-
-
     document
       .getElementById("authScreen")
       .classList.remove("hidden");
-
-
-    showLogin();
-
   }
 
 
-  /* =====================================================
-     user setup
-  ===================================================== */
+  /* =========================================================
+     USER SETUP
+  ========================================================= */
 
-  async function setupUser() {
+  async function setupUser(user) {
+
+    currentUser = user;
 
     document
       .getElementById("authScreen")
       .classList.add("hidden");
 
-
     document
       .getElementById("app")
       .classList.remove("hidden");
-
-
-    document
-      .getElementById("bottomNav")
-      .classList.remove("hidden");
-
-
-    document
-      .getElementById("profileEmail")
-      .textContent =
-      currentUser.email;
-
 
     await loadProgress();
 
-
     showPage("home");
-
   }
 
 
-  /* =====================================================
-     database
-  ===================================================== */
-
   async function loadProgress() {
 
-    const {
-      data,
-      error
-    } =
+    const { data, error } =
       await supabaseClient
-
         .from("user_progress")
-
         .select("*")
-
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-
+        .eq("user_id", currentUser.id)
         .maybeSingle();
-
 
     if (error) {
 
@@ -1872,354 +1620,797 @@
       return;
     }
 
-
     if (!data) {
 
-      const {
-        data: newProgress,
-        error: insertError
-      } =
+      const { data: created, error: createError } =
         await supabaseClient
-
           .from("user_progress")
-
           .insert({
-
-            user_id:
-              currentUser.id,
-
-            language:
-              "none",
-
-            xp:
-              0,
-
-            streak:
-              0,
-
-            lessons_completed:
-              0,
-
-            words_learned:
-              0
-
+            user_id: currentUser.id,
+            language: "none",
+            xp: 0,
+            streak: 0,
+            lessons_completed: 0,
+            words_learned: 0
           })
-
           .select()
-
           .single();
 
+      if (createError) {
 
-      if (insertError) {
-
-        console.error(insertError);
+        console.error(createError);
 
         return;
       }
 
-
-      progressData =
-        newProgress;
+      progress = created;
 
     } else {
 
-      progressData =
-        data;
-
+      progress = data;
     }
 
-
     updateProgressUI();
-
   }
 
 
-  async function saveProgress(changes) {
+  async function saveProgress() {
 
-    if (
-      !currentUser ||
-      !progressData
-    ) {
+    if (!currentUser || !progress) {
       return;
     }
 
-
-    const updated = {
-
-      ...progressData,
-
-      ...changes
-
-    };
-
-
-    const {
-      data,
-      error
-    } =
+    const { error } =
       await supabaseClient
-
         .from("user_progress")
-
         .update({
-
-          language:
-            updated.language,
-
-          xp:
-            updated.xp,
-
-          streak:
-            updated.streak,
-
+          language: progress.language,
+          xp: progress.xp,
+          streak: progress.streak,
           lessons_completed:
-            updated.lessons_completed,
-
+            progress.lessons_completed,
           words_learned:
-            updated.words_learned,
-
-          updated_at:
-            new Date().toISOString()
-
+            progress.words_learned,
+          updated_at: new Date().toISOString()
         })
-
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-
-        .select()
-
-        .single();
-
+        .eq("user_id", currentUser.id);
 
     if (error) {
-
       console.error(error);
-
-      return;
     }
-
-
-    progressData =
-      data;
-
-
-    updateProgressUI();
-
   }
 
 
   function updateProgressUI() {
 
-    if (!progressData) {
+    if (!progress) {
       return;
     }
 
+    document.getElementById("xpStat").textContent =
+      progress.xp || 0;
+
+    document.getElementById("streakStat").textContent =
+      progress.streak || 0;
+
+    document.getElementById("lessonsStat").textContent =
+      progress.lessons_completed || 0;
+
+    document.getElementById("wordsStat").textContent =
+      progress.words_learned || 0;
+  }
+
+
+  /* =========================================================
+     NAVIGATION
+  ========================================================= */
+
+  function showPage(page) {
 
     document
-      .getElementById("xpDisplay")
-      .textContent =
-      progressData.xp || 0;
+      .querySelectorAll(".page")
+      .forEach(p => p.classList.remove("active"));
+
+    if (page === "home") {
+
+      document
+        .getElementById("homePage")
+        .classList.add("active");
+
+    }
+
+    if (page === "lesson") {
+
+      document
+        .getElementById("lessonPage")
+        .classList.add("active");
+
+    }
+  }
 
 
-    document
-      .getElementById("lessonsDisplay")
-      .textContent =
-      progressData.lessons_completed || 0;
+  /* =========================================================
+     LESSON CREATION
+  ========================================================= */
+
+  function shuffle(array) {
+
+    const copy = [...array];
+
+    for (
+      let i = copy.length - 1;
+      i > 0;
+      i--
+    ) {
+
+      const j =
+        Math.floor(Math.random() * (i + 1));
+
+      [copy[i], copy[j]] =
+        [copy[j], copy[i]];
+    }
+
+    return copy;
+  }
 
 
-    document
-      .getElementById("wordsDisplay")
-      .textContent =
-      progressData.words_learned || 0;
+  function createLesson(language) {
+
+    const data =
+      languageData[language];
+
+    const vocabulary =
+      shuffle(data.words)
+        .slice(0, 6)
+        .map(item => ({
+          ...item,
+          type: "vocab"
+        }));
+
+    const phrases =
+      shuffle(data.phrases)
+        .slice(0, 4)
+        .map(item => ({
+          ...item,
+          type: "phrase"
+        }));
 
 
-    document
-      .getElementById("streakDisplay")
-      .textContent =
-      progressData.streak || 0;
+    const content =
+      shuffle([
+        ...vocabulary,
+        ...phrases
+      ]);
 
 
-    document
-      .getElementById("streakStatDisplay")
-      .textContent =
-      progressData.streak || 0;
+    /*
+      We deliberately make the lesson
+      speaking-heavy.
+    */
+
+    const modes = [
+      "speak",
+      "speak",
+      "listen",
+      "speak",
+      "choice",
+      "speak",
+      "write",
+      "speak",
+      "listen",
+      "speak"
+    ];
+
+
+    return content.map((item, index) => {
+
+      return {
+        ...item,
+        mode: modes[index]
+      };
+
+    });
 
   }
 
 
-  /* =====================================================
-     lessons
-  ===================================================== */
-
   function startLesson(language) {
 
-    currentLanguage =
-      language;
+    currentLanguage = language;
 
-    currentWordIndex =
-      0;
+    currentQuestions =
+      createLesson(language);
 
+    currentQuestionIndex = 0;
 
-    const word =
-      lessons[language][0];
+    speechScores = [];
 
+    progress.language = language;
 
-    document
-      .getElementById("lessonLanguage")
-      .textContent =
-      language;
+    showPage("lesson");
 
-
-    document
-      .getElementById("lessonWord")
-      .textContent =
-      word.word;
+    renderQuestion();
+  }
 
 
-    document
-      .getElementById("lessonTranslation")
-      .textContent =
-      word.translation;
+  /* =========================================================
+     RENDER QUESTION
+  ========================================================= */
+
+  function renderQuestion() {
+
+    currentQuestion =
+      currentQuestions[currentQuestionIndex];
+
+    questionAnswered = false;
 
 
-    document
-      .getElementById("lessonPronunciation")
-      .textContent =
-      word.pronunciation;
+    const data =
+      languageData[currentLanguage];
+
+
+    document.getElementById(
+      "lessonLanguage"
+    ).textContent =
+      data.name;
+
+
+    document.getElementById(
+      "lessonCount"
+    ).textContent =
+      `${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+
+
+    document.getElementById(
+      "questionNumber"
+    ).textContent =
+      `question ${currentQuestionIndex + 1}`;
+
+
+    document.getElementById(
+      "prompt"
+    ).textContent =
+      currentQuestion.word;
+
+
+    document.getElementById(
+      "translation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "pronunciation"
+    ).textContent =
+      "";
+
+
+    document.getElementById(
+      "speechResult"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+      "speechResult"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "choiceArea"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+      "writingInput"
+    ).value = "";
+
+
+    document.getElementById(
+      "writingInput"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "checkWritingButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "nextButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "finishButton"
+    ).classList.add("hidden");
+
+
+    const hearButton =
+      document.getElementById("hearButton");
+
+    const speakButton =
+      document.getElementById("speakButton");
+
+
+    hearButton.classList.remove("hidden");
+
+    speakButton.classList.add("hidden");
+
+
+    const mode =
+      currentQuestion.mode;
+
+
+    if (mode === "speak") {
+
+      document.getElementById(
+        "lessonMode"
+      ).textContent =
+        "speaking practice";
+
+
+      document.getElementById(
+        "translation"
+      ).textContent =
+        "say the phrase shown above";
+
+
+      document.getElementById(
+        "pronunciation"
+      ).textContent =
+        `pronunciation guide: ${currentQuestion.pronunciation}`;
+
+
+      speakButton.classList.remove("hidden");
+
+      speakButton.textContent =
+        "● speak now";
+
+
+      speakButton.disabled = false;
+
+    }
+
+
+    else if (mode === "listen") {
+
+      document.getElementById(
+        "lessonMode"
+      ).textContent =
+        "listening";
+
+
+      document.getElementById(
+        "prompt"
+      ).textContent =
+        "listen, then choose the meaning";
+
+
+      document.getElementById(
+        "translation"
+      ).textContent =
+        "";
+
+
+      createMeaningChoices();
+
+    }
+
+
+    else if (mode === "choice") {
+
+      document.getElementById(
+        "lessonMode"
+      ).textContent =
+        "quick reading";
+
+
+      document.getElementById(
+        "translation"
+      ).textContent =
+        "choose the correct meaning";
+
+
+      createMeaningChoices();
+
+    }
+
+
+    else if (mode === "write") {
+
+      document.getElementById(
+        "lessonMode"
+      ).textContent =
+        "quick writing";
+
+
+      document.getElementById(
+        "prompt"
+      ).textContent =
+        currentQuestion.translation;
+
+
+      document.getElementById(
+        "translation"
+      ).textContent =
+        "type the target language";
+
+
+      document.getElementById(
+        "pronunciation"
+      ).textContent =
+        "";
+
+
+      document.getElementById(
+        "writingInput"
+      ).classList.remove("hidden");
+
+
+      document.getElementById(
+        "checkWritingButton"
+      ).classList.remove("hidden");
+
+
+      hearButton.classList.add("hidden");
+
+    }
 
 
     updateLessonProgress();
-
-
-    showPage("lesson");
 
   }
 
 
   function updateLessonProgress() {
 
-    const total =
-      lessons[currentLanguage].length;
-
-
-    const current =
-      currentWordIndex + 1;
-
-
     const percent =
-      Math.round(
-        (current / total) * 100
-      );
+      (
+        currentQuestionIndex /
+        currentQuestions.length
+      ) * 100;
 
-
-    document
-      .getElementById("lessonProgressText")
-      .textContent =
-      String(current).padStart(2, "0")
-      + " / "
-      + String(total).padStart(2, "0");
-
-
-    document
-      .getElementById("lessonPercent")
-      .textContent =
-      percent + "%";
-
-
-    document
-      .getElementById("lessonProgressFill")
-      .style.width =
-      percent + "%";
-
+    document.getElementById(
+      "lessonProgress"
+    ).style.width =
+      `${percent}%`;
   }
 
 
-  async function completeLesson() {
+  /* =========================================================
+     AUDIO / TEXT TO SPEECH
+  ========================================================= */
 
-    if (
-      !currentUser ||
-      !progressData ||
-      !currentLanguage
-    ) {
+  function getBestVoice(languageCode) {
+
+    const voices =
+      window.speechSynthesis.getVoices();
+
+    if (!voices.length) {
+      return null;
+    }
+
+
+    const exact =
+      voices.find(
+        voice =>
+          voice.lang.toLowerCase() ===
+          languageCode.toLowerCase()
+      );
+
+
+    if (exact) {
+      return exact;
+    }
+
+
+    const language =
+      languageCode
+        .split("-")[0]
+        .toLowerCase();
+
+
+    return voices.find(
+      voice =>
+        voice.lang
+          .toLowerCase()
+          .startsWith(language)
+    ) || null;
+  }
+
+
+  function speakText(text) {
+
+    if (!("speechSynthesis" in window)) {
+
+      alert(
+        "your browser does not support text-to-speech."
+      );
+
       return;
     }
 
 
-    const xp =
-      (progressData.xp || 0)
-      + 50;
-
-
-    const lessonsCompleted =
-      (progressData.lessons_completed || 0)
-      + 1;
-
-
-    const words =
-      (progressData.words_learned || 0)
-      + lessons[currentLanguage].length;
-
-
-    await saveProgress({
-
-      language:
-        currentLanguage,
-
-      xp,
-
-      lessons_completed:
-        lessonsCompleted,
-
-      words_learned:
-        words
-
-    });
-
-
-    currentWordIndex = 0;
-
-
-    showPage("progress");
-
-  }
-
-
-  /* =====================================================
-     speech
-  ===================================================== */
-
-  function speakCurrentWord() {
-
-    if (!currentLanguage) {
-      return;
-    }
-
-
-    const word =
-      lessons[currentLanguage][currentWordIndex];
-
-
-    const speech =
-      new SpeechSynthesisUtterance(
-        word.word
-      );
-
-
-    speech.lang =
-      languageCodes[currentLanguage];
-
-
-    speech.rate =
-      0.82;
+    const code =
+      languageData[currentLanguage].code;
 
 
     window.speechSynthesis.cancel();
 
 
-    window.speechSynthesis.speak(
-      speech
+    const utterance =
+      new SpeechSynthesisUtterance(text);
+
+
+    utterance.lang = code;
+
+    utterance.rate = 0.78;
+
+    utterance.pitch = 1;
+
+
+    const voice =
+      getBestVoice(code);
+
+
+    if (voice) {
+      utterance.voice = voice;
+    }
+
+
+    /*
+      A tiny delay helps some browsers,
+      especially after another utterance.
+    */
+
+    setTimeout(() => {
+
+      window.speechSynthesis.speak(
+        utterance
+      );
+
+    }, 80);
+
+  }
+
+
+  function speakCurrentQuestion() {
+
+    if (!currentQuestion) {
+      return;
+    }
+
+    speakText(
+      currentQuestion.word
+    );
+  }
+
+
+  if ("speechSynthesis" in window) {
+
+    window.speechSynthesis.onvoiceschanged =
+      function () {
+
+        window.speechSynthesis
+          .getVoices();
+
+      };
+
+  }
+
+
+  /* =========================================================
+     SPEECH RECOGNITION
+  ========================================================= */
+
+  function getSpeechRecognition() {
+
+    return (
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition ||
+      null
+    );
+
+  }
+
+
+  function normalizeText(text) {
+
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[.,!?¿¡'’"“”]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  }
+
+
+  function levenshtein(a, b) {
+
+    const matrix = [];
+
+    for (
+      let i = 0;
+      i <= b.length;
+      i++
+    ) {
+
+      matrix[i] = [i];
+
+    }
+
+
+    for (
+      let j = 0;
+      j <= a.length;
+      j++
+    ) {
+
+      matrix[0][j] = j;
+
+    }
+
+
+    for (
+      let i = 1;
+      i <= b.length;
+      i++
+    ) {
+
+      for (
+        let j = 1;
+        j <= a.length;
+        j++
+      ) {
+
+        if (
+          b.charAt(i - 1) ===
+          a.charAt(j - 1)
+        ) {
+
+          matrix[i][j] =
+            matrix[i - 1][j - 1];
+
+        } else {
+
+          matrix[i][j] =
+            Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+
+        }
+
+      }
+
+    }
+
+    return matrix[b.length][a.length];
+
+  }
+
+
+  function similarity(a, b) {
+
+    a = normalizeText(a);
+    b = normalizeText(b);
+
+    if (!a || !b) {
+      return 0;
+    }
+
+    if (a === b) {
+      return 100;
+    }
+
+
+    const distance =
+      levenshtein(a, b);
+
+
+    const maxLength =
+      Math.max(a.length, b.length);
+
+
+    if (maxLength === 0) {
+      return 100;
+    }
+
+
+    return Math.round(
+      (1 - distance / maxLength) * 100
+    );
+
+  }
+
+
+  function wordOverlap(a, b) {
+
+    const wordsA =
+      normalizeText(a)
+        .split(" ")
+        .filter(Boolean);
+
+    const wordsB =
+      normalizeText(b)
+        .split(" ")
+        .filter(Boolean);
+
+
+    if (!wordsA.length || !wordsB.length) {
+      return 0;
+    }
+
+
+    let matches = 0;
+
+
+    wordsA.forEach(word => {
+
+      if (wordsB.includes(word)) {
+        matches++;
+      }
+
+    });
+
+
+    return (
+      matches /
+      Math.max(wordsA.length, wordsB.length)
+    ) * 100;
+
+  }
+
+
+  function scoreSpeech(transcript, item) {
+
+    const candidates = [
+      item.word,
+      ...(item.aliases || [])
+    ];
+
+
+    let bestScore = 0;
+
+
+    candidates.forEach(candidate => {
+
+      const direct =
+        similarity(
+          transcript,
+          candidate
+        );
+
+
+      const overlap =
+        wordOverlap(
+          transcript,
+          candidate
+        );
+
+
+      const combined =
+        Math.round(
+          direct * 0.75 +
+          overlap * 0.25
+        );
+
+
+      bestScore =
+        Math.max(
+          bestScore,
+          combined
+        );
+
+    });
+
+
+    return Math.max(
+      0,
+      Math.min(100, bestScore)
     );
 
   }
@@ -2227,194 +2418,818 @@
 
   function practiceSpeaking() {
 
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
+    const Recognition =
+      getSpeechRecognition();
 
 
-    const result =
-      document
-        .getElementById("speechResult");
+    if (!Recognition) {
+
+      document.getElementById(
+        "speechResult"
+      ).classList.remove("hidden");
 
 
-    if (!SpeechRecognition) {
-
-      result.textContent =
-        "speech recognition isn't supported here.";
+      document.getElementById(
+        "speechResult"
+      ).innerHTML =
+        `
+          <div class="score bad">
+            speech recognition unavailable
+          </div>
+          your browser does not support speech
+          recognition. try Chrome or Edge on desktop.
+        `;
 
       return;
     }
 
 
-    const recognition =
-      new SpeechRecognition();
+    if (speechRecognition) {
+
+      try {
+        speechRecognition.stop();
+      } catch (e) {}
+
+    }
 
 
-    recognition.lang =
-      languageCodes[currentLanguage];
+    speechRecognition =
+      new Recognition();
 
 
-    recognition.interimResults =
-      false;
+    const code =
+      languageData[currentLanguage].code;
 
 
-    recognition.maxAlternatives =
-      1;
+    speechRecognition.lang = code;
+
+    speechRecognition.continuous = false;
+
+    speechRecognition.interimResults = true;
+
+    speechRecognition.maxAlternatives = 5;
 
 
-    result.textContent =
-      "listening...";
+    const resultBox =
+      document.getElementById(
+        "speechResult"
+      );
 
 
-    recognition.start();
+    const speakButton =
+      document.getElementById(
+        "speakButton"
+      );
 
 
-    recognition.onresult =
+    resultBox.classList.remove("hidden");
+
+
+    resultBox.innerHTML =
+      `<div class="listening-live">● listening...</div>`;
+
+
+    speakButton.disabled = true;
+
+    speakButton.textContent =
+      "● listening...";
+
+
+    let finalTranscript = "";
+
+
+    speechRecognition.onresult =
       function(event) {
 
-        const spoken =
-          event
-            .results[0][0]
-            .transcript;
+        let interim = "";
 
 
-        result.textContent =
-          "you said: "
-          + spoken;
+        for (
+          let i = event.resultIndex;
+          i < event.results.length;
+          i++
+        ) {
+
+          const text =
+            event.results[i][0].transcript;
+
+
+          if (
+            event.results[i].isFinal
+          ) {
+
+            finalTranscript +=
+              text;
+
+          } else {
+
+            interim +=
+              text;
+
+          }
+
+        }
+
+
+        resultBox.innerHTML =
+          `
+            <div>
+              heard:
+              <strong>
+                ${escapeHTML(
+                  finalTranscript || interim
+                )}
+              </strong>
+            </div>
+          `;
 
       };
 
 
-    recognition.onerror =
+    speechRecognition.onerror =
+      function(event) {
+
+        speakButton.disabled = false;
+
+        speakButton.textContent =
+          "● try again";
+
+
+        resultBox.classList.remove(
+          "hidden"
+        );
+
+
+        resultBox.innerHTML =
+          `
+            <div class="score bad">
+              couldn't detect speech
+            </div>
+            ${escapeHTML(
+              event.error || "try again"
+            )}
+          `;
+
+      };
+
+
+    speechRecognition.onend =
       function() {
 
-        result.textContent =
-          "couldn't hear that. try again.";
+        speakButton.disabled = false;
+
+        speakButton.textContent =
+          "● try again";
+
+
+        if (!finalTranscript.trim()) {
+
+          resultBox.innerHTML =
+            `
+              <div class="score bad">
+                nothing detected
+              </div>
+              try saying the phrase again.
+            `;
+
+          return;
+        }
+
+
+        finishSpeech(
+          finalTranscript
+        );
 
       };
+
+
+    try {
+
+      speechRecognition.start();
+
+    } catch (error) {
+
+      console.error(error);
+
+      speakButton.disabled = false;
+
+      speakButton.textContent =
+        "● try again";
+
+    }
 
   }
 
 
-  /* =====================================================
-     navigation
-  ===================================================== */
+  function finishSpeech(transcript) {
 
-  function showPage(page) {
+    const score =
+      scoreSpeech(
+        transcript,
+        currentQuestion
+      );
 
-    const pages = [
 
-      "homePage",
+    speechScores.push(score);
 
-      "lessonPage",
 
-      "progressPage",
+    const resultBox =
+      document.getElementById(
+        "speechResult"
+      );
 
-      "profilePage"
 
+    let title = "";
+
+    let feedback = "";
+
+    if (score >= 88) {
+
+      title = "excellent";
+
+      feedback =
+        "that was very close.";
+
+    }
+
+    else if (score >= 70) {
+
+      title = "correct";
+
+      feedback =
+        "good job. the app detected the target phrase.";
+
+    }
+
+    else if (score >= 50) {
+
+      title = "almost";
+
+      feedback =
+        "some of it matched. try saying it more clearly.";
+
+    }
+
+    else {
+
+      title = "try again";
+
+      feedback =
+        "the detected speech was too different from the target.";
+
+    }
+
+
+    const scoreClass =
+      score >= 70
+        ? "good"
+        : "bad";
+
+
+    resultBox.innerHTML =
+      `
+        <div class="score ${scoreClass}">
+          ${score}% · ${title}
+        </div>
+
+        <div>
+          heard:
+          <strong>
+            ${escapeHTML(transcript)}
+          </strong>
+        </div>
+
+        <div>
+          target:
+          <strong>
+            ${escapeHTML(currentQuestion.word)}
+          </strong>
+        </div>
+
+        <div>
+          ${feedback}
+        </div>
+      `;
+
+
+    if (score >= 70) {
+
+      questionAnswered = true;
+
+      showNextButton();
+
+    } else {
+
+      questionAnswered = false;
+
+      document.getElementById(
+        "nextButton"
+      ).classList.add("hidden");
+
+    }
+
+  }
+
+
+  /* =========================================================
+     CHOICE QUESTIONS
+  ========================================================= */
+
+  function createMeaningChoices() {
+
+    const area =
+      document.getElementById(
+        "choiceArea"
+      );
+
+
+    const data =
+      languageData[currentLanguage];
+
+
+    const allItems = [
+      ...data.words,
+      ...data.phrases
     ];
 
 
-    pages.forEach(id => {
+    const wrongAnswers =
+      shuffle(
+        allItems.filter(
+          item =>
+            item.translation !==
+            currentQuestion.translation
+        )
+      )
+      .slice(0, 2)
+      .map(item => item.translation);
 
-      document
-        .getElementById(id)
-        .classList.add("hidden");
+
+    const options =
+      shuffle([
+        currentQuestion.translation,
+        ...wrongAnswers
+      ]);
+
+
+    options.forEach(option => {
+
+      const button =
+        document.createElement("button");
+
+
+      button.className =
+        "choice-btn";
+
+
+      button.textContent =
+        option;
+
+
+      button.onclick =
+        function() {
+
+          checkChoice(
+            option,
+            button
+          );
+
+        };
+
+
+      area.appendChild(button);
 
     });
 
-
-    const target =
-      document
-        .getElementById(
-          page + "Page"
-        );
+  }
 
 
-    if (target) {
+  function checkChoice(answer, button) {
 
-      target.classList.remove(
+    if (questionAnswered) {
+      return;
+    }
+
+
+    const correct =
+      normalizeText(answer) ===
+      normalizeText(
+        currentQuestion.translation
+      );
+
+
+    if (correct) {
+
+      button.classList.add(
+        "correct"
+      );
+
+      questionAnswered = true;
+
+      showNextButton();
+
+    } else {
+
+      button.classList.add(
+        "wrong"
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     WRITING
+  ========================================================= */
+
+  function checkWriting() {
+
+    if (questionAnswered) {
+      return;
+    }
+
+
+    const input =
+      document.getElementById(
+        "writingInput"
+      );
+
+
+    const answer =
+      input.value.trim();
+
+
+    if (!answer) {
+      return;
+    }
+
+
+    const score =
+      scoreSpeech(
+        answer,
+        currentQuestion
+      );
+
+
+    const resultBox =
+      document.getElementById(
+        "speechResult"
+      );
+
+
+    resultBox.classList.remove(
+      "hidden"
+    );
+
+
+    if (score >= 70) {
+
+      questionAnswered = true;
+
+
+      resultBox.innerHTML =
+        `
+          <div class="score good">
+            ${score}% · correct
+          </div>
+          your answer matches the target.
+        `;
+
+
+      showNextButton();
+
+    } else {
+
+      resultBox.innerHTML =
+        `
+          <div class="score bad">
+            ${score}% · try again
+          </div>
+          target:
+          <strong>
+            ${escapeHTML(
+              currentQuestion.word
+            )}
+          </strong>
+        `;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     NEXT QUESTION
+  ========================================================= */
+
+  function showNextButton() {
+
+    const next =
+      document.getElementById(
+        "nextButton"
+      );
+
+
+    if (
+      currentQuestionIndex <
+      currentQuestions.length - 1
+    ) {
+
+      next.classList.remove(
+        "hidden"
+      );
+
+    } else {
+
+      document.getElementById(
+        "finishButton"
+      ).classList.remove(
         "hidden"
       );
 
     }
 
-
-    const buttons =
-      document.querySelectorAll(
-        ".nav-button"
-      );
+  }
 
 
-    buttons.forEach(button => {
+  function nextQuestion() {
 
-      button.classList.remove(
-        "active"
-      );
-
-    });
+    if (!questionAnswered) {
+      return;
+    }
 
 
-    const index = {
+    currentQuestionIndex++;
 
-      home: 0,
+    renderQuestion();
 
-      lesson: 1,
-
-      progress: 2,
-
-      profile: 3
-
-    }[page];
+  }
 
 
-    if (
-      index !== undefined &&
-      buttons[index]
-    ) {
+  /* =========================================================
+     FINISH LESSON
+  ========================================================= */
 
-      buttons[index]
-        .classList.add("active");
+  async function finishLesson() {
+
+    document.getElementById(
+      "lessonProgress"
+    ).style.width =
+      "100%";
+
+
+    const baseXP = 50;
+
+
+    const speakingCount =
+      speechScores.length;
+
+
+    let averageSpeech = 0;
+
+
+    if (speakingCount > 0) {
+
+      averageSpeech =
+        Math.round(
+          speechScores.reduce(
+            (sum, score) =>
+              sum + score,
+            0
+          ) /
+          speakingCount
+        );
 
     }
 
 
-    window.scrollTo(
-      0,
-      0
+    let bonusXP = 0;
+
+
+    if (averageSpeech >= 90) {
+
+      bonusXP = 25;
+
+    } else if (averageSpeech >= 80) {
+
+      bonusXP = 15;
+
+    } else if (averageSpeech >= 70) {
+
+      bonusXP = 10;
+
+    }
+
+
+    const earnedXP =
+      baseXP + bonusXP;
+
+
+    progress.xp =
+      Number(progress.xp || 0) +
+      earnedXP;
+
+
+    progress.lessons_completed =
+      Number(
+        progress.lessons_completed || 0
+      ) + 1;
+
+
+    progress.words_learned =
+      Number(
+        progress.words_learned || 0
+      ) +
+      currentQuestions.length;
+
+
+    updateStreak();
+
+
+    await saveProgress();
+
+
+    updateProgressUI();
+
+
+    const averageText =
+      speakingCount
+        ? `average speaking score: ${averageSpeech}%`
+        : "speaking score: —";
+
+
+    document.getElementById(
+      "lessonMode"
+    ).textContent =
+      "lesson complete";
+
+
+    document.getElementById(
+      "prompt"
+    ).textContent =
+      `+${earnedXP} xp`;
+
+
+    document.getElementById(
+      "translation"
+    ).textContent =
+      averageText;
+
+
+    document.getElementById(
+      "pronunciation"
+    ).textContent =
+      `${currentQuestions.length} questions completed.`;
+
+
+    document.getElementById(
+      "choiceArea"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+      "speechResult"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "hearButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "speakButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "nextButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+      "finishButton"
+    ).classList.add("hidden");
+
+
+    setTimeout(() => {
+
+      showPage("home");
+
+    }, 1800);
+
+  }
+
+
+  /* =========================================================
+     STREAK
+  ========================================================= */
+
+  function updateStreak() {
+
+    const key =
+      "skillbuilding_last_study";
+
+
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    const last =
+      localStorage.getItem(key);
+
+
+    if (last === today) {
+
+      return;
+
+    }
+
+
+    if (last) {
+
+      const previous =
+        new Date(last);
+
+
+      const current =
+        new Date(today);
+
+
+      const difference =
+        Math.round(
+          (
+            current -
+            previous
+          ) /
+          86400000
+        );
+
+
+      if (difference === 1) {
+
+        progress.streak =
+          Number(progress.streak || 0) + 1;
+
+      } else {
+
+        progress.streak = 1;
+
+      }
+
+    } else {
+
+      progress.streak = 1;
+
+    }
+
+
+    localStorage.setItem(
+      key,
+      today
     );
 
   }
 
 
-  /* =====================================================
-     session
-  ===================================================== */
+  /* =========================================================
+     SECURITY / HTML ESCAPING
+  ========================================================= */
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================================
+     SESSION CHECK
+  ========================================================= */
 
   async function checkSession() {
 
     const {
-      data
+      data: {
+        session
+      }
     } =
-      await supabaseClient
-        .auth
-        .getSession();
+      await supabaseClient.auth.getSession();
 
 
-    if (data.session) {
+    if (session?.user) {
 
-      currentUser =
-        data.session.user;
-
-      await setupUser();
-
-    } else {
-
-      document
-        .getElementById("authScreen")
-        .classList.remove(
-          "hidden"
-        );
+      await setupUser(
+        session.user
+      );
 
     }
 
@@ -2422,20 +3237,16 @@
 
 
   supabaseClient.auth.onAuthStateChange(
-    async (
-      event,
-      session
-    ) => {
+    async (event, session) => {
 
       if (
-        session &&
+        session?.user &&
         !currentUser
       ) {
 
-        currentUser =
-          session.user;
-
-        await setupUser();
+        await setupUser(
+          session.user
+        );
 
       }
 
