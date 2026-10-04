@@ -3851,73 +3851,75 @@ function renderSpeakQuestion(
    LISTEN QUESTION
    ============================================================ */
 
-function renderListenQuestion(
-    area,
-    question
-) {
+function renderListenQuestion() {
+  const area = document.getElementById("questionArea");
 
-    const options =
-        makeOptions(
-            question
-        );
+  const options = makeOptions(
+    currentQuestion,
+    currentLanguage,
+    4
+  );
 
+  area.innerHTML = `
+    <div class="question-type">listening</div>
 
-    area.innerHTML = `
+    <h2>listen carefully</h2>
 
-        <div class="question-type">
-            listening
-        </div>
+    <p class="question-subtitle">
+      listen to the audio and choose what you hear.
+    </p>
 
+    <div class="listen-box">
+      <button
+        id="playAudioButton"
+        class="primary-button listen-button"
+        type="button"
+      >
+        🔊 play audio
+      </button>
 
-        <div class="question-target">
-            listen.
-        </div>
+      <p id="listenStatus" class="listen-status">
+        press play to hear the phrase
+      </p>
+    </div>
 
+    <div id="choiceContainer" class="choice-grid"></div>
+  `;
 
-        <div class="question-instruction">
-            press play, listen to the word or phrase,
-            then choose what it means.
-        </div>
+  const choiceContainer =
+    document.getElementById("choiceContainer");
 
+  options.forEach((option, index) => {
+    const button = document.createElement("button");
 
-        <button
-            class="speak-button"
-            onclick="speakText(
-                currentQuestion.word
-            )"
-        >
-            🔊 play audio
-        </button>
+    button.className = "choice-button";
+    button.type = "button";
+    button.textContent = option;
 
+    button.addEventListener("click", () => {
+      checkChoice(index, option, options);
+    });
 
-        <div class="choice-grid">
+    choiceContainer.appendChild(button);
+  });
 
-            ${options.map(
-                (option, index) => `
+  document
+    .getElementById("playAudioButton")
+    .addEventListener("click", () => {
+      const status = document.getElementById("listenStatus");
 
-                    <button
-                        class="choice-button"
-                        data-choice="${index}"
-                        onclick='checkChoice(
-                            ${index},
-                            ${JSON.stringify(
-                                option
-                            )}
-                        )'
-                    >
-                        ${escapeHTML(
-                            option.translation
-                        )}
-                    </button>
+      status.textContent = "playing...";
 
-                `
-            ).join("")}
+      speakText(currentQuestion.text);
 
-        </div>
-
-    `;
+      setTimeout(() => {
+        if (!questionAnswered) {
+          status.textContent =
+            "you can replay the audio as many times as you need.";
+        }
+      }, 1200);
+    });
 }
-
 
 /* ============================================================
    CHOICE QUESTION
