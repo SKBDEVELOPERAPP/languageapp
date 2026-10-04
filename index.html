@@ -4,725 +4,465 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f4eddf" />
-  <title>lingua — language journal</title>
+  <title>SKB — language journal</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
-      color: #302b27;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          #f5efdf 0px,
-          #f5efdf 31px,
-          #d8d0c0 32px
-        );
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 48px;
-      width: 1px;
-      background: #c88f8f;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .app {
-      width: min(100%, 650px);
-      margin: auto;
-      padding: 25px 25px 100px 70px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* ---------- login ---------- */
-
-    .auth-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 25px;
-    }
-
-    .auth-card {
-      width: min(100%, 430px);
-      padding: 35px 30px;
-      background: rgba(250, 246, 235, 0.94);
-      border: 1px solid #9e9588;
-      box-shadow: 7px 7px 0 rgba(74, 65, 56, 0.12);
-      transform: rotate(-0.4deg);
-    }
-
-    .auth-logo {
-      font-size: 42px;
-      font-style: italic;
-      text-align: center;
-      margin-bottom: 5px;
-    }
-
-    .auth-subtitle {
-      text-align: center;
-      color: #776e65;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-
-    .auth-card label {
-      display: block;
-      font-size: 13px;
-      margin: 15px 0 6px;
-      color: #645c54;
-    }
-
-    .auth-card input {
-      width: 100%;
-      border: none;
-      border-bottom: 1px dashed #8f867b;
-      background: transparent;
-      padding: 10px 4px;
-      outline: none;
-      color: #302b27;
-    }
-
-    .auth-card input:focus {
-      border-bottom: 1px solid #302b27;
-    }
-
-    .auth-button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 13px;
-      border: 1px solid #5e574f;
-      background: #302b27;
-      color: #f8f1e4;
-      border-radius: 2px;
-    }
-
-    .auth-switch {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 13px;
-      color: #756d65;
-    }
-
-    .auth-switch button {
-      border: none;
-      background: none;
-      text-decoration: underline;
-      padding: 0;
-      color: #302b27;
-    }
-
-    .auth-message {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 13px;
-      min-height: 18px;
-    }
-
-    /* ---------- header ---------- */
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 35px;
-    }
-
-    .logo {
-      font-size: 38px;
-      font-style: italic;
-      letter-spacing: -1px;
-    }
-
-    .subtitle {
-      color: #766d64;
-      font-size: 13px;
-      margin-top: 2px;
-    }
-
-    .streak {
-      font-size: 13px;
-      padding-top: 7px;
-    }
-
-    /* ---------- sections ---------- */
-
-    .page-title {
-      font-size: 28px;
-      margin-bottom: 4px;
-    }
-
-    .page-subtitle {
-      color: #766d64;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    .entry {
-      font-size: 11px;
-      color: #91887e;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 7px;
-    }
-
-    /* ---------- language cards ---------- */
-
-    .languages {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .language-card {
-      position: relative;
-      text-align: left;
-      padding: 20px;
-      min-height: 115px;
-      border: 1px dashed #9b9288;
-      background: rgba(250, 246, 235, 0.75);
-      color: #302b27;
-      transition: 0.15s ease;
-    }
-
-    .language-card:nth-child(2) {
-      transform: rotate(0.5deg);
-    }
-
-    .language-card:nth-child(3) {
-      transform: rotate(-0.4deg);
-    }
-
-    .language-card:hover {
-      transform: translateY(-3px) rotate(0deg);
-      box-shadow: 4px 5px 0 rgba(74, 65, 56, 0.12);
-    }
-
-    .flag {
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    .language-name {
-      font-size: 18px;
-    }
-
-    .language-native {
-      font-size: 12px;
-      color: #81786e;
-      margin-top: 4px;
-    }
-
-    /* ---------- lesson ---------- */
-
-    .back-button {
-      border: none;
-      background: none;
-      padding: 0;
-      margin-bottom: 20px;
-      color: #71685f;
-      font-size: 13px;
-    }
-
-    .lesson-card {
-      background: rgba(250, 246, 235, 0.92);
-      border: 1px solid #a39a8d;
-      padding: 30px 25px;
-      box-shadow: 6px 7px 0 rgba(74, 65, 56, 0.12);
-    }
-
-    .lesson-language {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #91877d;
-      margin-bottom: 20px;
-    }
-
-    .word {
-      font-size: 40px;
-      margin-bottom: 7px;
-    }
-
-    .translation {
-      font-size: 17px;
-      color: #756c63;
-    }
-
-    .pronunciation {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #91877d;
-      font-style: italic;
-    }
-
-    .speaker {
-      border: 1px solid #8e857b;
-      background: transparent;
-      border-radius: 50%;
-      width: 43px;
-      height: 43px;
-      margin-top: 22px;
-      font-size: 17px;
-    }
-
-    .practice {
-      width: 100%;
-      margin-top: 20px;
-      padding: 13px;
-      border: 1px solid #5d554d;
-      background: #302b27;
-      color: #f8f1e4;
-    }
-
-    .progress-area {
-      margin-top: 28px;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #81786e;
-      margin-bottom: 7px;
-    }
-
-    .progress-track {
-      height: 5px;
-      background: #ddd5c7;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #625a51;
-      transition: width 0.3s ease;
-    }
-
-    .lesson-complete {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      border: 1px dashed #756c63;
-      background: transparent;
-      color: #302b27;
-    }
-
-    /* ---------- progress ---------- */
-
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .stat {
-      background: rgba(250, 246, 235, 0.8);
-      border: 1px dashed #9b9288;
-      padding: 20px;
-    }
-
-    .stat-number {
-      font-size: 30px;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: #81786e;
-      margin-top: 4px;
-    }
-
-    /* ---------- profile ---------- */
-
-    .profile-card {
-      background: rgba(250, 246, 235, 0.85);
-      border: 1px dashed #9b9288;
-      padding: 25px;
-    }
-
-    .email-display {
-      font-size: 15px;
-      margin-bottom: 20px;
-      word-break: break-word;
-    }
-
-    .logout {
-      border: 1px solid #746b62;
-      background: transparent;
-      padding: 11px 20px;
-      color: #302b27;
-    }
-
-    /* ---------- nav ---------- */
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(100%, 650px);
-      background: rgba(245, 239, 223, 0.96);
-      border-top: 1px solid #aaa093;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 8px 8px 10px 48px;
-      backdrop-filter: blur(5px);
-    }
-
-    .nav-button {
-      border: none;
-      background: none;
-      color: #847a70;
-      padding: 8px 3px;
-      font-size: 11px;
-    }
-
-    .nav-button.active {
-      color: #302b27;
-      text-decoration: underline;
-    }
-
-    /* ---------- responsive ---------- */
-
-    @media (max-width: 500px) {
-      body::before {
-        left: 28px;
-      }
-
-      .app {
-        padding-left: 45px;
-        padding-right: 18px;
-      }
-
-      .languages {
-        grid-template-columns: 1fr;
-      }
-
-      .logo {
-        font-size: 32px;
-      }
-
-      .word {
-        font-size: 34px;
-      }
-
-      .bottom-nav {
-        padding-left: 35px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- login / signup -->
-  <div id="authScreen" class="auth-screen">
-    <div class="auth-card">
-
-      <div class="auth-logo">lingua</div>
-      <div class="auth-subtitle">a little language journal</div>
-
-      <div id="loginForm">
-
-        <label for="loginEmail">email</label>
-        <input
-          id="loginEmail"
-          type="email"
-          placeholder="your email"
-          autocomplete="email"
-        />
-
-        <label for="loginPassword">password</label>
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="your password"
-          autocomplete="current-password"
-        />
-
-        <button class="auth-button" onclick="login()">
-          log in →
-        </button>
-
-        <div class="auth-switch">
-          don't have an account?
-          <button onclick="showSignup()">sign up</button>
-        </div>
-
-      </div>
-
-      <div id="signupForm" class="hidden">
-
-        <label for="signupEmail">email</label>
-        <input
-          id="signupEmail"
-          type="email"
-          placeholder="your email"
-          autocomplete="email"
-        />
-
-        <label for="signupPassword">password</label>
-        <input
-          id="signupPassword"
-          type="password"
-          placeholder="at least 6 characters"
-          autocomplete="new-password"
-        />
-
-        <button class="auth-button" onclick="signup()">
-          create account →
-        </button>
-
-        <div class="auth-switch">
-          already have an account?
-          <button onclick="showLogin()">log in</button>
-        </div>
-
-      </div>
-
-      <div id="authMessage" class="auth-message"></div>
-
-    </div>
-  </div>
-
-
-  <!-- main app -->
-  <div id="app" class="hidden">
-
-    <div class="app">
-
-      <header>
-        <div>
-          <div class="logo">lingua</div>
-          <div class="subtitle">a little language journal</div>
-        </div>
-
-        <div class="streak">
-          ♡ <span id="streakDisplay">0</span> days
-        </div>
-      </header>
-
-
-      <!-- HOME -->
-      <section id="homePage">
-
-        <div class="entry">entry no. 001</div>
-
-        <div class="page-title">
-          what are we learning today?
-        </div>
-
-        <div class="page-subtitle">
-          pick a language. take your time.
-        </div>
-
-        <div class="languages">
-
-          <button class="language-card" onclick="startLesson('korean')">
-            <div class="flag">🇰🇷</div>
-            <div class="language-name">korean</div>
-            <div class="language-native">한국어</div>
-          </button>
-
-          <button class="language-card" onclick="startLesson('japanese')">
-            <div class="flag">🇯🇵</div>
-            <div class="language-name">japanese</div>
-            <div class="language-native">日本語</div>
-          </button>
-
-          <button class="language-card" onclick="startLesson('spanish')">
-            <div class="flag">🇪🇸</div>
-            <div class="language-name">spanish</div>
-            <div class="language-native">español</div>
-          </button>
-
-          <button class="language-card" onclick="startLesson('french')">
-            <div class="flag">🇫🇷</div>
-            <div class="language-name">french</div>
-            <div class="language-native">français</div>
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <!-- LESSON -->
-      <section id="lessonPage" class="hidden">
-
-        <button class="back-button" onclick="goHome()">
-          ← back
-        </button>
-
-        <div class="lesson-card">
-
-          <div class="lesson-language" id="lessonLanguage">
-            korean
-          </div>
-
-          <div class="word" id="lessonWord">
-            안녕하세요
-          </div>
-
-          <div class="translation" id="lessonTranslation">
-            hello
-          </div>
-
-          <div class="pronunciation" id="lessonPronunciation">
-            annyeonghaseyo
-          </div>
-
-          <button class="speaker" onclick="speakCurrentWord()">
-            ♫
-          </button>
-
-          <button class="practice" onclick="practiceSpeaking()">
-            say it out loud →
-          </button>
-
-          <div id="speechResult" class="pronunciation"></div>
-
-          <div class="progress-area">
-
-            <div class="progress-label">
-              <span>lesson progress</span>
-              <span id="lessonProgressText">0 / 5</span>
-            </div>
-
-            <div class="progress-track">
-              <div id="lessonProgressFill" class="progress-fill"></div>
-            </div>
-
-          </div>
-
-          <button class="lesson-complete" onclick="completeLesson()">
-            mark lesson complete ✓
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <!-- PROGRESS -->
-      <section id="progressPage" class="hidden">
-
-        <div class="entry">your little record</div>
-
-        <div class="page-title">
-          progress
-        </div>
-
-        <div class="page-subtitle">
-          everything you've learned so far.
-        </div>
-
-        <div class="stats">
-
-          <div class="stat">
-            <div class="stat-number" id="xpDisplay">0</div>
-            <div class="stat-label">xp</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-number" id="lessonsDisplay">0</div>
-            <div class="stat-label">lessons completed</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-number" id="wordsDisplay">0</div>
-            <div class="stat-label">words learned</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-number" id="streakStatDisplay">0</div>
-            <div class="stat-label">day streak</div>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- PROFILE -->
-      <section id="profilePage" class="hidden">
-
-        <div class="entry">your journal</div>
-
-        <div class="page-title">
-          profile
-        </div>
-
-        <div class="page-subtitle">
-          your account and settings.
-        </div>
-
-        <div class="profile-card">
-
-          <div class="email-display" id="profileEmail">
-            loading...
-          </div>
-
-          <button class="logout" onclick="logout()">
-            log out
-          </button>
-
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- bottom navigation -->
-    <nav class="bottom-nav">
-
-      <button class="nav-button active" onclick="showPage('home')">
-        home
-      </button>
-
-      <button class="nav-button" onclick="showPage('lesson')">
-        lessons
-      </button>
-
-      <button class="nav-button" onclick="showPage('progress')">
-        progress
-      </button>
-
-      <button class="nav-button" onclick="showPage('profile')">
-        profile
-      </button>
-
-    </nav>
-
-  </div>
-
-
+   * {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #191919;
+  color: #e4e0d8;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   app
+========================= */
+
+.app {
+  width: min(100%, 720px);
+  margin: auto;
+  padding: 55px 35px 100px;
+}
+
+/* =========================
+   login
+========================= */
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: #191919;
+}
+
+.auth-card {
+  width: min(100%, 390px);
+  background: #1d1d1d;
+  border: 1px solid #3a3a3a;
+  padding: 42px;
+}
+
+.auth-logo {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 30px;
+  font-weight: normal;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 40px;
+}
+
+.auth-card label {
+  display: block;
+  color: #888;
+  font-size: 11px;
+  text-transform: lowercase;
+  margin: 20px 0 8px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 11px 0;
+  border: none;
+  border-bottom: 1px solid #444;
+  outline: none;
+  background: transparent;
+  color: #eee;
+}
+
+.auth-card input:focus {
+  border-bottom-color: #aaa;
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 30px;
+  padding: 12px;
+  border: 1px solid #777;
+  background: #e4e0d8;
+  color: #191919;
+}
+
+.auth-button:hover {
+  background: #fff;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 22px;
+  color: #666;
+  font-size: 11px;
+}
+
+.auth-switch button {
+  border: none;
+  background: none;
+  color: #aaa;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.auth-message {
+  margin-top: 18px;
+  color: #999;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================
+   header
+========================= */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 90px;
+}
+
+.logo {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 27px;
+  font-weight: normal;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin-top: 7px;
+  color: #666;
+  font-size: 10px;
+}
+
+.streak {
+  color: #777;
+  font-size: 11px;
+}
+
+/* =========================
+   titles
+========================= */
+
+.entry {
+  color: #555;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+
+.page-title {
+  font-size: 23px;
+  font-weight: normal;
+  margin-bottom: 9px;
+}
+
+.page-subtitle {
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 38px;
+}
+
+/* =========================
+   languages
+========================= */
+
+.languages {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border: 1px solid #353535;
+  background: #353535;
+}
+
+.language-card {
+  text-align: left;
+  min-height: 145px;
+  padding: 24px;
+  border: none;
+  background: #1c1c1c;
+  color: #ddd;
+  transition: background 0.15s ease;
+}
+
+.language-card:hover {
+  background: #242424;
+}
+
+.flag {
+  display: none;
+}
+
+.language-name {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.language-native {
+  color: #666;
+  font-size: 11px;
+}
+
+/* =========================
+   lesson
+========================= */
+
+.back-button {
+  border: none;
+  background: none;
+  color: #666;
+  padding: 0;
+  margin-bottom: 35px;
+  font-size: 11px;
+}
+
+.back-button:hover {
+  color: #aaa;
+}
+
+.lesson-card {
+  border-top: 1px solid #3b3b3b;
+  padding-top: 35px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.lesson-language {
+  color: #666;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 35px;
+}
+
+.word {
+  font-size: 42px;
+  font-weight: normal;
+  margin-bottom: 12px;
+  color: #eee;
+}
+
+.translation {
+  color: #aaa;
+  font-size: 15px;
+}
+
+.pronunciation {
+  color: #666;
+  font-size: 11px;
+  margin-top: 9px;
+}
+
+.speaker {
+  margin-top: 30px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #555;
+  border-radius: 0;
+  background: transparent;
+  color: #bbb;
+}
+
+.speaker:hover {
+  background: #292929;
+}
+
+.practice {
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+  padding: 14px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #ccc;
+  text-align: left;
+}
+
+.practice:hover {
+  background: #242424;
+}
+
+.progress-area {
+  margin-top: 45px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.progress-track {
+  height: 2px;
+  background: #333;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #aaa;
+}
+
+.lesson-complete {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #888;
+}
+
+.lesson-complete:hover {
+  color: #ddd;
+  border-color: #777;
+}
+
+/* =========================
+   progress
+========================= */
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #353535;
+  border: 1px solid #353535;
+}
+
+.stat {
+  padding: 28px;
+  background: #1c1c1c;
+}
+
+.stat-number {
+  font-size: 28px;
+  color: #ddd;
+}
+
+.stat-label {
+  margin-top: 8px;
+  color: #666;
+  font-size: 10px;
+}
+
+/* =========================
+   profile
+========================= */
+
+.profile-card {
+  border-top: 1px solid #3b3b3b;
+  padding-top: 25px;
+}
+
+.email-display {
+  color: #999;
+  font-size: 12px;
+  margin-bottom: 30px;
+}
+
+.logout {
+  border: 1px solid #444;
+  background: transparent;
+  color: #888;
+  padding: 10px 18px;
+}
+
+.logout:hover {
+  color: #ddd;
+  border-color: #777;
+}
+
+/* =========================
+   navigation
+========================= */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 720px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #191919;
+  border-top: 1px solid #333;
+  padding: 5px 0;
+}
+
+.nav-button {
+  border: none;
+  background: transparent;
+  color: #555;
+  padding: 12px;
+  font-size: 10px;
+}
+
+.nav-button:hover {
+  color: #aaa;
+}
+
+.nav-button.active {
+  color: #ddd;
+}
+
+/* =========================
+   mobile
+========================= */
+
+@media (max-width: 550px) {
+
+  .app {
+    padding: 35px 20px 90px;
+  }
+
+  header {
+    margin-bottom: 65px;
+  }
+
+  .languages {
+    grid-template-columns: 1fr;
+  }
+
+  .language-card {
+    min-height: 95px;
+  }
+
+  .word {
+    font-size: 34px;
+  }
+
+  .auth-card {
+    padding: 30px;
+  }
+}
 <script>
   /* =========================================================
      SUPABASE
