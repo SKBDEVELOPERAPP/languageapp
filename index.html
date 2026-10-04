@@ -11,3 +11,397 @@
     <button>Start Learning</button>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Lingua">
+
+    <title>Lingua</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f7f7f5;
+            color: #171717;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: auto;
+            min-height: 100vh;
+            background: white;
+        }
+
+        header {
+            padding: 25px 22px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .streak {
+            background: #fff1c7;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .welcome {
+            padding: 15px 22px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #777;
+        }
+
+        .languages {
+            padding: 10px 22px;
+        }
+
+        .language {
+            width: 100%;
+            border: none;
+            background: #f4f4f4;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .language:hover {
+            transform: translateY(-2px);
+            background: #ededed;
+        }
+
+        .flag {
+            font-size: 27px;
+            margin-right: 12px;
+        }
+
+        .lesson {
+            display: none;
+            padding: 22px;
+        }
+
+        .back {
+            border: none;
+            background: none;
+            font-size: 18px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .lesson-card {
+            background: #f4f4f4;
+            border-radius: 25px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .lesson-card h2 {
+            font-size: 38px;
+            margin: 20px 0 10px;
+        }
+
+        .translation {
+            color: #777;
+            font-size: 18px;
+        }
+
+        .speak {
+            margin-top: 25px;
+            width: 65px;
+            height: 65px;
+            border: none;
+            border-radius: 50%;
+            background: #171717;
+            color: white;
+            font-size: 27px;
+            cursor: pointer;
+        }
+
+        .practice {
+            margin-top: 20px;
+            width: 100%;
+            border: none;
+            border-radius: 15px;
+            padding: 16px;
+            background: #171717;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 15px;
+            min-height: 25px;
+            color: #666;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(500px, 100%);
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            padding: 13px 0;
+        }
+
+        nav button {
+            border: none;
+            background: none;
+            font-size: 13px;
+            color: #666;
+        }
+
+        @media (min-width: 600px) {
+            body {
+                background: #e9e9e9;
+            }
+
+            .app {
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+        <div class="logo">Lingua</div>
+        <div class="streak">🔥 0</div>
+    </header>
+
+    <main>
+
+        <section id="home">
+            <div class="welcome">
+                <h1>What do you want to learn?</h1>
+                <p>Choose a language to start your lesson.</p>
+            </div>
+
+            <div class="languages">
+
+                <button class="language" onclick="openLanguage('Korean')">
+                    <span class="flag">🇰🇷</span>
+                    Korean
+                </button>
+
+                <button class="language" onclick="openLanguage('Japanese')">
+                    <span class="flag">🇯🇵</span>
+                    Japanese
+                </button>
+
+                <button class="language" onclick="openLanguage('Spanish')">
+                    <span class="flag">🇪🇸</span>
+                    Spanish
+                </button>
+
+                <button class="language" onclick="openLanguage('French')">
+                    <span class="flag">🇫🇷</span>
+                    French
+                </button>
+
+            </div>
+        </section>
+
+
+        <section id="lesson" class="lesson">
+
+            <button class="back" onclick="goHome()">← Languages</button>
+
+            <div class="lesson-card">
+
+                <div id="languageName"></div>
+
+                <h2 id="word"></h2>
+
+                <div class="translation" id="translation"></div>
+
+                <button class="speak" onclick="speakWord()">
+                    🔊
+                </button>
+
+                <button class="practice" onclick="startSpeaking()">
+                    🎤 Practice Speaking
+                </button>
+
+                <div class="message" id="message"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<nav>
+    <button onclick="goHome()">🏠<br>Home</button>
+    <button>📚<br>Lessons</button>
+    <button>🔥<br>Progress</button>
+    <button>👤<br>Profile</button>
+</nav>
+
+
+<script>
+
+const lessons = {
+
+    Korean: {
+        word: "안녕하세요",
+        translation: "Hello",
+        language: "ko-KR"
+    },
+
+    Japanese: {
+        word: "こんにちは",
+        translation: "Hello",
+        language: "ja-JP"
+    },
+
+    Spanish: {
+        word: "Hola",
+        translation: "Hello",
+        language: "es-ES"
+    },
+
+    French: {
+        word: "Bonjour",
+        translation: "Hello",
+        language: "fr-FR"
+    }
+
+};
+
+let currentLanguage = null;
+
+
+function openLanguage(language) {
+
+    currentLanguage = language;
+
+    const lesson = lessons[language];
+
+    document.getElementById("home").style.display = "none";
+    document.getElementById("lesson").style.display = "block";
+
+    document.getElementById("languageName").innerText = language;
+    document.getElementById("word").innerText = lesson.word;
+    document.getElementById("translation").innerText = lesson.translation;
+
+    document.getElementById("message").innerText = "";
+}
+
+
+function goHome() {
+
+    document.getElementById("lesson").style.display = "none";
+    document.getElementById("home").style.display = "block";
+
+}
+
+
+function speakWord() {
+
+    const lesson = lessons[currentLanguage];
+
+    const speech = new SpeechSynthesisUtterance(lesson.word);
+
+    speech.lang = lesson.language;
+    speech.rate = 0.8;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+
+}
+
+
+function startSpeaking() {
+
+    const message = document.getElementById("message");
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        message.innerText =
+            "Speaking practice isn't supported by this browser. Try Safari or Chrome on a supported device.";
+
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = lessons[currentLanguage].language;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    message.innerText = "🎤 Listening...";
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+
+        const spoken = event.results[0][0].transcript;
+
+        message.innerText =
+            "You said: " + spoken;
+
+    };
+
+    recognition.onerror = function() {
+
+        message.innerText =
+            "I couldn't hear you. Try again!";
+
+    };
+
+    recognition.onend = function() {
+
+        if (message.innerText === "🎤 Listening...") {
+            message.innerText = "Try speaking again.";
+        }
+
+    };
+
+}
+
+</script>
+
+</body>
+</html>
