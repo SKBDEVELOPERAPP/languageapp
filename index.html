@@ -1,2762 +1,5427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#181818">
 
-  <title>skillbuilding</title>
+<title>language /</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
+<style>
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #181818;
+    color: #eeeeea;
+    font-family: "Courier New", Courier, monospace;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+input,
+textarea {
+    outline: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+    --bg: #181818;
+    --bg-dark: #121212;
+    --panel: #202020;
+    --panel-light: #252525;
+    --line: #393939;
+    --line-light: #505050;
+
+    --text: #eeeeea;
+    --text-soft: #c7c7c2;
+    --text-muted: #8d8d88;
+
+    --success: #b9d8bd;
+    --error: #e0aaaa;
+}
+
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+.page-width {
+    width: min(1120px, 92%);
+    margin: 0 auto;
+}
+
+main {
+    padding-bottom: 80px;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: clamp(38px, 7vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -4px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 28px;
+    letter-spacing: -1px;
+}
+
+h3 {
+    font-size: 17px;
+}
+
+p {
+    line-height: 1.7;
+}
+
+.muted {
+    color: var(--text-muted);
+}
+
+.small {
+    font-size: 11px;
+}
+
+.kicker {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+    border-bottom: 1px solid var(--line);
+    padding: 22px 0;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 19px;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: var(--text-muted);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+    border: 1px solid var(--text);
+    background: var(--text);
+    color: var(--bg);
+    padding: 13px 18px;
+    transition: 0.15s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn.secondary {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--line);
+}
+
+.btn.secondary:hover {
+    border-color: var(--line-light);
+}
+
+.btn.small-btn {
+    padding: 8px 11px;
+    font-size: 11px;
+}
+
+.full-btn {
+    width: 100%;
+}
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+#auth-screen {
+    min-height: 100vh;
+}
+
+.auth-container {
+    width: min(470px, 92%);
+    margin: 0 auto;
+    padding-top: 12vh;
+}
+
+.auth-logo {
+    color: var(--text-muted);
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+}
+
+.auth-title {
+    font-size: clamp(42px, 9vw, 75px);
+    margin-bottom: 20px;
+}
+
+.auth-subtitle {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 35px;
+}
+
+.auth-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 25px;
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+}
+
+.auth-tab {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 12px;
+}
+
+.auth-tab.active {
+    color: var(--text);
+    border-bottom: 1px solid var(--text);
+}
+
+.auth-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input {
+    width: 100%;
+    background: var(--bg-dark);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 14px;
+}
+
+.input:focus {
+    border-color: var(--line-light);
+}
+
+.auth-message {
+    min-height: 20px;
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.app-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    border-bottom: 1px solid var(--line);
+    padding: 15px 0;
+    margin-bottom: 35px;
+}
+
+.nav-btn {
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 9px 12px;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    color: var(--text);
+}
+
+
+/* =========================================================
+   PAGES
+   ========================================================= */
+
+.app-page {
+    display: none;
+}
+
+.app-page.active {
+    display: block;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 22px;
+}
+
+.card-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.card-grid.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.card-grid.four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stat-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 20px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-number {
+    font-size: 30px;
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   LANGUAGE CARDS
+   ========================================================= */
+
+.language-card {
+    width: 100%;
+    min-height: 180px;
+    text-align: left;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 22px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    transition: 0.15s ease;
+}
+
+.language-card:hover {
+    border-color: var(--line-light);
+    transform: translateY(-2px);
+}
+
+.language-code {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+.language-name {
+    font-size: 27px;
+    margin: 12px 0 4px;
+}
+
+.language-native {
+    color: var(--text-soft);
+}
+
+.language-description {
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   LESSON
+   ========================================================= */
+
+.lesson-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+.lesson-meta {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.lesson-progress {
+    width: 100%;
+    height: 4px;
+    background: #303030;
+    margin-bottom: 20px;
+}
+
+.lesson-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #eeeeea;
+    transition: width 0.25s ease;
+}
+
+.question-card {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.question-content {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.question-type {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+.question-target {
+    font-size: clamp(32px, 7vw, 62px);
+    line-height: 1.25;
+    word-break: break-word;
+    margin-bottom: 18px;
+}
+
+.question-translation {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.question-pronunciation {
+    color: #686864;
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+.question-instruction {
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   SPEAKING
+   ========================================================= */
+
+.speak-button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 17px;
+
+    background: var(--text);
+    color: var(--bg);
+
+    border: 1px solid var(--text);
+}
+
+.hear-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+
+    background: transparent;
+    color: var(--text);
+
+    border: 1px solid var(--line);
+}
+
+.hear-button:hover {
+    border-color: var(--line-light);
+}
+
+.speech-result {
+    background: var(--bg-dark);
+    border: 1px solid var(--line);
+    margin-top: 18px;
+    padding: 17px;
+    text-align: left;
+    line-height: 1.7;
+}
+
+.listening {
+    color: var(--text-soft);
+}
+
+.score {
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+
+.score.good {
+    color: var(--success);
+}
+
+.score.bad {
+    color: var(--error);
+}
+
+
+/* =========================================================
+   CHOICES
+   ========================================================= */
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.choice-button {
+    min-height: 75px;
+    text-align: left;
+
+    background: var(--bg-dark);
+    color: var(--text);
+
+    border: 1px solid var(--line);
+    padding: 16px;
+}
+
+.choice-button:hover {
+    border-color: var(--line-light);
+}
+
+.choice-button.correct {
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.choice-button.wrong {
+    color: var(--error);
+    border-color: var(--error);
+}
+
+
+/* =========================================================
+   WRITING
+   ========================================================= */
+
+.writing-area {
+    min-height: 130px;
+    resize: vertical;
+}
+
+
+/* =========================================================
+   FEEDBACK
+   ========================================================= */
+
+.feedback {
+    margin-top: 18px;
+    padding: 14px;
+    border-left: 2px solid var(--line-light);
+    text-align: left;
+    color: var(--text-soft);
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   LESSON ACTIONS
+   ========================================================= */
+
+.lesson-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.profile-row:last-child {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+    text-align: center;
+    color: #5f5f5b;
+    font-size: 10px;
+    margin-top: 45px;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+#toast {
+    display: none;
+
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    max-width: 350px;
+
+    padding: 13px 15px;
+
+    background: var(--text);
+    color: var(--bg);
+
+    font-size: 11px;
+
+    z-index: 9999;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 750px) {
+
+    .card-grid.four {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    :root {
-      --bg: #181818;
-      --panel: #202020;
-      --panel-2: #252525;
-      --border: #3a3a3a;
-      --text: #eeeeee;
-      --muted: #999999;
-      --soft: #cfcfcf;
-      --good: #a8d5a2;
-      --bad: #d9a0a0;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Courier New", Courier, monospace;
-      min-height: 100vh;
-    }
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* ---------------- AUTH ---------------- */
-
-    #authScreen {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-    }
-
-    .auth-box {
-      width: 100%;
-      max-width: 420px;
-      border: 1px solid var(--border);
-      padding: 38px;
-      background: #1b1b1b;
-    }
-
-    .logo {
-      font-size: 26px;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
-
-    .auth-tabs {
-      display: flex;
-      margin-bottom: 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .auth-tab {
-      background: none;
-      border: none;
-      color: var(--muted);
-      padding: 12px 0;
-      margin-right: 24px;
-      font-size: 13px;
-    }
-
-    .auth-tab.active {
-      color: var(--text);
-    }
-
-    input {
-      width: 100%;
-      background: #151515;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 14px;
-      outline: none;
-      margin-bottom: 12px;
-    }
-
-    input:focus {
-      border-color: #666;
-    }
-
-    .main-btn {
-      width: 100%;
-      background: var(--text);
-      color: #111;
-      border: none;
-      padding: 14px;
-      margin-top: 8px;
-      font-weight: bold;
-    }
-
-    .main-btn:hover {
-      opacity: 0.88;
-    }
-
-    .message {
-      margin-top: 15px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--muted);
-    }
-
-    /* ---------------- APP ---------------- */
-
-    #app {
-      min-height: 100vh;
-    }
-
-    nav {
-      height: 64px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 30px;
-      position: sticky;
-      top: 0;
-      background: rgba(24, 24, 24, 0.96);
-      z-index: 20;
-    }
-
-    .nav-logo {
-      font-size: 17px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .nav-links button {
-      border: none;
-      background: none;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 6px;
-    }
-
-    .nav-links button:hover {
-      color: var(--text);
-    }
-
-    .logout-btn {
-      border-left: 1px solid var(--border) !important;
-      padding-left: 20px !important;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 50px 30px 100px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .page-title {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .page-description {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 38px;
-      line-height: 1.6;
-    }
-
-    /* ---------------- HOME ---------------- */
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 45px;
-    }
-
-    .stat {
-      border: 1px solid var(--border);
-      padding: 22px;
-      background: var(--panel);
-    }
-
-    .stat-number {
-      font-size: 25px;
-      margin-bottom: 6px;
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: lowercase;
-    }
-
-    .language-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .language-card {
-      border: 1px solid var(--border);
-      padding: 26px;
-      background: var(--panel);
-      transition: 0.15s;
-    }
-
-    .language-card:hover {
-      border-color: #666;
-      transform: translateY(-2px);
-    }
-
-    .language-name {
-      font-size: 20px;
-      margin-bottom: 8px;
-    }
-
-    .language-info {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 22px;
-    }
-
-    .small-btn {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      padding: 10px 15px;
-      font-size: 12px;
-    }
-
-    .small-btn:hover {
-      background: #2a2a2a;
-    }
-
-    /* ---------------- LESSON ---------------- */
-
-    .lesson-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 30px;
-    }
-
-    .lesson-language {
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .lesson-count {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .progress-line {
-      width: 100%;
-      height: 2px;
-      background: #333;
-      margin-bottom: 35px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: #eee;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .mode-label {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 15px;
-    }
-
-    .question-box {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      padding: 35px;
-      margin-bottom: 15px;
-      min-height: 230px;
-    }
-
-    .question-number {
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 25px;
-    }
-
-    .prompt {
-      font-size: 28px;
-      line-height: 1.4;
-      margin-bottom: 10px;
-      word-break: break-word;
-    }
-
-    .translation {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 25px;
-    }
-
-    .pronunciation {
-      color: #aaa;
-      font-size: 12px;
-      margin-bottom: 20px;
-    }
-
-    .lesson-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .action-btn {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      padding: 13px 18px;
-      font-size: 12px;
-    }
-
-    .action-btn:hover {
-      background: var(--panel-2);
-    }
-
-    .primary-action {
-      background: var(--text);
-      color: #111;
-      border-color: var(--text);
-    }
-
-    .primary-action:hover {
-      background: #ccc;
-    }
-
-    .speech-result {
-      margin-top: 20px;
-      border-top: 1px solid var(--border);
-      padding-top: 18px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    .score {
-      font-size: 24px;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-
-    .score.good {
-      color: var(--good);
-    }
-
-    .score.bad {
-      color: var(--bad);
-    }
-
-    .listening-live {
-      color: var(--text);
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      50% {
-        opacity: 0.4;
-      }
+    .card-grid.two {
+        grid-template-columns: 1fr;
     }
 
     .choice-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .choice-btn {
-      border: 1px solid var(--border);
-      background: #191919;
-      color: var(--text);
-      padding: 15px;
-      text-align: left;
-      font-size: 13px;
-    }
-
-    .choice-btn:hover {
-      border-color: #777;
-    }
-
-    .choice-btn.correct {
-      border-color: var(--good);
-      color: var(--good);
-    }
-
-    .choice-btn.wrong {
-      border-color: var(--bad);
-      color: var(--bad);
-    }
-
-    .writing-input {
-      margin-top: 20px;
-    }
-
-    .finish-area {
-      margin-top: 40px;
-      padding-top: 25px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* ---------------- RESPONSIVE ---------------- */
-
-    @media (max-width: 700px) {
-      nav {
-        padding: 0 16px;
-      }
-
-      .nav-links {
-        gap: 8px;
-      }
-
-      .nav-links button {
-        font-size: 10px;
-      }
-
-      main {
-        padding: 35px 18px 80px;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .language-grid {
         grid-template-columns: 1fr;
-      }
-
-      .question-box {
-        padding: 24px;
-      }
-
-      .prompt {
-        font-size: 23px;
-      }
-
-      .lesson-header {
-        gap: 20px;
-      }
     }
-  </style>
+
+    .header-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+
+    .question-card {
+        min-height: 470px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .page-width {
+        width: 94%;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+    .card-grid.four {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-number {
+        font-size: 23px;
+    }
+
+    .lesson-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .lesson-actions .btn {
+        width: 100%;
+    }
+}
+
+</style>
 </head>
 
 <body>
 
-  <!-- ================= AUTH ================= -->
 
-  <section id="authScreen">
+<!-- ========================================================
+     AUTH SCREEN
+     ======================================================== -->
 
-    <div class="auth-box">
+<section id="auth-screen">
 
-      <div class="logo">skillbuilding</div>
+    <div class="auth-container">
 
-      <div class="subtitle">
-        a speaking-first language learning app.
-        practice real words, listen, speak, repeat.
-      </div>
+        <div class="auth-logo">
+            language /
+        </div>
 
-      <div class="auth-tabs">
-        <button
-          id="loginTab"
-          class="auth-tab active"
-          onclick="showAuth('login')"
-        >
-          login
-        </button>
+        <h1 class="auth-title">
+            learn by<br>
+            speaking.
+        </h1>
 
-        <button
-          id="signupTab"
-          class="auth-tab"
-          onclick="showAuth('signup')"
-        >
-          sign up
-        </button>
-      </div>
+        <p class="auth-subtitle">
+            speaking-first language practice for
+            korean, japanese, spanish, and french.
+        </p>
 
-      <div id="loginForm">
+        <div class="auth-card">
 
-        <input
-          id="loginEmail"
-          type="email"
-          placeholder="email"
-          autocomplete="email"
-        />
+            <div class="auth-tabs">
 
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="password"
-          autocomplete="current-password"
-        />
+                <button
+                    id="login-tab"
+                    class="auth-tab active"
+                    onclick="setAuthMode('login')"
+                >
+                    log in
+                </button>
 
-        <button class="main-btn" onclick="login()">
-          login
-        </button>
+                <button
+                    id="signup-tab"
+                    class="auth-tab"
+                    onclick="setAuthMode('signup')"
+                >
+                    sign up
+                </button>
 
-      </div>
+            </div>
 
-      <div id="signupForm" class="hidden">
 
-        <input
-          id="signupEmail"
-          type="email"
-          placeholder="email"
-          autocomplete="email"
-        />
+            <div class="auth-fields">
 
-        <input
-          id="signupPassword"
-          type="password"
-          placeholder="password"
-          autocomplete="new-password"
-        />
+                <input
+                    id="email-input"
+                    class="input"
+                    type="email"
+                    placeholder="email"
+                    autocomplete="email"
+                >
 
-        <button class="main-btn" onclick="signup()">
-          create account
-        </button>
+                <input
+                    id="password-input"
+                    class="input"
+                    type="password"
+                    placeholder="password"
+                    autocomplete="current-password"
+                >
 
-      </div>
+                <button
+                    id="auth-button"
+                    class="btn full-btn"
+                    onclick="submitAuth()"
+                >
+                    log in
+                </button>
 
-      <div id="authMessage" class="message"></div>
+                <div
+                    id="auth-message"
+                    class="auth-message"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer">
+            free · speaking first · four languages
+        </div>
 
     </div>
 
-  </section>
+</section>
 
 
-  <!-- ================= APP ================= -->
+<!-- ========================================================
+     APP
+     ======================================================== -->
 
-  <div id="app" class="hidden">
+<section id="app-screen" class="hidden">
 
-    <nav>
+    <header class="site-header">
 
-      <div class="nav-logo">
-        skillbuilding
-      </div>
+        <div class="page-width header-inner">
 
-      <div class="nav-links">
-
-        <button onclick="showPage('home')">
-          home
-        </button>
-
-        <button onclick="showPage('lesson')">
-          lesson
-        </button>
-
-        <button onclick="logout()" class="logout-btn">
-          logout
-        </button>
-
-      </div>
-
-    </nav>
-
-
-    <main>
-
-      <!-- ================= HOME ================= -->
-
-      <section id="homePage" class="page active">
-
-        <div class="page-title">
-          learn by speaking.
-        </div>
-
-        <div class="page-description">
-          short lessons built around speaking, listening,
-          and understanding real language.
-        </div>
-
-
-        <div class="stats">
-
-          <div class="stat">
-            <div id="xpStat" class="stat-number">0</div>
-            <div class="stat-label">xp</div>
-          </div>
-
-          <div class="stat">
-            <div id="streakStat" class="stat-number">0</div>
-            <div class="stat-label">day streak</div>
-          </div>
-
-          <div class="stat">
-            <div id="lessonsStat" class="stat-number">0</div>
-            <div class="stat-label">lessons</div>
-          </div>
-
-          <div class="stat">
-            <div id="wordsStat" class="stat-number">0</div>
-            <div class="stat-label">words</div>
-          </div>
-
-        </div>
-
-
-        <div class="language-grid">
-
-          <div class="language-card">
-
-            <div class="language-name">
-              korean
+            <div class="logo">
+                language <span>/</span>
             </div>
 
-            <div class="language-info">
-              한국어 · speaking + listening
+            <div class="header-right">
+
+                <span
+                    id="header-email"
+                    class="small muted"
+                ></span>
+
+                <button
+                    class="btn secondary small-btn"
+                    onclick="logout()"
+                >
+                    log out
+                </button>
+
             </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="page-width">
+
+
+        <!-- ==================================================
+             NAVIGATION
+             ================================================== -->
+
+        <nav class="app-nav">
 
             <button
-              class="small-btn"
-              onclick="startLesson('korean')"
+                id="nav-home"
+                class="nav-btn active"
+                onclick="showPage('home')"
             >
-              start →
+                home
             </button>
-
-          </div>
-
-
-          <div class="language-card">
-
-            <div class="language-name">
-              japanese
-            </div>
-
-            <div class="language-info">
-              日本語 · speaking + listening
-            </div>
 
             <button
-              class="small-btn"
-              onclick="startLesson('japanese')"
+                id="nav-learn"
+                class="nav-btn"
+                onclick="showPage('learn')"
             >
-              start →
+                learn
             </button>
-
-          </div>
-
-
-          <div class="language-card">
-
-            <div class="language-name">
-              spanish
-            </div>
-
-            <div class="language-info">
-              español · speaking + listening
-            </div>
 
             <button
-              class="small-btn"
-              onclick="startLesson('spanish')"
+                id="nav-progress"
+                class="nav-btn"
+                onclick="showPage('progress')"
             >
-              start →
+                progress
             </button>
-
-          </div>
-
-
-          <div class="language-card">
-
-            <div class="language-name">
-              french
-            </div>
-
-            <div class="language-info">
-              français · speaking + listening
-            </div>
 
             <button
-              class="small-btn"
-              onclick="startLesson('french')"
+                id="nav-profile"
+                class="nav-btn"
+                onclick="showPage('profile')"
             >
-              start →
+                profile
             </button>
 
-          </div>
-
-        </div>
-
-      </section>
+        </nav>
 
 
-      <!-- ================= LESSON ================= -->
+        <!-- ==================================================
+             HOME PAGE
+             ================================================== -->
 
-    
-      <section id="lessonPage" class="page">
+        <section
+            id="home-page"
+            class="app-page active"
+        >
 
-        <div class="lesson-header">
-
-          <div>
-            <div id="lessonLanguage" class="lesson-language">
-              lesson
+            <div class="kicker">
+                welcome back
             </div>
-          </div>
 
-          <div id="lessonCount" class="lesson-count">
-            1 / 10
-          </div>
+            <h1>
+                say it.<br>
+                hear it.<br>
+                use it.
+            </h1>
 
-        </div>
-
-
-        <div class="progress-line">
-          <div
-            id="lessonProgress"
-            class="progress-fill"
-          ></div>
-        </div>
+            <p class="muted">
+                short lessons built around speaking,
+                listening, recognition, and real phrases.
+            </p>
 
 
-        <div id="lessonMode" class="mode-label">
-          speaking practice
-        </div>
+            <div
+                class="card-grid four"
+                style="margin-top:35px"
+            >
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        xp
+                    </div>
+
+                    <div
+                        id="home-xp"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
 
 
-        <div class="question-box">
+                <div class="stat-card">
+                    <div class="stat-label">
+                        streak
+                    </div>
 
-          <div id="questionNumber" class="question-number">
-            question 1
-          </div>
-
-          <div id="prompt" class="prompt">
-            hello
-          </div>
-
-          <div id="translation" class="translation">
-            hello
-          </div>
-
-          <div id="pronunciation" class="pronunciation">
-          </div>
+                    <div
+                        id="home-streak"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
 
 
-          <div id="choiceArea" class="choice-grid">
-          </div>
+                <div class="stat-card">
+                    <div class="stat-label">
+                        lessons
+                    </div>
+
+                    <div
+                        id="home-lessons"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
 
 
-          <input
-            id="writingInput"
-            class="writing-input hidden"
-            type="text"
-            placeholder="type your answer..."
-            autocomplete="off"
-          />
+                <div class="stat-card">
+                    <div class="stat-label">
+                        words
+                    </div>
+
+                    <div
+                        id="home-words"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
+
+            </div>
 
 
-          <div id="speechResult" class="speech-result hidden">
-          </div>
+            <div style="margin-top:50px">
 
-        </div>
+                <div class="kicker">
+                    start learning
+                </div>
 
+                <h2>
+                    choose a language.
+                </h2>
 
-        <div class="lesson-actions">
+                <div
+                    id="home-language-grid"
+                    class="card-grid two"
+                    style="margin-top:18px"
+                ></div>
 
-          <button
-            id="hearButton"
-            class="action-btn"
-            onclick="speakCurrentQuestion()"
-          >
-            ♫ hear it
-          </button>
+            </div>
 
-          <button
-            id="speakButton"
-            class="action-btn primary-action"
-            onclick="practiceSpeaking()"
-          >
-            ● speak now
-          </button>
-
-          <button
-            id="checkWritingButton"
-            class="action-btn primary-action hidden"
-            onclick="checkWriting()"
-          >
-            check
-          </button>
-
-          <button
-            id="nextButton"
-            class="action-btn primary-action hidden"
-            onclick="nextQuestion()"
-          >
-            next →
-          </button>
-
-        </div>
+        </section>
 
 
-        <div class="finish-area">
+        <!-- ==================================================
+             LEARN PAGE
+             ================================================== -->
 
-          <button
-            id="finishButton"
-            class="action-btn hidden"
-            onclick="finishLesson()"
-          >
-            finish lesson
-          </button>
+        <section
+            id="learn-page"
+            class="app-page"
+        >
 
-        </div>
+            <div class="kicker">
+                learn
+            </div>
 
-      </section>
+            <h1>
+                choose.
+            </h1>
+
+            <p class="muted">
+                every lesson is generated from a larger
+                pool of words and phrases.
+            </p>
+
+            <div
+                id="learn-language-grid"
+                class="card-grid two"
+                style="margin-top:30px"
+            ></div>
+
+        </section>
+
+
+        <!-- ==================================================
+             PROGRESS PAGE
+             ================================================== -->
+
+        <section
+            id="progress-page"
+            class="app-page"
+        >
+
+            <div class="kicker">
+                progress
+            </div>
+
+            <h1>
+                your numbers.
+            </h1>
+
+
+            <div class="card-grid four">
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        xp
+                    </div>
+
+                    <div
+                        id="progress-xp"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        streak
+                    </div>
+
+                    <div
+                        id="progress-streak"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        lessons
+                    </div>
+
+                    <div
+                        id="progress-lessons"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        words
+                    </div>
+
+                    <div
+                        id="progress-words"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div
+                class="card"
+                style="margin-top:18px"
+            >
+
+                <div class="kicker">
+                    speaking
+                </div>
+
+                <h2>
+                    speech performance.
+                </h2>
+
+                <p class="muted">
+                    successful speaking attempts are
+                    averaged during the current session.
+                </p>
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        average
+                    </div>
+
+                    <div
+                        id="speech-average"
+                        class="stat-number"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             PROFILE PAGE
+             ================================================== -->
+
+        <section
+            id="profile-page"
+            class="app-page"
+        >
+
+            <div class="kicker">
+                profile
+            </div>
+
+            <h1>
+                account.
+            </h1>
+
+            <div class="card">
+
+                <div class="profile-row">
+
+                    <span>
+                        email
+                    </span>
+
+                    <span
+                        id="profile-email"
+                        class="muted"
+                    ></span>
+
+                </div>
+
+
+                <div class="profile-row">
+
+                    <span>
+                        account created
+                    </span>
+
+                    <span
+                        id="profile-created"
+                        class="muted"
+                    ></span>
+
+                </div>
+
+
+                <div class="profile-row">
+
+                    <span>
+                        current language
+                    </span>
+
+                    <span
+                        id="profile-language"
+                        class="muted"
+                    >
+                        none
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             LESSON PAGE
+             ================================================== -->
+
+        <section
+            id="lesson-page"
+            class="app-page"
+        >
+
+            <div class="lesson-header">
+
+                <div>
+
+                    <div
+                        id="lesson-language"
+                        class="kicker"
+                    >
+                        lesson
+                    </div>
+
+                    <div
+                        id="lesson-count"
+                        class="lesson-meta"
+                    >
+                        1 / 10
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="lesson-timer"
+                    class="lesson-meta"
+                >
+                    00:00
+                </div>
+
+            </div>
+
+
+            <div class="lesson-progress">
+
+                <div
+                    id="lesson-progress-fill"
+                    class="lesson-progress-fill"
+                ></div>
+
+            </div>
+
+
+            <div class="card question-card">
+
+                <div
+                    id="question-area"
+                    class="question-content"
+                ></div>
+
+            </div>
+
+
+            <div class="lesson-actions">
+
+                <button
+                    class="btn secondary"
+                    onclick="quitLesson()"
+                >
+                    quit
+                </button>
+
+
+                <button
+                    id="next-button"
+                    class="btn hidden"
+                    onclick="nextQuestion()"
+                >
+                    next →
+                </button>
+
+            </div>
+
+        </section>
 
     </main>
 
-  </div>
+</section>
+
+
+<div id="toast"></div>
 
 
 <script>
 
-  /* =========================================================
-     SUPABASE
-  ========================================================= */
+/* ============================================================
+   SUPABASE
+   ============================================================ */
 
-  const SUPABASE_URL =
+/*
+   IMPORTANT:
+   Put your current Supabase publishable key here.
+
+   Do NOT use a service_role key in browser code.
+*/
+
+const SUPABASE_URL =
     "https://gdcvudbqwkdiccyugtxz.supabase.co";
 
-  /*
-    IMPORTANT:
-    put your NEW Supabase publishable key here.
-    Do not use your old key.
-  */
+const SUPABASE_PUBLISHABLE_KEY =
+    "PASTE_YOUR_CURRENT_PUBLISHABLE_KEY_HERE";
 
-  const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_K7S7aII4qnXr4N04kQphMw_ZlPKsxBQ";
-
-  const supabaseClient =
+const supabaseClient =
     window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
     );
 
-
-  const PRODUCTION_URL =
+const PRODUCTION_URL =
     "https://selinahe361-eng.github.io/language-app/";
 
 
-  function getRedirectUrl() {
+/* ============================================================
+   STATE
+   ============================================================ */
 
-    if (
-      window.location.protocol === "http:" ||
-      window.location.protocol === "https:"
-    ) {
+let currentUser = null;
 
-      return (
-        window.location.origin +
-        window.location.pathname
-      );
+let progress = null;
 
-    }
+let currentLanguage = null;
 
-    return PRODUCTION_URL;
-  }
+let currentQuestions = [];
+
+let currentQuestionIndex = 0;
+
+let currentQuestion = null;
+
+let questionAnswered = false;
+
+let speechRecognition = null;
+
+let speechScores = [];
+
+let authMode = "login";
+
+let lessonTimer = null;
+
+let lessonStartTime = null;
 
 
-  /* =========================================================
-     LANGUAGE DATA
-  ========================================================= */
+/* ============================================================
+   LANGUAGE DATA
+   ============================================================ */
 
-  const languageData = {
+const languageData = {
 
     korean: {
 
-      name: "korean",
-      code: "ko-KR",
+        name: "korean",
 
-      words: [
+        native: "한국어",
 
-        {
-          word: "안녕하세요",
-          translation: "hello",
-          pronunciation: "annyeonghaseyo",
-          aliases: ["안녕하세요"]
-        },
+        code: "ko-KR",
 
-        {
-          word: "감사합니다",
-          translation: "thank you",
-          pronunciation: "gamsahamnida",
-          aliases: ["감사합니다"]
-        },
+        description:
+            "learn everyday korean words and phrases.",
 
-        {
-          word: "네",
-          translation: "yes",
-          pronunciation: "ne",
-          aliases: ["네"]
-        },
+        words: [
 
-        {
-          word: "아니요",
-          translation: "no",
-          pronunciation: "aniyo",
-          aliases: ["아니요"]
-        },
+            {
+                word: "안녕하세요",
+                translation: "hello",
+                pronunciation: "annyeonghaseyo"
+            },
 
-        {
-          word: "친구",
-          translation: "friend",
-          pronunciation: "chingu",
-          aliases: ["친구"]
-        },
+            {
+                word: "감사합니다",
+                translation: "thank you",
+                pronunciation: "gamsahamnida"
+            },
 
-        {
-          word: "물",
-          translation: "water",
-          pronunciation: "mul",
-          aliases: ["물"]
-        },
+            {
+                word: "네",
+                translation: "yes",
+                pronunciation: "ne"
+            },
 
-        {
-          word: "밥",
-          translation: "rice / meal",
-          pronunciation: "bap",
-          aliases: ["밥"]
-        },
+            {
+                word: "아니요",
+                translation: "no",
+                pronunciation: "aniyo"
+            },
 
-        {
-          word: "괜찮아요",
-          translation: "it's okay",
-          pronunciation: "gwaenchanayo",
-          aliases: ["괜찮아요"]
-        },
+            {
+                word: "친구",
+                translation: "friend",
+                pronunciation: "chingu"
+            },
 
-        {
-          word: "미안해요",
-          translation: "I'm sorry",
-          pronunciation: "mianhaeyo",
-          aliases: ["미안해요"]
-        },
+            {
+                word: "물",
+                translation: "water",
+                pronunciation: "mul"
+            },
 
-        {
-          word: "주세요",
-          translation: "please give me",
-          pronunciation: "juseyo",
-          aliases: ["주세요"]
-        }
+            {
+                word: "밥",
+                translation: "rice / meal",
+                pronunciation: "bap"
+            },
 
-      ],
+            {
+                word: "괜찮아요",
+                translation: "it's okay",
+                pronunciation: "gwaenchanayo"
+            },
 
-      phrases: [
+            {
+                word: "미안해요",
+                translation: "i'm sorry",
+                pronunciation: "mianhaeyo"
+            },
 
-        {
-          word: "물 주세요.",
-          translation: "water, please.",
-          pronunciation: "mul juseyo",
-          aliases: ["물 주세요"]
-        },
+            {
+                word: "주세요",
+                translation: "please give me",
+                pronunciation: "juseyo"
+            },
 
-        {
-          word: "괜찮아요.",
-          translation: "it's okay.",
-          pronunciation: "gwaenchanayo",
-          aliases: ["괜찮아요"]
-        },
+            {
+                word: "사랑",
+                translation: "love",
+                pronunciation: "sarang"
+            },
 
-        {
-          word: "감사합니다.",
-          translation: "thank you.",
-          pronunciation: "gamsahamnida",
-          aliases: ["감사합니다"]
-        },
+            {
+                word: "학교",
+                translation: "school",
+                pronunciation: "hakgyo"
+            },
 
-        {
-          word: "네, 좋아요.",
-          translation: "yes, that's good.",
-          pronunciation: "ne, joayo",
-          aliases: ["네 좋아요"]
-        },
+            {
+                word: "학생",
+                translation: "student",
+                pronunciation: "haksaeng"
+            },
 
-        {
-          word: "미안해요.",
-          translation: "I'm sorry.",
-          pronunciation: "mianhaeyo",
-          aliases: ["미안해요"]
-        }
+            {
+                word: "선생님",
+                translation: "teacher",
+                pronunciation: "seonsaengnim"
+            },
 
-      ]
+            {
+                word: "오늘",
+                translation: "today",
+                pronunciation: "oneul"
+            },
+
+            {
+                word: "내일",
+                translation: "tomorrow",
+                pronunciation: "naeil"
+            },
+
+            {
+                word: "어제",
+                translation: "yesterday",
+                pronunciation: "eoje"
+            },
+
+            {
+                word: "좋아요",
+                translation: "good / i like it",
+                pronunciation: "joayo"
+            },
+
+            {
+                word: "싫어요",
+                translation: "i don't like it",
+                pronunciation: "sireoyo"
+            },
+
+            {
+                word: "어디",
+                translation: "where",
+                pronunciation: "eodi"
+            },
+
+            {
+                word: "뭐",
+                translation: "what",
+                pronunciation: "mwo"
+            },
+
+            {
+                word: "누구",
+                translation: "who",
+                pronunciation: "nugu"
+            },
+
+            {
+                word: "왜",
+                translation: "why",
+                pronunciation: "wae"
+            },
+
+            {
+                word: "언제",
+                translation: "when",
+                pronunciation: "eonje"
+            },
+
+            {
+                word: "지금",
+                translation: "now",
+                pronunciation: "jigeum"
+            },
+
+            {
+                word: "여기",
+                translation: "here",
+                pronunciation: "yeogi"
+            },
+
+            {
+                word: "집",
+                translation: "home",
+                pronunciation: "jip"
+            },
+
+            {
+                word: "가게",
+                translation: "store",
+                pronunciation: "gage"
+            },
+
+            {
+                word: "커피",
+                translation: "coffee",
+                pronunciation: "keopi"
+            },
+
+            {
+                word: "책",
+                translation: "book",
+                pronunciation: "chaek"
+            }
+
+        ],
+
+        phrases: [
+
+            {
+                word: "물 주세요.",
+                translation: "water, please.",
+                pronunciation: "mul juseyo"
+            },
+
+            {
+                word: "괜찮아요.",
+                translation: "it's okay.",
+                pronunciation: "gwaenchanayo"
+            },
+
+            {
+                word: "감사합니다.",
+                translation: "thank you.",
+                pronunciation: "gamsahamnida"
+            },
+
+            {
+                word: "네, 좋아요.",
+                translation: "yes, sounds good.",
+                pronunciation: "ne joayo"
+            },
+
+            {
+                word: "미안해요.",
+                translation: "i'm sorry.",
+                pronunciation: "mianhaeyo"
+            },
+
+            {
+                word: "안녕하세요.",
+                translation: "hello.",
+                pronunciation: "annyeonghaseyo"
+            },
+
+            {
+                word: "저는 학생이에요.",
+                translation: "i am a student.",
+                pronunciation: "jeoneun haksaengieyo"
+            },
+
+            {
+                word: "오늘 뭐 해요?",
+                translation: "what are you doing today?",
+                pronunciation: "oneul mwo haeyo"
+            },
+
+            {
+                word: "어디에 가요?",
+                translation: "where are you going?",
+                pronunciation: "eodie gayo"
+            },
+
+            {
+                word: "이거 주세요.",
+                translation: "please give me this.",
+                pronunciation: "igeo juseyo"
+            },
+
+            {
+                word: "커피 주세요.",
+                translation: "coffee, please.",
+                pronunciation: "keopi juseyo"
+            },
+
+            {
+                word: "학교에 가요.",
+                translation: "i go to school.",
+                pronunciation: "hakgyoe gayo"
+            },
+
+            {
+                word: "집에 있어요.",
+                translation: "i am at home.",
+                pronunciation: "jibe isseoyo"
+            },
+
+            {
+                word: "잘 모르겠어요.",
+                translation: "i'm not sure.",
+                pronunciation: "jal moreugesseoyo"
+            },
+
+            {
+                word: "다시 말해 주세요.",
+                translation: "please say it again.",
+                pronunciation: "dasi malhae juseyo"
+            }
+
+        ]
 
     },
 
 
     japanese: {
 
-      name: "japanese",
-      code: "ja-JP",
+        name: "japanese",
 
-      words: [
+        native: "日本語",
 
-        {
-          word: "こんにちは",
-          translation: "hello",
-          pronunciation: "konnichiwa",
-          aliases: ["こんにちは"]
-        },
+        code: "ja-JP",
 
-        {
-          word: "ありがとう",
-          translation: "thank you",
-          pronunciation: "arigatou",
-          aliases: ["ありがとう"]
-        },
+        description:
+            "practice useful japanese for everyday situations.",
 
-        {
-          word: "はい",
-          translation: "yes",
-          pronunciation: "hai",
-          aliases: ["はい"]
-        },
+        words: [
 
-        {
-          word: "いいえ",
-          translation: "no",
-          pronunciation: "iie",
-          aliases: ["いいえ"]
-        },
+            {
+                word: "こんにちは",
+                translation: "hello",
+                pronunciation: "konnichiwa"
+            },
 
-        {
-          word: "友達",
-          translation: "friend",
-          pronunciation: "tomodachi",
-          aliases: ["友達"]
-        },
+            {
+                word: "ありがとう",
+                translation: "thank you",
+                pronunciation: "arigatou"
+            },
 
-        {
-          word: "水",
-          translation: "water",
-          pronunciation: "mizu",
-          aliases: ["水"]
-        },
+            {
+                word: "はい",
+                translation: "yes",
+                pronunciation: "hai"
+            },
 
-        {
-          word: "ごはん",
-          translation: "meal / rice",
-          pronunciation: "gohan",
-          aliases: ["ごはん"]
-        },
+            {
+                word: "いいえ",
+                translation: "no",
+                pronunciation: "iie"
+            },
 
-        {
-          word: "大丈夫",
-          translation: "it's okay",
-          pronunciation: "daijoubu",
-          aliases: ["大丈夫"]
-        },
+            {
+                word: "友達",
+                translation: "friend",
+                pronunciation: "tomodachi"
+            },
 
-        {
-          word: "すみません",
-          translation: "excuse me / sorry",
-          pronunciation: "sumimasen",
-          aliases: ["すみません"]
-        },
+            {
+                word: "水",
+                translation: "water",
+                pronunciation: "mizu"
+            },
 
-        {
-          word: "お願いします",
-          translation: "please",
-          pronunciation: "onegaishimasu",
-          aliases: ["お願いします"]
-        }
+            {
+                word: "ごはん",
+                translation: "rice / meal",
+                pronunciation: "gohan"
+            },
 
-      ],
+            {
+                word: "大丈夫",
+                translation: "it's okay",
+                pronunciation: "daijoubu"
+            },
 
-      phrases: [
+            {
+                word: "すみません",
+                translation: "excuse me / sorry",
+                pronunciation: "sumimasen"
+            },
 
-        {
-          word: "水をください。",
-          translation: "water, please.",
-          pronunciation: "mizu o kudasai",
-          aliases: ["水をください"]
-        },
+            {
+                word: "お願いします",
+                translation: "please",
+                pronunciation: "onegaishimasu"
+            },
 
-        {
-          word: "大丈夫です。",
-          translation: "it's okay.",
-          pronunciation: "daijoubu desu",
-          aliases: ["大丈夫です"]
-        },
+            {
+                word: "愛",
+                translation: "love",
+                pronunciation: "ai"
+            },
 
-        {
-          word: "ありがとうございます。",
-          translation: "thank you very much.",
-          pronunciation: "arigatou gozaimasu",
-          aliases: ["ありがとうございます"]
-        },
+            {
+                word: "学校",
+                translation: "school",
+                pronunciation: "gakkou"
+            },
 
-        {
-          word: "はい、お願いします。",
-          translation: "yes, please.",
-          pronunciation: "hai, onegaishimasu",
-          aliases: ["はい お願いします"]
-        },
+            {
+                word: "学生",
+                translation: "student",
+                pronunciation: "gakusei"
+            },
 
-        {
-          word: "すみません。",
-          translation: "excuse me / sorry.",
-          pronunciation: "sumimasen",
-          aliases: ["すみません"]
-        }
+            {
+                word: "先生",
+                translation: "teacher",
+                pronunciation: "sensei"
+            },
 
-      ]
+            {
+                word: "今日",
+                translation: "today",
+                pronunciation: "kyou"
+            },
+
+            {
+                word: "明日",
+                translation: "tomorrow",
+                pronunciation: "ashita"
+            },
+
+            {
+                word: "昨日",
+                translation: "yesterday",
+                pronunciation: "kinou"
+            },
+
+            {
+                word: "好き",
+                translation: "like",
+                pronunciation: "suki"
+            },
+
+            {
+                word: "嫌い",
+                translation: "dislike",
+                pronunciation: "kirai"
+            },
+
+            {
+                word: "どこ",
+                translation: "where",
+                pronunciation: "doko"
+            },
+
+            {
+                word: "何",
+                translation: "what",
+                pronunciation: "nani"
+            },
+
+            {
+                word: "誰",
+                translation: "who",
+                pronunciation: "dare"
+            },
+
+            {
+                word: "なぜ",
+                translation: "why",
+                pronunciation: "naze"
+            },
+
+            {
+                word: "いつ",
+                translation: "when",
+                pronunciation: "itsu"
+            },
+
+            {
+                word: "今",
+                translation: "now",
+                pronunciation: "ima"
+            },
+
+            {
+                word: "ここ",
+                translation: "here",
+                pronunciation: "koko"
+            },
+
+            {
+                word: "家",
+                translation: "home",
+                pronunciation: "ie"
+            },
+
+            {
+                word: "店",
+                translation: "store",
+                pronunciation: "mise"
+            },
+
+            {
+                word: "コーヒー",
+                translation: "coffee",
+                pronunciation: "koohii"
+            },
+
+            {
+                word: "本",
+                translation: "book",
+                pronunciation: "hon"
+            }
+
+        ],
+
+        phrases: [
+
+            {
+                word: "水をください。",
+                translation: "water, please.",
+                pronunciation: "mizu o kudasai"
+            },
+
+            {
+                word: "大丈夫です。",
+                translation: "it's okay.",
+                pronunciation: "daijoubu desu"
+            },
+
+            {
+                word: "ありがとうございます。",
+                translation: "thank you very much.",
+                pronunciation: "arigatou gozaimasu"
+            },
+
+            {
+                word: "はい、お願いします。",
+                translation: "yes, please.",
+                pronunciation: "hai onegaishimasu"
+            },
+
+            {
+                word: "すみません。",
+                translation: "excuse me / sorry.",
+                pronunciation: "sumimasen"
+            },
+
+            {
+                word: "こんにちは。",
+                translation: "hello.",
+                pronunciation: "konnichiwa"
+            },
+
+            {
+                word: "私は学生です。",
+                translation: "i am a student.",
+                pronunciation: "watashi wa gakusei desu"
+            },
+
+            {
+                word: "今日は何をしますか。",
+                translation: "what will you do today?",
+                pronunciation: "kyou wa nani o shimasu ka"
+            },
+
+            {
+                word: "どこに行きますか。",
+                translation: "where are you going?",
+                pronunciation: "doko ni ikimasu ka"
+            },
+
+            {
+                word: "これをください。",
+                translation: "please give me this.",
+                pronunciation: "kore o kudasai"
+            },
+
+            {
+                word: "コーヒーをください。",
+                translation: "coffee, please.",
+                pronunciation: "koohii o kudasai"
+            },
+
+            {
+                word: "学校に行きます。",
+                translation: "i go to school.",
+                pronunciation: "gakkou ni ikimasu"
+            },
+
+            {
+                word: "家にいます。",
+                translation: "i am at home.",
+                pronunciation: "ie ni imasu"
+            },
+
+            {
+                word: "よく分かりません。",
+                translation: "i'm not sure.",
+                pronunciation: "yoku wakarimasen"
+            },
+
+            {
+                word: "もう一度お願いします。",
+                translation: "one more time, please.",
+                pronunciation: "mou ichido onegaishimasu"
+            }
+
+        ]
 
     },
 
 
     spanish: {
 
-      name: "spanish",
-      code: "es-ES",
+        name: "spanish",
 
-      words: [
+        native: "español",
 
-        {
-          word: "hola",
-          translation: "hello",
-          pronunciation: "oh-la",
-          aliases: ["hola"]
-        },
+        code: "es-ES",
 
-        {
-          word: "gracias",
-          translation: "thank you",
-          pronunciation: "grah-see-as",
-          aliases: ["gracias"]
-        },
+        description:
+            "build practical spanish through speaking.",
 
-        {
-          word: "sí",
-          translation: "yes",
-          pronunciation: "see",
-          aliases: ["sí", "si"]
-        },
+        words: [
 
-        {
-          word: "no",
-          translation: "no",
-          pronunciation: "no",
-          aliases: ["no"]
-        },
+            {
+                word: "hola",
+                translation: "hello",
+                pronunciation: "hola"
+            },
 
-        {
-          word: "amigo",
-          translation: "friend",
-          pronunciation: "ah-mee-go",
-          aliases: ["amigo"]
-        },
+            {
+                word: "gracias",
+                translation: "thank you",
+                pronunciation: "gracias"
+            },
 
-        {
-          word: "agua",
-          translation: "water",
-          pronunciation: "ah-gwa",
-          aliases: ["agua"]
-        },
+            {
+                word: "sí",
+                translation: "yes",
+                pronunciation: "si"
+            },
 
-        {
-          word: "comida",
-          translation: "food",
-          pronunciation: "koh-mee-da",
-          aliases: ["comida"]
-        },
+            {
+                word: "no",
+                translation: "no",
+                pronunciation: "no"
+            },
 
-        {
-          word: "por favor",
-          translation: "please",
-          pronunciation: "por fah-vor",
-          aliases: ["por favor"]
-        },
+            {
+                word: "amigo",
+                translation: "friend",
+                pronunciation: "amigo"
+            },
 
-        {
-          word: "perdón",
-          translation: "sorry / excuse me",
-          pronunciation: "pair-don",
-          aliases: ["perdón", "perdon"]
-        },
+            {
+                word: "agua",
+                translation: "water",
+                pronunciation: "agua"
+            },
 
-        {
-          word: "quiero",
-          translation: "I want",
-          pronunciation: "kee-eh-ro",
-          aliases: ["quiero"]
-        }
+            {
+                word: "comida",
+                translation: "food",
+                pronunciation: "comida"
+            },
 
-      ],
+            {
+                word: "por favor",
+                translation: "please",
+                pronunciation: "por favor"
+            },
 
-      phrases: [
+            {
+                word: "perdón",
+                translation: "sorry / excuse me",
+                pronunciation: "perdon"
+            },
 
-        {
-          word: "Quiero agua, por favor.",
-          translation: "I want water, please.",
-          pronunciation: "kee-eh-ro ah-gwa por fah-vor",
-          aliases: ["quiero agua por favor"]
-        },
+            {
+                word: "quiero",
+                translation: "i want",
+                pronunciation: "quiero"
+            },
 
-        {
-          word: "Estoy bien.",
-          translation: "I'm okay.",
-          pronunciation: "es-toy byen",
-          aliases: ["estoy bien"]
-        },
+            {
+                word: "amor",
+                translation: "love",
+                pronunciation: "amor"
+            },
 
-        {
-          word: "Muchas gracias.",
-          translation: "thank you very much.",
-          pronunciation: "moo-chas gra-see-as",
-          aliases: ["muchas gracias"]
-        },
+            {
+                word: "escuela",
+                translation: "school",
+                pronunciation: "escuela"
+            },
 
-        {
-          word: "Sí, por favor.",
-          translation: "yes, please.",
-          pronunciation: "see por fah-vor",
-          aliases: ["sí por favor", "si por favor"]
-        },
+            {
+                word: "estudiante",
+                translation: "student",
+                pronunciation: "estudiante"
+            },
 
-        {
-          word: "Perdón.",
-          translation: "sorry / excuse me.",
-          pronunciation: "pair-don",
-          aliases: ["perdón", "perdon"]
-        }
+            {
+                word: "profesor",
+                translation: "teacher",
+                pronunciation: "profesor"
+            },
 
-      ]
+            {
+                word: "hoy",
+                translation: "today",
+                pronunciation: "hoy"
+            },
+
+            {
+                word: "mañana",
+                translation: "tomorrow",
+                pronunciation: "manana"
+            },
+
+            {
+                word: "ayer",
+                translation: "yesterday",
+                pronunciation: "ayer"
+            },
+
+            {
+                word: "bueno",
+                translation: "good",
+                pronunciation: "bueno"
+            },
+
+            {
+                word: "malo",
+                translation: "bad",
+                pronunciation: "malo"
+            },
+
+            {
+                word: "dónde",
+                translation: "where",
+                pronunciation: "donde"
+            },
+
+            {
+                word: "qué",
+                translation: "what",
+                pronunciation: "que"
+            },
+
+            {
+                word: "quién",
+                translation: "who",
+                pronunciation: "quien"
+            },
+
+            {
+                word: "por qué",
+                translation: "why",
+                pronunciation: "por que"
+            },
+
+            {
+                word: "cuándo",
+                translation: "when",
+                pronunciation: "cuando"
+            },
+
+            {
+                word: "ahora",
+                translation: "now",
+                pronunciation: "ahora"
+            },
+
+            {
+                word: "aquí",
+                translation: "here",
+                pronunciation: "aqui"
+            },
+
+            {
+                word: "casa",
+                translation: "home",
+                pronunciation: "casa"
+            },
+
+            {
+                word: "tienda",
+                translation: "store",
+                pronunciation: "tienda"
+            },
+
+            {
+                word: "café",
+                translation: "coffee",
+                pronunciation: "cafe"
+            },
+
+            {
+                word: "libro",
+                translation: "book",
+                pronunciation: "libro"
+            }
+
+        ],
+
+        phrases: [
+
+            {
+                word: "Quiero agua, por favor.",
+                translation: "I want water, please.",
+                pronunciation: "quiero agua por favor"
+            },
+
+            {
+                word: "Estoy bien.",
+                translation: "I'm okay.",
+                pronunciation: "estoy bien"
+            },
+
+            {
+                word: "Muchas gracias.",
+                translation: "Thank you very much.",
+                pronunciation: "muchas gracias"
+            },
+
+            {
+                word: "Sí, por favor.",
+                translation: "Yes, please.",
+                pronunciation: "si por favor"
+            },
+
+            {
+                word: "Perdón.",
+                translation: "Sorry / excuse me.",
+                pronunciation: "perdon"
+            },
+
+            {
+                word: "Hola, ¿cómo estás?",
+                translation: "Hello, how are you?",
+                pronunciation: "hola como estas"
+            },
+
+            {
+                word: "Soy estudiante.",
+                translation: "I am a student.",
+                pronunciation: "soy estudiante"
+            },
+
+            {
+                word: "¿Qué haces hoy?",
+                translation: "What are you doing today?",
+                pronunciation: "que haces hoy"
+            },
+
+            {
+                word: "¿Adónde vas?",
+                translation: "Where are you going?",
+                pronunciation: "adonde vas"
+            },
+
+            {
+                word: "Quiero esto, por favor.",
+                translation: "I want this, please.",
+                pronunciation: "quiero esto por favor"
+            },
+
+            {
+                word: "Quiero un café.",
+                translation: "I want a coffee.",
+                pronunciation: "quiero un cafe"
+            },
+
+            {
+                word: "Voy a la escuela.",
+                translation: "I go to school.",
+                pronunciation: "voy a la escuela"
+            },
+
+            {
+                word: "Estoy en casa.",
+                translation: "I am at home.",
+                pronunciation: "estoy en casa"
+            },
+
+            {
+                word: "No entiendo.",
+                translation: "I don't understand.",
+                pronunciation: "no entiendo"
+            },
+
+            {
+                word: "¿Puedes repetir?",
+                translation: "Can you repeat?",
+                pronunciation: "puedes repetir"
+            }
+
+        ]
 
     },
 
 
     french: {
 
-      name: "french",
-      code: "fr-FR",
+        name: "french",
 
-      words: [
+        native: "français",
 
-        {
-          word: "bonjour",
-          translation: "hello",
-          pronunciation: "bohn-zhoor",
-          aliases: ["bonjour"]
-        },
+        code: "fr-FR",
 
-        {
-          word: "merci",
-          translation: "thank you",
-          pronunciation: "mehr-see",
-          aliases: ["merci"]
-        },
+        description:
+            "learn useful french through real spoken phrases.",
 
-        {
-          word: "oui",
-          translation: "yes",
-          pronunciation: "wee",
-          aliases: ["oui"]
-        },
+        words: [
 
-        {
-          word: "non",
-          translation: "no",
-          pronunciation: "noh",
-          aliases: ["non"]
-        },
+            {
+                word: "bonjour",
+                translation: "hello",
+                pronunciation: "bonjour"
+            },
 
-        {
-          word: "ami",
-          translation: "friend",
-          pronunciation: "ah-mee",
-          aliases: ["ami"]
-        },
+            {
+                word: "merci",
+                translation: "thank you",
+                pronunciation: "merci"
+            },
 
-        {
-          word: "eau",
-          translation: "water",
-          pronunciation: "oh",
-          aliases: ["eau"]
-        },
+            {
+                word: "oui",
+                translation: "yes",
+                pronunciation: "oui"
+            },
 
-        {
-          word: "nourriture",
-          translation: "food",
-          pronunciation: "noo-ree-toor",
-          aliases: ["nourriture"]
-        },
+            {
+                word: "non",
+                translation: "no",
+                pronunciation: "non"
+            },
 
-        {
-          word: "s'il vous plaît",
-          translation: "please",
-          pronunciation: "seel voo pleh",
-          aliases: ["s'il vous plaît", "sil vous plait"]
-        },
+            {
+                word: "ami",
+                translation: "friend",
+                pronunciation: "ami"
+            },
 
-        {
-          word: "pardon",
-          translation: "sorry / excuse me",
-          pronunciation: "par-dohn",
-          aliases: ["pardon"]
-        },
+            {
+                word: "eau",
+                translation: "water",
+                pronunciation: "eau"
+            },
 
-        {
-          word: "je veux",
-          translation: "I want",
-          pronunciation: "zhuh vuh",
-          aliases: ["je veux"]
-        }
+            {
+                word: "nourriture",
+                translation: "food",
+                pronunciation: "nourriture"
+            },
 
-      ],
+            {
+                word: "s'il vous plaît",
+                translation: "please",
+                pronunciation: "sil vous plait"
+            },
 
-      phrases: [
+            {
+                word: "pardon",
+                translation: "sorry / excuse me",
+                pronunciation: "pardon"
+            },
 
-        {
-          word: "Je voudrais de l'eau, s'il vous plaît.",
-          translation: "I would like water, please.",
-          pronunciation: "zhuh voo-dreh duh loh seel voo pleh",
-          aliases: [
-            "je voudrais de l'eau s'il vous plaît",
-            "je voudrais de leau sil vous plait"
-          ]
-        },
+            {
+                word: "je veux",
+                translation: "i want",
+                pronunciation: "je veux"
+            },
 
-        {
-          word: "Ça va.",
-          translation: "I'm okay.",
-          pronunciation: "sa va",
-          aliases: ["ça va", "ca va"]
-        },
+            {
+                word: "amour",
+                translation: "love",
+                pronunciation: "amour"
+            },
 
-        {
-          word: "Merci beaucoup.",
-          translation: "thank you very much.",
-          pronunciation: "mehr-see boh-koo",
-          aliases: ["merci beaucoup"]
-        },
+            {
+                word: "école",
+                translation: "school",
+                pronunciation: "ecole"
+            },
 
-        {
-          word: "Oui, s'il vous plaît.",
-          translation: "yes, please.",
-          pronunciation: "wee seel voo pleh",
-          aliases: [
-            "oui s'il vous plaît",
-            "oui sil vous plait"
-          ]
-        },
+            {
+                word: "étudiant",
+                translation: "student",
+                pronunciation: "etudiant"
+            },
 
-        {
-          word: "Pardon.",
-          translation: "sorry / excuse me.",
-          pronunciation: "par-dohn",
-          aliases: ["pardon"]
-        }
+            {
+                word: "professeur",
+                translation: "teacher",
+                pronunciation: "professeur"
+            },
 
-      ]
+            {
+                word: "aujourd'hui",
+                translation: "today",
+                pronunciation: "aujourdhui"
+            },
+
+            {
+                word: "demain",
+                translation: "tomorrow",
+                pronunciation: "demain"
+            },
+
+            {
+                word: "hier",
+                translation: "yesterday",
+                pronunciation: "hier"
+            },
+
+            {
+                word: "bon",
+                translation: "good",
+                pronunciation: "bon"
+            },
+
+            {
+                word: "mauvais",
+                translation: "bad",
+                pronunciation: "mauvais"
+            },
+
+            {
+                word: "où",
+                translation: "where",
+                pronunciation: "ou"
+            },
+
+            {
+                word: "quoi",
+                translation: "what",
+                pronunciation: "quoi"
+            },
+
+            {
+                word: "qui",
+                translation: "who",
+                pronunciation: "qui"
+            },
+
+            {
+                word: "pourquoi",
+                translation: "why",
+                pronunciation: "pourquoi"
+            },
+
+            {
+                word: "quand",
+                translation: "when",
+                pronunciation: "quand"
+            },
+
+            {
+                word: "maintenant",
+                translation: "now",
+                pronunciation: "maintenant"
+            },
+
+            {
+                word: "ici",
+                translation: "here",
+                pronunciation: "ici"
+            },
+
+            {
+                word: "maison",
+                translation: "home",
+                pronunciation: "maison"
+            },
+
+            {
+                word: "magasin",
+                translation: "store",
+                pronunciation: "magasin"
+            },
+
+            {
+                word: "café",
+                translation: "coffee",
+                pronunciation: "cafe"
+            },
+
+            {
+                word: "livre",
+                translation: "book",
+                pronunciation: "livre"
+            }
+
+        ],
+
+        phrases: [
+
+            {
+                word: "Je voudrais de l'eau, s'il vous plaît.",
+                translation: "I would like water, please.",
+                pronunciation: "je voudrais de leau sil vous plait"
+            },
+
+            {
+                word: "Ça va.",
+                translation: "I'm okay.",
+                pronunciation: "ca va"
+            },
+
+            {
+                word: "Merci beaucoup.",
+                translation: "Thank you very much.",
+                pronunciation: "merci beaucoup"
+            },
+
+            {
+                word: "Oui, s'il vous plaît.",
+                translation: "Yes, please.",
+                pronunciation: "oui sil vous plait"
+            },
+
+            {
+                word: "Pardon.",
+                translation: "Sorry / excuse me.",
+                pronunciation: "pardon"
+            },
+
+            {
+                word: "Bonjour, comment ça va ?",
+                translation: "Hello, how are you?",
+                pronunciation: "bonjour comment ca va"
+            },
+
+            {
+                word: "Je suis étudiant.",
+                translation: "I am a student.",
+                pronunciation: "je suis etudiant"
+            },
+
+            {
+                word: "Qu'est-ce que tu fais aujourd'hui ?",
+                translation: "What are you doing today?",
+                pronunciation: "quest ce que tu fais aujourdhui"
+            },
+
+            {
+                word: "Où vas-tu ?",
+                translation: "Where are you going?",
+                pronunciation: "ou vas tu"
+            },
+
+            {
+                word: "Je voudrais ceci, s'il vous plaît.",
+                translation: "I would like this, please.",
+                pronunciation: "je voudrais ceci sil vous plait"
+            },
+
+            {
+                word: "Je voudrais un café.",
+                translation: "I would like a coffee.",
+                pronunciation: "je voudrais un cafe"
+            },
+
+            {
+                word: "Je vais à l'école.",
+                translation: "I go to school.",
+                pronunciation: "je vais a lecole"
+            },
+
+            {
+                word: "Je suis à la maison.",
+                translation: "I am at home.",
+                pronunciation: "je suis a la maison"
+            },
+
+            {
+                word: "Je ne comprends pas.",
+                translation: "I don't understand.",
+                pronunciation: "je ne comprends pas"
+            },
+
+            {
+                word: "Pouvez-vous répéter ?",
+                translation: "Can you repeat?",
+                pronunciation: "pouvez vous repeter"
+            }
+
+        ]
 
     }
 
-  };
+};
 
 
-  /* =========================================================
-     APP STATE
-  ========================================================= */
+/* ============================================================
+   GENERAL HELPERS
+   ============================================================ */
 
-  let currentUser = null;
-  let progress = null;
+function $(id) {
+    return document.getElementById(id);
+}
 
-  let currentLanguage = null;
-  let currentQuestions = [];
-  let currentQuestionIndex = 0;
-  let currentQuestion = null;
-
-  let questionAnswered = false;
-
-  let speechRecognition = null;
-
-  let speechScores = [];
-
-
-  /* =========================================================
-     AUTH
-  ========================================================= */
-
-  function showAuth(type) {
-
-    const loginForm =
-      document.getElementById("loginForm");
-
-    const signupForm =
-      document.getElementById("signupForm");
-
-    const loginTab =
-      document.getElementById("loginTab");
-
-    const signupTab =
-      document.getElementById("signupTab");
-
-    if (type === "login") {
-
-      loginForm.classList.remove("hidden");
-      signupForm.classList.add("hidden");
-
-      loginTab.classList.add("active");
-      signupTab.classList.remove("active");
-
-    } else {
-
-      signupForm.classList.remove("hidden");
-      loginForm.classList.add("hidden");
-
-      signupTab.classList.add("active");
-      loginTab.classList.remove("active");
-
-    }
-
-    document.getElementById("authMessage").textContent = "";
-  }
-
-
-  async function login() {
-
-    const email =
-      document.getElementById("loginEmail").value.trim();
-
-    const password =
-      document.getElementById("loginPassword").value;
-
-    const message =
-      document.getElementById("authMessage");
-
-    if (!email || !password) {
-
-      message.textContent =
-        "enter your email and password.";
-
-      return;
-    }
-
-    message.textContent = "logging in...";
-
-    const { error } =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
-
-    if (error) {
-
-      message.textContent =
-        error.message;
-
-      return;
-    }
-
-    message.textContent = "";
-  }
-
-
-  async function signup() {
-
-    const email =
-      document.getElementById("signupEmail").value.trim();
-
-    const password =
-      document.getElementById("signupPassword").value;
-
-    const message =
-      document.getElementById("authMessage");
-
-    if (!email || !password) {
-
-      message.textContent =
-        "enter an email and password.";
-
-      return;
-    }
-
-    if (password.length < 6) {
-
-      message.textContent =
-        "password must be at least 6 characters.";
-
-      return;
-    }
-
-    message.textContent =
-      "creating your account...";
-
-    const { data, error } =
-      await supabaseClient.auth.signUp({
-
-        email,
-        password,
-
-        options: {
-          emailRedirectTo: getRedirectUrl()
-        }
-
-      });
-
-    if (error) {
-
-      message.textContent =
-        error.message;
-
-      return;
-    }
-
-    if (data.session) {
-
-      message.textContent =
-        "account created.";
-
-    } else {
-
-      message.textContent =
-        "account created. check your email to confirm it.";
-
-    }
-  }
-
-
-  async function logout() {
-
-    await supabaseClient.auth.signOut();
-
-    currentUser = null;
-
-    document
-      .getElementById("app")
-      .classList.add("hidden");
-
-    document
-      .getElementById("authScreen")
-      .classList.remove("hidden");
-  }
-
-
-  /* =========================================================
-     USER SETUP
-  ========================================================= */
-
-  async function setupUser(user) {
-
-    currentUser = user;
-
-    document
-      .getElementById("authScreen")
-      .classList.add("hidden");
-
-    document
-      .getElementById("app")
-      .classList.remove("hidden");
-
-    await loadProgress();
-
-    showPage("home");
-  }
-
-
-  async function loadProgress() {
-
-    const { data, error } =
-      await supabaseClient
-        .from("user_progress")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .maybeSingle();
-
-    if (error) {
-
-      console.error(error);
-
-      return;
-    }
-
-    if (!data) {
-
-      const { data: created, error: createError } =
-        await supabaseClient
-          .from("user_progress")
-          .insert({
-            user_id: currentUser.id,
-            language: "none",
-            xp: 0,
-            streak: 0,
-            lessons_completed: 0,
-            words_learned: 0
-          })
-          .select()
-          .single();
-
-      if (createError) {
-
-        console.error(createError);
-
-        return;
-      }
-
-      progress = created;
-
-    } else {
-
-      progress = data;
-    }
-
-    updateProgressUI();
-  }
-
-
-  async function saveProgress() {
-
-    if (!currentUser || !progress) {
-      return;
-    }
-
-    const { error } =
-      await supabaseClient
-        .from("user_progress")
-        .update({
-          language: progress.language,
-          xp: progress.xp,
-          streak: progress.streak,
-          lessons_completed:
-            progress.lessons_completed,
-          words_learned:
-            progress.words_learned,
-          updated_at: new Date().toISOString()
-        })
-        .eq("user_id", currentUser.id);
-
-    if (error) {
-      console.error(error);
-    }
-  }
-
-
-  function updateProgressUI() {
-
-    if (!progress) {
-      return;
-    }
-
-    document.getElementById("xpStat").textContent =
-      progress.xp || 0;
-
-    document.getElementById("streakStat").textContent =
-      progress.streak || 0;
-
-    document.getElementById("lessonsStat").textContent =
-      progress.lessons_completed || 0;
-
-    document.getElementById("wordsStat").textContent =
-      progress.words_learned || 0;
-  }
-
-
-  /* =========================================================
-     NAVIGATION
-  ========================================================= */
-
-  function showPage(page) {
-
-    document
-      .querySelectorAll(".page")
-      .forEach(p => p.classList.remove("active"));
-
-    if (page === "home") {
-
-      document
-        .getElementById("homePage")
-        .classList.add("active");
-
-    }
-
-    if (page === "lesson") {
-
-      document
-        .getElementById("lessonPage")
-        .classList.add("active");
-
-    }
-  }
-
-
-  /* =========================================================
-     LESSON CREATION
-  ========================================================= */
-
-  function shuffle(array) {
+function shuffle(array) {
 
     const copy = [...array];
 
     for (
-      let i = copy.length - 1;
-      i > 0;
-      i--
+        let i = copy.length - 1;
+        i > 0;
+        i--
     ) {
 
-      const j =
-        Math.floor(Math.random() * (i + 1));
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
 
-      [copy[i], copy[j]] =
-        [copy[j], copy[i]];
+        [
+            copy[i],
+            copy[j]
+        ] = [
+            copy[j],
+            copy[i]
+        ];
     }
 
     return copy;
-  }
-
-
-function createLesson(language) {
-  const data = languageData[language];
-
-  const items = shuffle([
-    ...data.words.map(item => ({
-      ...item,
-      type: "vocab"
-    })),
-
-    ...data.phrases.map(item => ({
-      ...item,
-      type: "phrase"
-    }))
-  ]).slice(0, 10);
-
-  const modes = [
-    "speak",
-    "listen",
-    "speak",
-    "choice",
-    "speak",
-    "write",
-    "speak",
-    "listen",
-    "choice",
-    "speak"
-  ];
-
-  return items.map((item, index) => ({
-    ...item,
-    mode: modes[index]
-  }));
 }
-  /* =========================================================
-     RENDER QUESTION
-  ========================================================= */
 
-  function renderQuestion() {
-
-    currentQuestion =
-      currentQuestions[currentQuestionIndex];
-
-    questionAnswered = false;
-
-
-    const data =
-      languageData[currentLanguage];
-
-
-    document.getElementById(
-      "lessonLanguage"
-    ).textContent =
-      data.name;
-
-
-    document.getElementById(
-      "lessonCount"
-    ).textContent =
-      `${currentQuestionIndex + 1} / ${currentQuestions.length}`;
-
-
-    document.getElementById(
-      "questionNumber"
-    ).textContent =
-      `question ${currentQuestionIndex + 1}`;
-
-
-    document.getElementById(
-      "prompt"
-    ).textContent =
-      currentQuestion.word;
-
-
-    document.getElementById(
-      "translation"
-    ).textContent =
-      "";
-
-
-    document.getElementById(
-      "pronunciation"
-    ).textContent =
-      "";
-
-
-    document.getElementById(
-      "speechResult"
-    ).innerHTML = "";
-
-
-    document.getElementById(
-      "speechResult"
-    ).classList.add("hidden");
-
-
-    document.getElementById(
-      "choiceArea"
-    ).innerHTML = "";
-
-
-    document.getElementById(
-      "writingInput"
-    ).value = "";
-
-
-    document.getElementById(
-      "writingInput"
-    ).classList.add("hidden");
-
-
-    document.getElementById(
-      "checkWritingButton"
-    ).classList.add("hidden");
-
-
-    document.getElementById(
-      "nextButton"
-    ).classList.add("hidden");
-
-
-    document.getElementById(
-      "finishButton"
-    ).classList.add("hidden");
-
-
-    const hearButton =
-      document.getElementById("hearButton");
-
-    const speakButton =
-      document.getElementById("speakButton");
-
-
-    hearButton.classList.remove("hidden");
-
-    speakButton.classList.add("hidden");
-
-
-    const mode =
-      currentQuestion.mode;
-
-
-    if (mode === "speak") {
-
-      document.getElementById(
-        "lessonMode"
-      ).textContent =
-        "speaking practice";
-
-
-      document.getElementById(
-        "translation"
-      ).textContent =
-        "say the phrase shown above";
-
-
-      document.getElementById(
-        "pronunciation"
-      ).textContent =
-        `pronunciation guide: ${currentQuestion.pronunciation}`;
-
-
-      speakButton.classList.remove("hidden");
-
-      speakButton.textContent =
-        "● speak now";
-
-
-      speakButton.disabled = false;
-
-    }
-
-
-    else if (mode === "listen") {
-
-      document.getElementById(
-        "lessonMode"
-      ).textContent =
-        "listening";
-
-
-      document.getElementById(
-        "prompt"
-      ).textContent =
-        "listen, then choose the meaning";
-
-
-      document.getElementById(
-        "translation"
-      ).textContent =
-        "";
-
-
-      createMeaningChoices();
-
-    }
-
-
-    else if (mode === "choice") {
-
-      document.getElementById(
-        "lessonMode"
-      ).textContent =
-        "quick reading";
-
-
-      document.getElementById(
-        "translation"
-      ).textContent =
-        "choose the correct meaning";
-
-
-      createMeaningChoices();
-
-    }
-
-
-    else if (mode === "write") {
-
-      document.getElementById(
-        "lessonMode"
-      ).textContent =
-        "quick writing";
-
-
-      document.getElementById(
-        "prompt"
-      ).textContent =
-        currentQuestion.translation;
-
-
-      document.getElementById(
-        "translation"
-      ).textContent =
-        "type the target language";
-
-
-      document.getElementById(
-        "pronunciation"
-      ).textContent =
-        "";
-
-
-      document.getElementById(
-        "writingInput"
-      ).classList.remove("hidden");
-
-
-      document.getElementById(
-        "checkWritingButton"
-      ).classList.remove("hidden");
-
-
-      hearButton.classList.add("hidden");
-
-    }
-
-
-    updateLessonProgress();
-
-  }
-
-
-  function updateLessonProgress() {
-
-    const percent =
-      (
-        currentQuestionIndex /
-        currentQuestions.length
-      ) * 100;
-
-    document.getElementById(
-      "lessonProgress"
-    ).style.width =
-      `${percent}%`;
-  }
-
-
-  /* =========================================================
-     AUDIO / TEXT TO SPEECH
-  ========================================================= */
-
-  function getBestVoice(languageCode) {
-
-    const voices =
-      window.speechSynthesis.getVoices();
-
-    if (!voices.length) {
-      return null;
-    }
-
-
-    const exact =
-      voices.find(
-        voice =>
-          voice.lang.toLowerCase() ===
-          languageCode.toLowerCase()
-      );
-
-
-    if (exact) {
-      return exact;
-    }
-
-
-    const language =
-      languageCode
-        .split("-")[0]
-        .toLowerCase();
-
-
-    return voices.find(
-      voice =>
-        voice.lang
-          .toLowerCase()
-          .startsWith(language)
-    ) || null;
-  }
-
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    alert(
-      "your browser does not support text-to-speech."
-    );
-    return;
-  }
-
-  const code =
-    languageData[currentLanguage].code;
-
-  window.speechSynthesis.cancel();
-
-  function actuallySpeak() {
-    const utterance =
-      new SpeechSynthesisUtterance(text);
-
-    utterance.lang = code;
-    utterance.rate = 0.78;
-    utterance.pitch = 1;
-
-    const voice =
-      getBestVoice(code);
-
-    if (voice) {
-      utterance.voice = voice;
-    }
-
-    window.speechSynthesis.speak(
-      utterance
-    );
-  }
-
-  // Some browsers load voices late
-  if (
-    window.speechSynthesis
-      .getVoices()
-      .length > 0
-  ) {
-    actuallySpeak();
-  } else {
-    setTimeout(
-      actuallySpeak,
-      300
-    );
-  }
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
-  /* =========================================================
-     SPEECH RECOGNITION
-  ========================================================= */
 
-  function getSpeechRecognition() {
+function normalizeText(text) {
 
-    return (
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition ||
-      null
+    return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /[^\p{L}\p{N}\s]/gu,
+            " "
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+}
+
+function showToast(message) {
+
+    const toast = $("toast");
+
+    toast.textContent = message;
+
+    toast.style.display = "block";
+
+    clearTimeout(
+        window.__toastTimeout
     );
 
-  }
+    window.__toastTimeout =
+        setTimeout(
+            () => {
+                toast.style.display = "none";
+            },
+            3000
+        );
+}
 
+function getRedirectUrl() {
 
-  function normalizeText(text) {
-
-    return text
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[.,!?¿¡'’"“”]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-
-  }
-
-
-  function levenshtein(a, b) {
-
-    const matrix = [];
-
-    for (
-      let i = 0;
-      i <= b.length;
-      i++
+    if (
+        location.protocol === "http:" ||
+        location.protocol === "https:"
     ) {
 
-      matrix[i] = [i];
+        return (
+            location.origin +
+            location.pathname
+        );
+    }
 
+    return PRODUCTION_URL;
+}
+
+
+/* ============================================================
+   AUTH MODE
+   ============================================================ */
+
+function setAuthMode(mode) {
+
+    authMode = mode;
+
+    $("login-tab")
+        .classList
+        .toggle(
+            "active",
+            mode === "login"
+        );
+
+    $("signup-tab")
+        .classList
+        .toggle(
+            "active",
+            mode === "signup"
+        );
+
+    $("auth-button").textContent =
+        mode === "login"
+            ? "log in"
+            : "create account";
+
+    $("auth-message").textContent = "";
+}
+
+
+/* ============================================================
+   AUTH SUBMIT
+   ============================================================ */
+
+async function submitAuth() {
+
+    const email =
+        $("email-input")
+            .value
+            .trim();
+
+    const password =
+        $("password-input")
+            .value;
+
+    const message =
+        $("auth-message");
+
+    const button =
+        $("auth-button");
+
+
+    if (!email || !password) {
+
+        message.textContent =
+            "enter your email and password.";
+
+        return;
     }
 
 
-    for (
-      let j = 0;
-      j <= a.length;
-      j++
-    ) {
+    if (password.length < 6) {
 
-      matrix[0][j] = j;
+        message.textContent =
+            "password must be at least 6 characters.";
 
+        return;
     }
 
 
-    for (
-      let i = 1;
-      i <= b.length;
-      i++
-    ) {
+    button.disabled = true;
 
-      for (
-        let j = 1;
-        j <= a.length;
-        j++
-      ) {
+    message.textContent =
+        "working...";
 
-        if (
-          b.charAt(i - 1) ===
-          a.charAt(j - 1)
-        ) {
 
-          matrix[i][j] =
-            matrix[i - 1][j - 1];
+    try {
+
+        if (authMode === "login") {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .signInWithPassword({
+                        email,
+                        password
+                    });
+
+            if (error) {
+                throw error;
+            }
+
+            message.textContent =
+                "logged in.";
 
         } else {
 
-          matrix[i][j] =
-            Math.min(
-              matrix[i - 1][j - 1] + 1,
-              matrix[i][j - 1] + 1,
-              matrix[i - 1][j] + 1
-            );
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .signUp({
 
+                        email,
+
+                        password,
+
+                        options: {
+                            emailRedirectTo:
+                                getRedirectUrl()
+                        }
+
+                    });
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (data.session) {
+
+                message.textContent =
+                    "account created.";
+
+            } else {
+
+                message.textContent =
+                    "account created. check your email to confirm it.";
+
+            }
         }
 
-      }
+    } catch (error) {
+
+        console.error(
+            "authentication error:",
+            error
+        );
+
+        message.textContent =
+            error.message ||
+            "something went wrong.";
+
+    } finally {
+
+        button.disabled = false;
+    }
+}
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+
+async function logout() {
+
+    await supabaseClient
+        .auth
+        .signOut();
+
+    currentUser = null;
+
+    progress = null;
+
+    $("app-screen")
+        .classList
+        .add("hidden");
+
+    $("auth-screen")
+        .classList
+        .remove("hidden");
+
+    stopLessonTimer();
+
+    showPage("home");
+}
+
+
+/* ============================================================
+   USER SETUP
+   ============================================================ */
+
+async function setupUser(user) {
+
+    if (!user) {
+        return;
+    }
+
+    currentUser = user;
+
+
+    $("auth-screen")
+        .classList
+        .add("hidden");
+
+    $("app-screen")
+        .classList
+        .remove("hidden");
+
+
+    $("header-email")
+        .textContent =
+        user.email || "";
+
+
+    $("profile-email")
+        .textContent =
+        user.email || "";
+
+
+    if (user.created_at) {
+
+        $("profile-created")
+            .textContent =
+            new Date(
+                user.created_at
+            ).toLocaleDateString();
 
     }
 
-    return matrix[b.length][a.length];
 
-  }
+    await loadProgress();
+
+    updateProgressUI();
+}
 
 
-  function similarity(a, b) {
+/* ============================================================
+   LOAD PROGRESS
+   ============================================================ */
 
-    a = normalizeText(a);
-    b = normalizeText(b);
+async function loadProgress() {
 
-    if (!a || !b) {
-      return 0;
+    if (!currentUser) {
+        return;
     }
 
-    if (a === b) {
-      return 100;
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("user_progress")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            )
+            .limit(1)
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "progress load error:",
+            error
+        );
+
+
+        /*
+         * Keep the app usable even if
+         * the database temporarily fails.
+         */
+
+        progress = {
+
+            user_id:
+                currentUser.id,
+
+            language:
+                "none",
+
+            xp: 0,
+
+            streak: 0,
+
+            lessons_completed: 0,
+
+            words_learned: 0
+
+        };
+
+
+        showToast(
+            "progress could not be loaded."
+        );
+
+        return;
+    }
+
+
+    if (!data) {
+
+        const {
+            data: created,
+            error: createError
+        } =
+            await supabaseClient
+                .from("user_progress")
+                .insert({
+
+                    user_id:
+                        currentUser.id,
+
+                    language:
+                        "none",
+
+                    xp: 0,
+
+                    streak: 0,
+
+                    lessons_completed: 0,
+
+                    words_learned: 0
+
+                })
+                .select()
+                .single();
+
+
+        if (createError) {
+
+            console.error(
+                "progress creation error:",
+                createError
+            );
+
+
+            progress = {
+
+                user_id:
+                    currentUser.id,
+
+                language:
+                    "none",
+
+                xp: 0,
+
+                streak: 0,
+
+                lessons_completed: 0,
+
+                words_learned: 0
+
+            };
+
+            return;
+        }
+
+
+        progress = created;
+
+    } else {
+
+        progress = data;
+
+    }
+
+
+    if (
+        progress.language &&
+        languageData[
+            progress.language
+        ]
+    ) {
+
+        $("profile-language")
+            .textContent =
+            languageData[
+                progress.language
+            ].name;
+    }
+}
+
+
+/* ============================================================
+   SAVE PROGRESS
+   ============================================================ */
+
+async function saveProgress() {
+
+    if (
+        !currentUser ||
+        !progress
+    ) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("user_progress")
+            .update({
+
+                language:
+                    progress.language ||
+                    "none",
+
+                xp:
+                    Number(
+                        progress.xp
+                    ) || 0,
+
+                streak:
+                    Number(
+                        progress.streak
+                    ) || 0,
+
+                lessons_completed:
+                    Number(
+                        progress.lessons_completed
+                    ) || 0,
+
+                words_learned:
+                    Number(
+                        progress.words_learned
+                    ) || 0,
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            })
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "progress save error:",
+            error
+        );
+
+        showToast(
+            "progress could not be saved."
+        );
+    }
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+function showPage(page) {
+
+    const pages =
+        document.querySelectorAll(
+            ".app-page"
+        );
+
+    pages.forEach(
+        element => {
+            element.classList.remove(
+                "active"
+            );
+        }
+    );
+
+
+    const target =
+        $(page + "-page");
+
+
+    if (target) {
+
+        target.classList.add(
+            "active"
+        );
+    }
+
+
+    const navButtons =
+        document.querySelectorAll(
+            ".nav-btn"
+        );
+
+
+    navButtons.forEach(
+        button => {
+            button.classList.remove(
+                "active"
+            );
+        }
+    );
+
+
+    const navMap = {
+
+        home:
+            "nav-home",
+
+        learn:
+            "nav-learn",
+
+        progress:
+            "nav-progress",
+
+        profile:
+            "nav-profile"
+
+    };
+
+
+    if (navMap[page]) {
+
+        $(navMap[page])
+            .classList
+            .add("active");
+    }
+}
+
+
+/* ============================================================
+   UPDATE PROGRESS UI
+   ============================================================ */
+
+function updateProgressUI() {
+
+    if (!progress) {
+        return;
+    }
+
+
+    const xp =
+        Number(
+            progress.xp
+        ) || 0;
+
+
+    const streak =
+        Number(
+            progress.streak
+        ) || 0;
+
+
+    const lessons =
+        Number(
+            progress.lessons_completed
+        ) || 0;
+
+
+    const words =
+        Number(
+            progress.words_learned
+        ) || 0;
+
+
+    $("home-xp")
+        .textContent = xp;
+
+    $("home-streak")
+        .textContent = streak;
+
+    $("home-lessons")
+        .textContent = lessons;
+
+    $("home-words")
+        .textContent = words;
+
+
+    $("progress-xp")
+        .textContent = xp;
+
+    $("progress-streak")
+        .textContent = streak;
+
+    $("progress-lessons")
+        .textContent = lessons;
+
+    $("progress-words")
+        .textContent = words;
+
+
+    if (
+        progress.language &&
+        languageData[
+            progress.language
+        ]
+    ) {
+
+        $("profile-language")
+            .textContent =
+            languageData[
+                progress.language
+            ].name;
+    }
+}
+
+
+/* ============================================================
+   LANGUAGE CARDS
+   ============================================================ */
+
+function renderLanguageCards() {
+
+    const containers = [
+
+        $("home-language-grid"),
+
+        $("learn-language-grid")
+
+    ];
+
+
+    containers.forEach(
+        container => {
+
+            if (!container) {
+                return;
+            }
+
+
+            container.innerHTML = "";
+
+
+            Object.keys(
+                languageData
+            ).forEach(
+                key => {
+
+                    const language =
+                        languageData[key];
+
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.className =
+                        "language-card";
+
+
+                    button.type =
+                        "button";
+
+
+                    button.onclick =
+                        () =>
+                            startLesson(key);
+
+
+                    button.innerHTML = `
+
+                        <div>
+
+                            <div class="language-code">
+                                ${escapeHTML(
+                                    language.code
+                                )}
+                            </div>
+
+                            <div class="language-name">
+                                ${escapeHTML(
+                                    language.name
+                                )}
+                            </div>
+
+                            <div class="language-native">
+                                ${escapeHTML(
+                                    language.native
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="language-description">
+
+                            ${escapeHTML(
+                                language.description
+                            )}
+
+                            <br><br>
+
+                            ${language.words.length}
+                            words ·
+                            ${language.phrases.length}
+                            phrases
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        button
+                    );
+
+                }
+            );
+        }
+    );
+}
+
+
+/* ============================================================
+   LESSON GENERATOR
+   ============================================================ */
+
+function createLesson(language) {
+
+    const data =
+        languageData[language];
+
+
+    const vocabulary =
+        data.words.map(
+            item => ({
+                word:
+                    item.word,
+
+                translation:
+                    item.translation,
+
+                pronunciation:
+                    item.pronunciation,
+
+                type:
+                    "vocabulary"
+            })
+        );
+
+
+    const phrases =
+        data.phrases.map(
+            item => ({
+                word:
+                    item.word,
+
+                translation:
+                    item.translation,
+
+                pronunciation:
+                    item.pronunciation,
+
+                type:
+                    "phrase"
+            })
+        );
+
+
+    const allItems =
+        shuffle([
+            ...vocabulary,
+            ...phrases
+        ]);
+
+
+    const selected =
+        allItems.slice(
+            0,
+            Math.min(
+                10,
+                allItems.length
+            )
+        );
+
+
+    /*
+     * Speaking is intentionally
+     * the largest category.
+     *
+     * 5 speaking
+     * 2 listening
+     * 2 choice
+     * 1 writing
+     */
+
+    const modes =
+        shuffle([
+
+            "speak",
+            "speak",
+            "speak",
+            "speak",
+            "speak",
+
+            "listen",
+            "listen",
+
+            "choice",
+            "choice",
+
+            "write"
+
+        ]);
+
+
+    return selected.map(
+        (item, index) => ({
+
+            ...item,
+
+            mode:
+                modes[index]
+
+        })
+    );
+}
+
+
+/* ============================================================
+   START LESSON
+   ============================================================ */
+
+function startLesson(language) {
+
+    if (!progress) {
+
+        alert(
+            "your progress has not loaded yet. refresh the page and log in again."
+        );
+
+        return;
+    }
+
+
+    currentLanguage =
+        language;
+
+
+    currentQuestions =
+        createLesson(
+            language
+        );
+
+
+    currentQuestionIndex =
+        0;
+
+
+    currentQuestion =
+        null;
+
+
+    questionAnswered =
+        false;
+
+
+    speechScores =
+        [];
+
+
+    lessonStartTime =
+        Date.now();
+
+
+    progress.language =
+        language;
+
+
+    $("profile-language")
+        .textContent =
+        languageData[
+            language
+        ].name;
+
+
+    showPage("lesson");
+
+
+    startLessonTimer();
+
+
+    renderQuestion();
+}
+
+
+/* ============================================================
+   LESSON TIMER
+   ============================================================ */
+
+function startLessonTimer() {
+
+    stopLessonTimer();
+
+
+    lessonTimer =
+        setInterval(
+            () => {
+
+                if (!lessonStartTime) {
+                    return;
+                }
+
+
+                const elapsed =
+                    Math.floor(
+                        (
+                            Date.now() -
+                            lessonStartTime
+                        ) / 1000
+                    );
+
+
+                const minutes =
+                    String(
+                        Math.floor(
+                            elapsed / 60
+                        )
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const seconds =
+                    String(
+                        elapsed % 60
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                $("lesson-timer")
+                    .textContent =
+                    minutes +
+                    ":" +
+                    seconds;
+
+            },
+            1000
+        );
+}
+
+
+function stopLessonTimer() {
+
+    if (lessonTimer) {
+
+        clearInterval(
+            lessonTimer
+        );
+
+        lessonTimer =
+            null;
+    }
+}
+
+
+/* ============================================================
+   QUIT LESSON
+   ============================================================ */
+
+function quitLesson() {
+
+    if (
+        !confirm(
+            "leave this lesson? your current lesson will not be saved."
+        )
+    ) {
+        return;
+    }
+
+
+    stopLessonTimer();
+
+
+    if (
+        "speechSynthesis"
+        in window
+    ) {
+
+        window.speechSynthesis.cancel();
+    }
+
+
+    if (speechRecognition) {
+
+        try {
+
+            speechRecognition.abort();
+
+        } catch (error) {}
+
+    }
+
+
+    showPage("home");
+}
+
+
+/* ============================================================
+   RENDER QUESTION
+   ============================================================ */
+
+function renderQuestion() {
+
+    const question =
+        currentQuestions[
+            currentQuestionIndex
+        ];
+
+
+    if (!question) {
+        return;
+    }
+
+
+    currentQuestion =
+        question;
+
+
+    questionAnswered =
+        false;
+
+
+    $("next-button")
+        .classList
+        .add("hidden");
+
+
+    $("lesson-count")
+        .textContent =
+        (
+            currentQuestionIndex +
+            1
+        ) +
+        " / " +
+        currentQuestions.length;
+
+
+    $("lesson-language")
+        .textContent =
+        languageData[
+            currentLanguage
+        ].name +
+        " / " +
+        question.mode;
+
+
+    const percentage =
+        (
+            currentQuestionIndex /
+            currentQuestions.length
+        ) *
+        100;
+
+
+    $("lesson-progress-fill")
+        .style.width =
+        percentage + "%";
+
+
+    const area =
+        $("question-area");
+
+
+    area.innerHTML = "";
+
+
+    if (
+        question.mode ===
+        "speak"
+    ) {
+
+        renderSpeakQuestion(
+            area,
+            question
+        );
+
+    } else if (
+        question.mode ===
+        "listen"
+    ) {
+
+        renderListenQuestion(
+            area,
+            question
+        );
+
+    } else if (
+        question.mode ===
+        "choice"
+    ) {
+
+        renderChoiceQuestion(
+            area,
+            question
+        );
+
+    } else if (
+        question.mode ===
+        "write"
+    ) {
+
+        renderWriteQuestion(
+            area,
+            question
+        );
+    }
+}
+
+
+/* ============================================================
+   SPEAK QUESTION
+   ============================================================ */
+
+function renderSpeakQuestion(
+    area,
+    question
+) {
+
+    area.innerHTML = `
+
+        <div class="question-type">
+            speaking
+        </div>
+
+
+        <div class="question-target">
+            ${escapeHTML(
+                question.word
+            )}
+        </div>
+
+
+        <div class="question-translation">
+            ${escapeHTML(
+                question.translation
+            )}
+        </div>
+
+
+        <div class="question-pronunciation">
+            pronunciation:
+            ${escapeHTML(
+                question.pronunciation
+            )}
+        </div>
+
+
+        <button
+            id="speak-button"
+            class="speak-button"
+            onclick="practiceSpeaking()"
+        >
+            ● speak
+        </button>
+
+
+        <button
+            class="hear-button"
+            onclick="speakText(
+                currentQuestion.word
+            )"
+        >
+            🔊 hear it
+        </button>
+
+
+        <div
+            id="speech-result"
+            class="speech-result hidden"
+        ></div>
+
+    `;
+}
+
+
+/* ============================================================
+   LISTEN QUESTION
+   ============================================================ */
+
+function renderListenQuestion(
+    area,
+    question
+) {
+
+    const options =
+        makeOptions(
+            question
+        );
+
+
+    area.innerHTML = `
+
+        <div class="question-type">
+            listening
+        </div>
+
+
+        <div class="question-target">
+            listen.
+        </div>
+
+
+        <div class="question-instruction">
+            press play, listen to the word or phrase,
+            then choose what it means.
+        </div>
+
+
+        <button
+            class="speak-button"
+            onclick="speakText(
+                currentQuestion.word
+            )"
+        >
+            🔊 play audio
+        </button>
+
+
+        <div class="choice-grid">
+
+            ${options.map(
+                (option, index) => `
+
+                    <button
+                        class="choice-button"
+                        data-choice="${index}"
+                        onclick='checkChoice(
+                            ${index},
+                            ${JSON.stringify(
+                                option
+                            )}
+                        )'
+                    >
+                        ${escapeHTML(
+                            option.translation
+                        )}
+                    </button>
+
+                `
+            ).join("")}
+
+        </div>
+
+    `;
+}
+
+
+/* ============================================================
+   CHOICE QUESTION
+   ============================================================ */
+
+function renderChoiceQuestion(
+    area,
+    question
+) {
+
+    const options =
+        makeOptions(
+            question
+        );
+
+
+    area.innerHTML = `
+
+        <div class="question-type">
+            choose
+        </div>
+
+
+        <div class="question-target">
+            ${escapeHTML(
+                question.word
+            )}
+        </div>
+
+
+        <div class="question-instruction">
+            choose the correct meaning.
+        </div>
+
+
+        <div class="choice-grid">
+
+            ${options.map(
+                (option, index) => `
+
+                    <button
+                        class="choice-button"
+                        data-choice="${index}"
+                        onclick='checkChoice(
+                            ${index},
+                            ${JSON.stringify(
+                                option
+                            )}
+                        )'
+                    >
+                        ${escapeHTML(
+                            option.translation
+                        )}
+                    </button>
+
+                `
+            ).join("")}
+
+        </div>
+
+    `;
+}
+
+
+/* ============================================================
+   WRITE QUESTION
+   ============================================================ */
+
+function renderWriteQuestion(
+    area,
+    question
+) {
+
+    area.innerHTML = `
+
+        <div class="question-type">
+            writing
+        </div>
+
+
+        <div class="question-instruction">
+            translate this into
+            ${escapeHTML(
+                languageData[
+                    currentLanguage
+                ].name
+            )}.
+        </div>
+
+
+        <div class="question-target">
+            ${escapeHTML(
+                question.translation
+            )}
+        </div>
+
+
+        <input
+            id="writing-input"
+            class="input"
+            style="text-align:center;margin-top:20px"
+            placeholder="type your answer..."
+            autocomplete="off"
+        >
+
+
+        <button
+            class="speak-button"
+            onclick="checkWriting()"
+        >
+            check answer
+        </button>
+
+
+        <div
+            id="writing-result"
+            class="speech-result hidden"
+        ></div>
+
+    `;
+
+
+    $("writing-input")
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    checkWriting();
+                }
+
+            }
+        );
+}
+
+
+/* ============================================================
+   OPTIONS
+   ============================================================ */
+
+function makeOptions(
+    correct
+) {
+
+    const data =
+        languageData[
+            currentLanguage
+        ];
+
+
+    const all = [
+
+        ...data.words,
+
+        ...data.phrases
+
+    ];
+
+
+    const wrong =
+        shuffle(
+            all.filter(
+                item =>
+                    item.word !==
+                    correct.word
+            )
+        ).slice(
+            0,
+            2
+        );
+
+
+    return shuffle([
+
+        correct,
+
+        ...wrong
+
+    ]);
+}
+
+
+/* ============================================================
+   CHOICE CHECK
+   ============================================================ */
+
+function checkChoice(
+    index,
+    option
+) {
+
+    if (
+        questionAnswered
+    ) {
+        return;
+    }
+
+
+    const buttons =
+        [
+            ...document.querySelectorAll(
+                ".choice-button"
+            )
+        ];
+
+
+    buttons.forEach(
+        button => {
+            button.disabled =
+                true;
+        }
+    );
+
+
+    const correct =
+        option.word ===
+        currentQuestion.word;
+
+
+    buttons[index]
+        ?.classList
+        .add(
+            correct
+                ? "correct"
+                : "wrong"
+        );
+
+
+    if (!correct) {
+
+        const correctIndex =
+            buttons.findIndex(
+                button =>
+                    button.textContent
+                        .trim() ===
+                    currentQuestion
+                        .translation
+            );
+
+
+        if (
+            correctIndex >= 0
+        ) {
+
+            buttons[
+                correctIndex
+            ]
+                .classList
+                .add("correct");
+        }
+    }
+
+
+    const feedback =
+        document.createElement(
+            "div"
+        );
+
+
+    feedback.className =
+        "feedback";
+
+
+    feedback.innerHTML =
+        correct
+
+            ? "correct."
+
+            : `
+                not quite.
+                the answer is
+                <strong>
+                    ${escapeHTML(
+                        currentQuestion
+                            .translation
+                    )}
+                </strong>
+            `;
+
+
+    $("question-area")
+        .appendChild(
+            feedback
+        );
+
+
+    questionAnswered =
+        true;
+
+
+    showNextButton();
+}
+
+
+/* ============================================================
+   WRITING SCORE
+   ============================================================ */
+
+function checkWriting() {
+
+    if (
+        questionAnswered
+    ) {
+        return;
+    }
+
+
+    const input =
+        $("writing-input");
+
+
+    const result =
+        $("writing-result");
+
+
+    const answer =
+        input.value.trim();
+
+
+    result.classList.remove(
+        "hidden"
+    );
+
+
+    if (!answer) {
+
+        result.innerHTML = `
+
+            <div class="score bad">
+                enter an answer first.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    const score =
+        scoreText(
+            answer,
+            currentQuestion
+        );
+
+
+    if (score >= 70) {
+
+        result.innerHTML = `
+
+            <div class="score good">
+                ${score}% · correct
+            </div>
+
+            <div>
+                answer:
+                <strong>
+                    ${escapeHTML(
+                        currentQuestion.word
+                    )}
+                </strong>
+            </div>
+
+        `;
+
+
+        questionAnswered =
+            true;
+
+
+        showNextButton();
+
+    } else {
+
+        result.innerHTML = `
+
+            <div class="score bad">
+                ${score}% · try again
+            </div>
+
+            <div>
+                detected:
+                <strong>
+                    ${escapeHTML(
+                        answer
+                    )}
+                </strong>
+            </div>
+
+        `;
+    }
+}
+
+
+/* ============================================================
+   TEXT NORMALIZATION
+   ============================================================ */
+
+function normalizeSpeech(
+    text
+) {
+
+    return String(
+        text || ""
+    )
+        .toLowerCase()
+        .normalize(
+            "NFD"
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /[^\p{L}\p{N}\s]/gu,
+            " "
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+}
+
+
+/* ============================================================
+   LEVENSHTEIN
+   ============================================================ */
+
+function levenshtein(
+    a,
+    b
+) {
+
+    const matrix = [];
+
+
+    for (
+        let i = 0;
+        i <= b.length;
+        i++
+    ) {
+
+        matrix[i] = [i];
+    }
+
+
+    for (
+        let j = 0;
+        j <= a.length;
+        j++
+    ) {
+
+        matrix[0][j] = j;
+    }
+
+
+    for (
+        let i = 1;
+        i <= b.length;
+        i++
+    ) {
+
+        for (
+            let j = 1;
+            j <= a.length;
+            j++
+        ) {
+
+            if (
+                b.charAt(i - 1) ===
+                a.charAt(j - 1)
+            ) {
+
+                matrix[i][j] =
+                    matrix[i - 1][j - 1];
+
+            } else {
+
+                matrix[i][j] =
+                    Math.min(
+
+                        matrix[
+                            i - 1
+                        ][
+                            j - 1
+                        ] + 1,
+
+                        matrix[
+                            i
+                        ][
+                            j - 1
+                        ] + 1,
+
+                        matrix[
+                            i - 1
+                        ][
+                            j
+                        ] + 1
+
+                    );
+            }
+        }
+    }
+
+
+    return matrix[
+        b.length
+    ][
+        a.length
+    ];
+}
+
+
+/* ============================================================
+   TEXT SIMILARITY
+   ============================================================ */
+
+function similarity(
+    a,
+    b
+) {
+
+    const first =
+        normalizeSpeech(a);
+
+
+    const second =
+        normalizeSpeech(b);
+
+
+    if (
+        !first ||
+        !second
+    ) {
+
+        return 0;
+    }
+
+
+    if (
+        first ===
+        second
+    ) {
+
+        return 100;
     }
 
 
     const distance =
-      levenshtein(a, b);
+        levenshtein(
+            first,
+            second
+        );
 
 
     const maxLength =
-      Math.max(a.length, b.length);
+        Math.max(
+            first.length,
+            second.length
+        );
 
 
-    if (maxLength === 0) {
-      return 100;
+    if (
+        maxLength === 0
+    ) {
+
+        return 100;
     }
 
 
-    return Math.round(
-      (1 - distance / maxLength) * 100
+    return Math.max(
+        0,
+        Math.round(
+            (
+                1 -
+                distance /
+                maxLength
+            ) *
+            100
+        )
     );
-
-  }
-
-
-  function wordOverlap(a, b) {
-
-    const wordsA =
-      normalizeText(a)
-        .split(" ")
-        .filter(Boolean);
-
-    const wordsB =
-      normalizeText(b)
-        .split(" ")
-        .filter(Boolean);
+}
 
 
-    if (!wordsA.length || !wordsB.length) {
-      return 0;
+/* ============================================================
+   WORD OVERLAP
+   ============================================================ */
+
+function wordOverlap(
+    a,
+    b
+) {
+
+    const first =
+        normalizeSpeech(a)
+            .split(" ")
+            .filter(Boolean);
+
+
+    const second =
+        normalizeSpeech(b)
+            .split(" ")
+            .filter(Boolean);
+
+
+    if (
+        !first.length ||
+        !second.length
+    ) {
+
+        return 0;
     }
 
 
     let matches = 0;
 
 
-    wordsA.forEach(word => {
+    first.forEach(
+        word => {
 
-      if (wordsB.includes(word)) {
-        matches++;
-      }
+            if (
+                second.includes(
+                    word
+                )
+            ) {
 
-    });
+                matches++;
+            }
 
-
-    return (
-      matches /
-      Math.max(wordsA.length, wordsB.length)
-    ) * 100;
-
-  }
-
-
-  function scoreSpeech(transcript, item) {
-
-    const candidates = [
-      item.word,
-      ...(item.aliases || [])
-    ];
-
-
-    let bestScore = 0;
-
-
-    candidates.forEach(candidate => {
-
-      const direct =
-        similarity(
-          transcript,
-          candidate
-        );
-
-
-      const overlap =
-        wordOverlap(
-          transcript,
-          candidate
-        );
-
-
-      const combined =
-        Math.round(
-          direct * 0.75 +
-          overlap * 0.25
-        );
-
-
-      bestScore =
-        Math.max(
-          bestScore,
-          combined
-        );
-
-    });
-
-
-    return Math.max(
-      0,
-      Math.min(100, bestScore)
+        }
     );
 
-  }
+
+    return Math.round(
+        (
+            matches /
+            Math.max(
+                first.length,
+                second.length
+            )
+        ) *
+        100
+    );
+}
+
+
+/* ============================================================
+   SPEECH SCORE
+   ============================================================ */
+
+function scoreSpeech(
+    transcript,
+    question
+) {
+
+    const direct =
+        similarity(
+            transcript,
+            question.word
+        );
+
+
+    const overlap =
+        wordOverlap(
+            transcript,
+            question.word
+        );
+
+
+    const romanized =
+        similarity(
+            transcript,
+            question.pronunciation
+        );
+
+
+    /*
+     * Direct target match is weighted
+     * most heavily.
+     */
+
+    return Math.min(
+        100,
+        Math.round(
+            direct * 0.55 +
+            overlap * 0.25 +
+            romanized * 0.20
+        )
+    );
+}
+
+
+/* ============================================================
+   WRITING SCORE
+   ============================================================ */
+
+function scoreText(
+    answer,
+    question
+) {
+
+    const direct =
+        similarity(
+            answer,
+            question.word
+        );
+
+
+    const pronunciation =
+        similarity(
+            answer,
+            question.pronunciation
+        );
+
+
+    return Math.min(
+        100,
+        Math.round(
+            direct * 0.75 +
+            pronunciation * 0.25
+        )
+    );
+}
+
+
+/* ============================================================
+   SPEECH RECOGNITION
+   ============================================================ */
+
+function getSpeechRecognition() {
+
+    return (
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition ||
+        null
+    );
+}
 
 
 function practiceSpeaking() {
-  const Recognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
 
-  const resultBox = document.getElementById("speechResult");
-  const speakButton = document.getElementById("speakButton");
-
-  if (!Recognition) {
-    resultBox.classList.remove("hidden");
-
-    resultBox.innerHTML = `
-      <div class="score bad">
-        speech recognition unavailable
-      </div>
-      <div>
-        use Chrome or Edge and allow microphone access.
-      </div>
-    `;
-
-    return;
-  }
-
-  // Stop an old recognition attempt
-  if (speechRecognition) {
-    try {
-      speechRecognition.abort();
-    } catch (e) {}
-  }
-
-  const recognition = new Recognition();
-
-  speechRecognition = recognition;
-
-  recognition.lang =
-    languageData[currentLanguage].code;
-
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 5;
-
-  let finalTranscript = "";
-  let finished = false;
-
-  resultBox.classList.remove("hidden");
-
-  resultBox.innerHTML = `
-    <div class="listening-live">
-      ● listening...
-    </div>
-  `;
-
-  speakButton.disabled = true;
-  speakButton.textContent = "● listening...";
-
-  recognition.onresult = function(event) {
-    let interimTranscript = "";
-
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
-      const transcript =
-        event.results[i][0].transcript;
-
-      if (event.results[i].isFinal) {
-        finalTranscript += transcript;
-      } else {
-        interimTranscript += transcript;
-      }
-    }
-
-    const displayedTranscript =
-      finalTranscript || interimTranscript;
-
-    resultBox.innerHTML = `
-      <div>
-        heard:
-        <strong>
-          ${escapeHTML(displayedTranscript)}
-        </strong>
-      </div>
-    `;
-  };
-
-  recognition.onerror = function(event) {
-    if (finished) return;
-
-    finished = true;
-
-    speakButton.disabled = false;
-    speakButton.textContent = "● try again";
-
-    let message =
-      "try saying the phrase again.";
-
-    if (event.error === "not-allowed") {
-      message =
-        "microphone permission was blocked. allow microphone access and try again.";
-    }
-
-    if (event.error === "no-speech") {
-      message =
-        "no speech detected. speak clearly after pressing the button.";
-    }
-
-    if (event.error === "network") {
-      message =
-        "speech recognition needs a browser connection. try Chrome or Edge.";
-    }
-
-    resultBox.innerHTML = `
-      <div class="score bad">
-        couldn't detect speech
-      </div>
-
-      <div>
-        ${escapeHTML(message)}
-      </div>
-    `;
-  };
-
-  recognition.onend = function() {
-    if (finished) return;
-
-    finished = true;
-
-    speakButton.disabled = false;
-    speakButton.textContent = "● try again";
-
-    if (!finalTranscript.trim()) {
-      resultBox.innerHTML = `
-        <div class="score bad">
-          nothing detected
-        </div>
-
-        <div>
-          try saying the phrase again.
-        </div>
-      `;
-
-      return;
-    }
-
-function finishSpeech(transcript) {
-  const score =
-    scoreSpeech(transcript, currentQuestion);
-
-  const resultBox =
-    document.getElementById("speechResult");
-
-  let title = "";
-  let feedback = "";
-
-  if (score >= 88) {
-    title = "excellent";
-    feedback =
-      "that was very close to the target.";
-  } else if (score >= 70) {
-    title = "correct";
-    feedback =
-      "good job. the app detected the target phrase.";
-  } else if (score >= 50) {
-    title = "almost";
-    feedback =
-      "some of it matched. try saying it more clearly.";
-  } else {
-    title = "try again";
-    feedback =
-      "the detected speech was too different from the target.";
-  }
-
-  const scoreClass =
-    score >= 70 ? "good" : "bad";
-
-  resultBox.innerHTML = `
-    <div class="score ${scoreClass}">
-      ${score}% · ${title}
-    </div>
-
-    <div>
-      heard:
-      <strong>
-        ${escapeHTML(transcript)}
-      </strong>
-    </div>
-
-    <div>
-      target:
-      <strong>
-        ${escapeHTML(currentQuestion.word)}
-      </strong>
-    </div>
-
-    <div>
-      ${feedback}
-    </div>
-  `;
-
-  if (score >= 70) {
-    // Only successful attempts count
-    speechScores.push(score);
-
-    questionAnswered = true;
-
-    showNextButton();
-  } else {
-    questionAnswered = false;
-
-    document
-      .getElementById("nextButton")
-      .classList.add("hidden");
-  }
-}
-
-  /* =========================================================
-     WRITING
-  ========================================================= */
-
-  function checkWriting() {
-
-    if (questionAnswered) {
-      return;
-    }
-
-
-    const input =
-      document.getElementById(
-        "writingInput"
-      );
-
-
-    const answer =
-      input.value.trim();
-
-
-    if (!answer) {
-      return;
-    }
-
-
-    const score =
-      scoreSpeech(
-        answer,
-        currentQuestion
-      );
+    const Recognition =
+        getSpeechRecognition();
 
 
     const resultBox =
-      document.getElementById(
-        "speechResult"
-      );
+        $("speech-result");
 
 
-    resultBox.classList.remove(
-      "hidden"
-    );
-
-
-    if (score >= 70) {
-
-      questionAnswered = true;
-
-
-      resultBox.innerHTML =
-        `
-          <div class="score good">
-            ${score}% · correct
-          </div>
-          your answer matches the target.
-        `;
-
-
-      showNextButton();
-
-    } else {
-
-      resultBox.innerHTML =
-        `
-          <div class="score bad">
-            ${score}% · try again
-          </div>
-          target:
-          <strong>
-            ${escapeHTML(
-              currentQuestion.word
-            )}
-          </strong>
-        `;
-
-    }
-
-  }
-
-
-  /* =========================================================
-     NEXT QUESTION
-  ========================================================= */
-
-  function showNextButton() {
-
-    const next =
-      document.getElementById(
-        "nextButton"
-      );
+    const speakButton =
+        $("speak-button");
 
 
     if (
-      currentQuestionIndex <
-      currentQuestions.length - 1
+        !Recognition
     ) {
 
-      next.classList.remove(
-        "hidden"
-      );
+        resultBox
+            .classList
+            .remove(
+                "hidden"
+            );
 
-    } else {
 
-      document.getElementById(
-        "finishButton"
-      ).classList.remove(
-        "hidden"
-      );
+        resultBox.innerHTML = `
+
+            <div class="score bad">
+                speech recognition unavailable
+            </div>
+
+            <div>
+                use Chrome or Edge for
+                microphone practice.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    if (
+        speechRecognition
+    ) {
+
+        try {
+
+            speechRecognition.abort();
+
+        } catch (error) {}
 
     }
 
-  }
+
+    const recognition =
+        new Recognition();
 
 
-  function nextQuestion() {
+    speechRecognition =
+        recognition;
 
-    if (!questionAnswered) {
-      return;
+
+    recognition.lang =
+        languageData[
+            currentLanguage
+        ].code;
+
+
+    recognition.continuous =
+        false;
+
+
+    recognition.interimResults =
+        true;
+
+
+    recognition.maxAlternatives =
+        5;
+
+
+    let finalTranscript =
+        "";
+
+
+    let finished =
+        false;
+
+
+    resultBox
+        .classList
+        .remove(
+            "hidden"
+        );
+
+
+    resultBox.innerHTML = `
+
+        <div class="listening">
+            ● listening...
+        </div>
+
+        <div class="small muted">
+            speak now.
+        </div>
+
+    `;
+
+
+    speakButton.disabled =
+        true;
+
+
+    speakButton.textContent =
+        "● listening...";
+
+
+    recognition.onresult =
+        event => {
+
+            let interim =
+                "";
+
+
+            for (
+                let i =
+                    event.resultIndex;
+
+                i <
+                event.results.length;
+
+                i++
+            ) {
+
+                const transcript =
+                    event.results[
+                        i
+                    ][0].transcript;
+
+
+                if (
+                    event.results[
+                        i
+                    ].isFinal
+                ) {
+
+                    finalTranscript +=
+                        transcript;
+
+                } else {
+
+                    interim +=
+                        transcript;
+                }
+            }
+
+
+            const shown =
+                finalTranscript ||
+                interim;
+
+
+            resultBox.innerHTML = `
+
+                <div>
+                    heard:
+                    <strong>
+                        ${escapeHTML(
+                            shown
+                        )}
+                    </strong>
+                </div>
+
+            `;
+        };
+
+
+    recognition.onerror =
+        event => {
+
+            if (
+                finished
+            ) {
+                return;
+            }
+
+
+            finished =
+                true;
+
+
+            speakButton.disabled =
+                false;
+
+
+            speakButton.textContent =
+                "● try again";
+
+
+            let message =
+                "try saying the phrase again.";
+
+
+            if (
+                event.error ===
+                "not-allowed"
+            ) {
+
+                message =
+                    "microphone permission was blocked. allow microphone access in your browser.";
+
+            } else if (
+                event.error ===
+                "no-speech"
+            ) {
+
+                message =
+                    "no speech was detected. speak clearly after pressing the button.";
+
+            } else if (
+                event.error ===
+                "network"
+            ) {
+
+                message =
+                    "speech recognition could not connect. check your internet connection.";
+
+            }
+
+
+            resultBox.innerHTML = `
+
+                <div class="score bad">
+                    couldn't detect speech
+                </div>
+
+                <div>
+                    ${escapeHTML(
+                        message
+                    )}
+                </div>
+
+            `;
+        };
+
+
+    recognition.onend =
+        () => {
+
+            if (
+                finished
+            ) {
+
+                return;
+            }
+
+
+            finished =
+                true;
+
+
+            speakButton.disabled =
+                false;
+
+
+            speakButton.textContent =
+                "● try again";
+
+
+            if (
+                !finalTranscript.trim()
+            ) {
+
+                resultBox.innerHTML = `
+
+                    <div class="score bad">
+                        nothing detected
+                    </div>
+
+                    <div>
+                        try saying it again.
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            finishSpeech(
+                finalTranscript.trim()
+            );
+        };
+
+
+    try {
+
+        recognition.start();
+
+    } catch (error) {
+
+        finished =
+            true;
+
+
+        speakButton.disabled =
+            false;
+
+
+        speakButton.textContent =
+            "● try again";
+
+
+        resultBox.innerHTML = `
+
+            <div class="score bad">
+                microphone could not start
+            </div>
+
+            <div>
+                close the previous attempt
+                and try again.
+            </div>
+
+        `;
+    }
+}
+
+
+/* ============================================================
+   FINISH SPEECH
+   ============================================================ */
+
+function finishSpeech(
+    transcript
+) {
+
+    const score =
+        scoreSpeech(
+            transcript,
+            currentQuestion
+        );
+
+
+    const resultBox =
+        $("speech-result");
+
+
+    let title = "";
+
+    let feedback = "";
+
+
+    if (
+        score >= 88
+    ) {
+
+        title =
+            "excellent";
+
+        feedback =
+            "that was very close to the target.";
+
+    } else if (
+        score >= 70
+    ) {
+
+        title =
+            "correct";
+
+        feedback =
+            "good job. the app detected the target phrase.";
+
+    } else if (
+        score >= 50
+    ) {
+
+        title =
+            "almost";
+
+        feedback =
+            "some of it matched. try saying it more clearly.";
+
+    } else {
+
+        title =
+            "try again";
+
+        feedback =
+            "the detected speech was too different from the target.";
+    }
+
+
+    resultBox.innerHTML = `
+
+        <div class="score ${
+            score >= 70
+                ? "good"
+                : "bad"
+        }">
+
+            ${score}%
+            ·
+            ${title}
+
+        </div>
+
+
+        <div>
+            heard:
+            <strong>
+                ${escapeHTML(
+                    transcript
+                )}
+            </strong>
+        </div>
+
+
+        <div>
+            target:
+            <strong>
+                ${escapeHTML(
+                    currentQuestion.word
+                )}
+            </strong>
+        </div>
+
+
+        <div>
+            ${escapeHTML(
+                feedback
+            )}
+        </div>
+
+    `;
+
+
+    if (
+        score >= 70
+    ) {
+
+        /*
+         * Only successful attempts
+         * count toward the average.
+         */
+
+        speechScores.push(
+            score
+        );
+
+
+        questionAnswered =
+            true;
+
+
+        showNextButton();
+
+    } else {
+
+        questionAnswered =
+            false;
+
+
+        $("next-button")
+            .classList
+            .add(
+                "hidden"
+            );
+    }
+}
+
+
+/* ============================================================
+   TEXT TO SPEECH
+   ============================================================ */
+
+function getBestVoice(
+    languageCode
+) {
+
+    const voices =
+        window.speechSynthesis
+            .getVoices();
+
+
+    if (
+        !voices.length
+    ) {
+
+        return null;
+    }
+
+
+    const exact =
+        voices.find(
+            voice =>
+                voice.lang
+                    .toLowerCase() ===
+                languageCode
+                    .toLowerCase()
+        );
+
+
+    if (
+        exact
+    ) {
+
+        return exact;
+    }
+
+
+    const shortCode =
+        languageCode
+            .split("-")[0]
+            .toLowerCase();
+
+
+    return (
+        voices.find(
+            voice =>
+                voice.lang
+                    .toLowerCase()
+                    .startsWith(
+                        shortCode
+                    )
+        ) ||
+        null
+    );
+}
+
+
+function speakText(
+    text
+) {
+
+    if (
+        !(
+            "speechSynthesis"
+            in window
+        )
+    ) {
+
+        alert(
+            "your browser does not support text-to-speech."
+        );
+
+        return;
+    }
+
+
+    const language =
+        languageData[
+            currentLanguage
+        ];
+
+
+    window.speechSynthesis.cancel();
+
+
+    function speakNow() {
+
+        const utterance =
+            new SpeechSynthesisUtterance(
+                text
+            );
+
+
+        utterance.lang =
+            language.code;
+
+
+        utterance.rate =
+            0.78;
+
+
+        utterance.pitch =
+            1;
+
+
+        const voice =
+            getBestVoice(
+                language.code
+            );
+
+
+        if (
+            voice
+        ) {
+
+            utterance.voice =
+                voice;
+        }
+
+
+        window.speechSynthesis.speak(
+            utterance
+        );
+    }
+
+
+    const voices =
+        window.speechSynthesis
+            .getVoices();
+
+
+    if (
+        voices.length
+    ) {
+
+        speakNow();
+
+    } else {
+
+        setTimeout(
+            speakNow,
+            300
+        );
+    }
+}
+
+
+if (
+    "speechSynthesis"
+    in window
+) {
+
+    window.speechSynthesis
+        .onvoiceschanged =
+        () => {
+
+            window.speechSynthesis
+                .getVoices();
+
+        };
+}
+
+
+/* ============================================================
+   NEXT BUTTON
+   ============================================================ */
+
+function showNextButton() {
+
+    const button =
+        $("next-button");
+
+
+    button.classList
+        .remove(
+            "hidden"
+        );
+
+
+    if (
+        currentQuestionIndex ===
+        currentQuestions.length - 1
+    ) {
+
+        button.textContent =
+            "finish →";
+
+    } else {
+
+        button.textContent =
+            "next →";
+    }
+}
+
+
+function nextQuestion() {
+
+    if (
+        !questionAnswered
+    ) {
+
+        return;
+    }
+
+
+    if (
+        currentQuestionIndex >=
+        currentQuestions.length - 1
+    ) {
+
+        finishLesson();
+
+        return;
     }
 
 
     currentQuestionIndex++;
 
+
     renderQuestion();
-
-  }
-
-
-  /* =========================================================
-     FINISH LESSON
-  ========================================================= */
-
-  async function finishLesson() {
-
-    document.getElementById(
-      "lessonProgress"
-    ).style.width =
-      "100%";
+}
 
 
-    const baseXP = 50;
+/* ============================================================
+   FINISH LESSON
+   ============================================================ */
+
+async function finishLesson() {
+
+    stopLessonTimer();
 
 
-    const speakingCount =
-      speechScores.length;
+    const baseXP =
+        50;
 
 
-    let averageSpeech = 0;
+    const average =
+        speechScores.length
+            ? Math.round(
+                speechScores.reduce(
+                    (
+                        total,
+                        score
+                    ) =>
+                        total + score,
+                    0
+                ) /
+                speechScores.length
+            )
+            : 0;
 
 
-    if (speakingCount > 0) {
-
-      averageSpeech =
-        Math.round(
-          speechScores.reduce(
-            (sum, score) =>
-              sum + score,
-            0
-          ) /
-          speakingCount
-        );
-
-    }
-
-
-    let bonusXP = 0;
-
-
-    if (averageSpeech >= 90) {
-
-      bonusXP = 25;
-
-    } else if (averageSpeech >= 80) {
-
-      bonusXP = 15;
-
-    } else if (averageSpeech >= 70) {
-
-      bonusXP = 10;
-
-    }
-
-
-    const earnedXP =
-      baseXP + bonusXP;
+    const bonus =
+        average >= 90
+            ? 30
+            : average >= 80
+                ? 20
+                : average >= 70
+                    ? 10
+                    : 0;
 
 
     progress.xp =
-      Number(progress.xp || 0) +
-      earnedXP;
+        (
+            Number(
+                progress.xp
+            ) || 0
+        ) +
+        baseXP +
+        bonus;
 
 
     progress.lessons_completed =
-      Number(
-        progress.lessons_completed || 0
-      ) + 1;
+        (
+            Number(
+                progress.lessons_completed
+            ) || 0
+        ) + 1;
 
 
     progress.words_learned =
-      Number(
-        progress.words_learned || 0
-      ) +
-      currentQuestions.length;
+        (
+            Number(
+                progress.words_learned
+            ) || 0
+        ) +
+        currentQuestions.length;
 
 
     updateStreak();
@@ -2768,208 +5433,294 @@ function finishSpeech(transcript) {
     updateProgressUI();
 
 
-    const averageText =
-      speakingCount
-        ? `average speaking score: ${averageSpeech}%`
-        : "speaking score: —";
+    $("speech-average")
+        .textContent =
+        average
+            ? average + "%"
+            : "—";
 
 
-    document.getElementById(
-      "lessonMode"
-    ).textContent =
-      "lesson complete";
+    const languageName =
+        languageData[
+            currentLanguage
+        ].name;
 
 
-    document.getElementById(
-      "prompt"
-    ).textContent =
-      `+${earnedXP} xp`;
+    $("question-area")
+        .innerHTML = `
+
+            <div class="question-type">
+                complete
+            </div>
 
 
-    document.getElementById(
-      "translation"
-    ).textContent =
-      averageText;
+            <div class="question-target">
+                lesson finished.
+            </div>
 
 
-    document.getElementById(
-      "pronunciation"
-    ).textContent =
-      `${currentQuestions.length} questions completed.`;
+            <div class="question-translation">
+                ${escapeHTML(
+                    languageName
+                )}
+                ·
+                +${baseXP + bonus} xp
+            </div>
 
 
-    document.getElementById(
-      "choiceArea"
-    ).innerHTML = "";
+            <div
+                class="card-grid two"
+                style="margin-top:30px;text-align:left"
+            >
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        questions
+                    </div>
+
+                    <div class="stat-number">
+                        ${currentQuestions.length}
+                    </div>
+
+                </div>
 
 
-    document.getElementById(
-      "speechResult"
-    ).classList.add("hidden");
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        speech average
+                    </div>
+
+                    <div class="stat-number">
+                        ${
+                            average
+                                ? average + "%"
+                                : "—"
+                        }
+                    </div>
+
+                </div>
+
+            </div>
 
 
-    document.getElementById(
-      "hearButton"
-    ).classList.add("hidden");
+            <button
+                class="speak-button"
+                style="margin-top:30px"
+                onclick="showPage('home')"
+            >
+                back home
+            </button>
+
+        `;
 
 
-    document.getElementById(
-      "speakButton"
-    ).classList.add("hidden");
+    $("next-button")
+        .classList
+        .add(
+            "hidden"
+        );
+}
 
 
-    document.getElementById(
-      "nextButton"
-    ).classList.add("hidden");
+/* ============================================================
+   STREAK
+   ============================================================ */
 
-
-    document.getElementById(
-      "finishButton"
-    ).classList.add("hidden");
-
-
-    setTimeout(() => {
-
-      showPage("home");
-
-    }, 1800);
-
-  }
-
-
-  /* =========================================================
-     STREAK
-  ========================================================= */
-
-  function updateStreak() {
-
-    const key =
-      "skillbuilding_last_study";
-
+function updateStreak() {
 
     const today =
-      new Date()
-        .toISOString()
-        .split("T")[0];
+        new Date()
+            .toISOString()
+            .slice(
+                0,
+                10
+            );
 
 
     const last =
-      localStorage.getItem(key);
-
-
-    if (last === today) {
-
-      return;
-
-    }
-
-
-    if (last) {
-
-      const previous =
-        new Date(last);
-
-
-      const current =
-        new Date(today);
-
-
-      const difference =
-        Math.round(
-          (
-            current -
-            previous
-          ) /
-          86400000
+        localStorage.getItem(
+            "language_last_lesson"
         );
 
 
-      if (difference === 1) {
+    if (
+        last ===
+        today
+    ) {
+
+        return;
+    }
+
+
+    const yesterday =
+        new Date();
+
+
+    yesterday.setDate(
+        yesterday.getDate() - 1
+    );
+
+
+    const yesterdayString =
+        yesterday
+            .toISOString()
+            .slice(
+                0,
+                10
+            );
+
+
+    if (
+        last ===
+        yesterdayString
+    ) {
 
         progress.streak =
-          Number(progress.streak || 0) + 1;
-
-      } else {
-
-        progress.streak = 1;
-
-      }
+            (
+                Number(
+                    progress.streak
+                ) || 0
+            ) + 1;
 
     } else {
 
-      progress.streak = 1;
-
+        progress.streak =
+            1;
     }
 
 
     localStorage.setItem(
-      key,
-      today
+        "language_last_lesson",
+        today
     );
-
-  }
-
-
-  /* =========================================================
-     SECURITY / HTML ESCAPING
-  ========================================================= */
-
-  function escapeHTML(value) {
-
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
+}
 
 
-  /* =========================================================
-     SESSION CHECK
-  ========================================================= */
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
 
-  async function checkSession() {
+async function initializeApp() {
+
+    renderLanguageCards();
+
 
     const {
-      data: {
-        session
-      }
+        data: {
+            session
+        }
     } =
-      await supabaseClient.auth.getSession();
+        await supabaseClient
+            .auth
+            .getSession();
 
 
-    if (session?.user) {
-
-      await setupUser(
+    if (
+        session &&
         session.user
-      );
-
-    }
-
-  }
-
-
-  supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
-
-      if (
-        session?.user &&
-        !currentUser
-      ) {
+    ) {
 
         await setupUser(
-          session.user
+            session.user
         );
+    }
+}
 
-      }
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        async (
+            event,
+            session
+        ) => {
+
+            if (
+                session &&
+                session.user &&
+                !currentUser
+            ) {
+
+                await setupUser(
+                    session.user
+                );
+            }
+
+
+            if (
+                !session ||
+                !session.user
+            ) {
+
+                currentUser =
+                    null;
+
+                progress =
+                    null;
+            }
+
+        }
+    );
+
+
+initializeApp();
+
+
+/* ============================================================
+   CLEANUP
+   ============================================================ */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.hidden
+        ) {
+
+            if (
+                "speechSynthesis"
+                in window
+            ) {
+
+                window.speechSynthesis
+                    .cancel();
+            }
+        }
+    }
+);
+
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        if (
+            "speechSynthesis"
+            in window
+        ) {
+
+            window.speechSynthesis
+                .cancel();
+        }
+
+
+        if (
+            speechRecognition
+        ) {
+
+            try {
+
+                speechRecognition.abort();
+
+            } catch (error) {}
+        }
 
     }
-  );
+);
 
-
-  checkSession();
 
 </script>
 
